@@ -38,7 +38,6 @@ def cleanup(stage, check, force, api_name, test_account_id):
     cleanup_database(check, force)
 
 
-
 def assume_session(role, session_name):
     sts = boto3.client('sts')
     credentials = sts.assume_role(

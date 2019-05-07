@@ -4,9 +4,9 @@ a simple front end for to terminator for checking in isolation.
 import click
 import logging
 import boto3
-import os
 
-from terminator import get_concrete_subclasses, kvs, Terminator, process_instance
+from terminator import (
+    cleanup, get_concrete_subclasses, kvs, Terminator, process_instance)
 
 log = logging.getLogger('aws-terminator')
 
@@ -62,20 +62,12 @@ def cli_run(terminator, table, check, force):
 @click.option('--stage', required=True)
 @click.option('--force', is_flag=True, default=False)
 @click.option('--check', is_flag=True, default=False)
-def cli_cleanup(stage, api_name, test_accout_id, check, force):
+def cli_cleanup(stage, api_name, check, force):
     """Run the full cleanup in the same manner as the lambda."""
     account_id = boto3.client('sts').get_caller_identity().get('AccountId')
-    cleanup(stage=stage, check=check, api_name=api, test_account_id=account_id)
-    
-    
+    cleanup(stage=stage, check=check, api_name=api_name,
+            test_account_id=account_id)
+
+
 if __name__ == '__main__':
     cli()
-    
-
-
-
-
-    
-
-    
-    
