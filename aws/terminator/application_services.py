@@ -35,6 +35,10 @@ class CodePipeline(Terminator):
             lambda client: client.list_pipelines().get('pipelines', ()))
 
     @property
+    def created_time(self):
+        return self.instance['created']
+
+    @property
     def id(self):
         return self.instance['name']
 
