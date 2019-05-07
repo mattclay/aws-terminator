@@ -173,15 +173,8 @@ def get_concrete_subclasses(class_type):
     return subclasses
 
 
-def get_account_id(credentials):
-    client = boto3.client(
-        'sts',
-        aws_access_key_id=credentials['AccessKeyId'],
-        aws_secret_access_key=credentials['SecretAccessKey'],
-        aws_session_token=credentials['SessionToken'],
-        region_name=AWS_REGION,
-    )
-    return client.get_caller_identity()["Account"]
+def get_account_id(session):
+    return session.client('sts').get_caller_identity('Account')
 
 
 def get_tag_dict_from_tag_list(tag_list):
