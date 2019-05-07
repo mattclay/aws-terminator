@@ -49,6 +49,7 @@ Statement:
       - ssm:DescribeParameters
       - dms:DescribeReplicationSubnetGroups
       - codebuild:BatchGetProjects
+      - codebuild:ListProjects
       - codecommit:ListRepositories
       - sqs:CreateQueue
       - sqs:DeleteQueue
@@ -57,6 +58,7 @@ Statement:
       - sqs:ListQueues
       - sqs:SetQueueAttributes
       - dynamodb:Scan
+      - dynamodb:ListTables
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
