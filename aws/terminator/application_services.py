@@ -218,3 +218,35 @@ class SsmParameter(DbTerminator):
 
     def terminate(self):
         self.client.delete_parameter(Name=self.id)
+
+
+class DynamoDb(Terminator):
+
+    @staticmethod
+    def create(credentials):
+
+        def get_tables(client):
+            table_names = client.get_paginator(
+                'list_tables').paginate().build_full_result().get('TableNames', ())
+            tables = []
+            for t in table_names:
+                tables.append(
+                    client.describe_table(TableName=t).get('Table'))
+            return tables
+
+        return Terminator._create(credentials, DynamoDb, 'dynamodb', get_tables)
+
+    @property
+    def id(self):
+        return self.instance['TableName']
+
+    @property
+    def name(self):
+        return self.instance['TableName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationDateTime']
+
+    def terminate(self):
+        return self.client.delete_table(TableName=self.instance['TableName'])
