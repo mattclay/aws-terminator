@@ -33,6 +33,10 @@ class CodeBuild(Terminator):
         def paginate_projects(client):
             project_names = client.get_paginator(
                 'list_projects').paginate().build_full_result()['projects']
+
+            if not project_names:
+                return []
+
             projects = client.batch_get_projects(
                 names=project_names).get('projects', ())
             return [
