@@ -19,7 +19,10 @@ Statement:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
     Condition:
       ArnLike:
-        iam:PolicyArn: arn:aws:iam::aws:policy/IAMReadOnlyAccess
+        iam:PolicyArn:
+          - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
