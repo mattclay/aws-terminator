@@ -1,0 +1,66 @@
+- name: show configuration
+  tags: always
+  debug: msg="aws_region={{ aws_region }}, stage={{ stage }}, aws_account_id={{ aws_account_id }}"
+- name: publish terminator requirements layer
+  tags: lambda
+  lambda_layer:
+    name: "{{ api_name }}-terminator-requirements"
+    description: "Python requirements for {{ api_name }}-terminator"
+    compatible_runtimes:
+      - python3.7
+    path: "{{ packaging_dir }}/terminator-requirements.zip"
+    license_info: GPL-3.0-only
+    region: "{{ aws_region }}"
+    state: present
+  register: terminator_requirements_layer
+- name: create terminator package
+  tags: lambda
+  lambda_package:
+    src: "{{ playbook_dir }}"
+    dest: "{{ packaging_dir }}/terminator.zip"
+    include:
+      - "{{ playbook_dir }}/terminator_lambda.py"
+      - "{{ playbook_dir }}/terminator/*.py"
+- name: deploy terminator package
+  tags: lambda
+  lambda:
+    region: "{{ aws_region }}"
+    name: "{{ api_name }}-terminator"
+    local_path: "{{ packaging_dir }}/terminator.zip"
+    runtime: python3.7
+    timeout: 60
+    handler: terminator_lambda.lambda_handler
+    memory_size: 128
+    role: "{{ api_name }}-terminator-{{ stage }}"
+    publish: True
+    qualifier: "{{ stage }}"
+    environment:
+      TEST_ACCOUNT_ID: "{{ test_account_id }}"
+      API_NAME: "{{ api_name }}"
+    layers:
+      - "{{ terminator_requirements_layer.layer.layer_version_arn }}"
+  register: terminator_function
+- name: alias terminator functions
+  tags: lambda
+  lambda_alias:
+    region: "{{ aws_region }}"
+    state: present
+    name: "{{ stage }}"
+    description: "{{ stage }} alias"
+    function_name: "{{ terminator_function.meta.function_name }}"
+    version: "{{ terminator_function.meta.version }}"
+- name: schedule terminator event
+  tags: schedule
+  cloudwatch_event:
+    region: "{{ aws_region }}"
+    rule_name: "{{ api_name }}-terminator-{{ stage }}"
+    schedule_expression: rate(5 minutes)
+    function_name: "{{ api_name }}-terminator:{{ stage }}"
+  register: event
+- name: schedule terminator event permissions
+  tags: schedule
+  lambda_policy:
+    region: "{{ aws_region }}"
+    function_name: "{{ api_name }}-terminator:{{ stage }}"
+    source_arn: "arn:aws:events:{{ aws_region }}:{{ aws_account_id }}:rule/{{ api_name }}-terminator-{{ stage }}"
+    principal_service: events.amazonaws.com

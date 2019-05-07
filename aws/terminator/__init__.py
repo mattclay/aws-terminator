@@ -48,6 +48,22 @@ def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id
         cleanup_database(check, force)
 
 
+def get_region_restrictions():
+    """ Get regions specific for each service so unsupported regions for services and global services can be skipped
+    :rtype: dict [str, list]
+    """
+    restricted_regions = {}
+    session = boto3.Session()
+    services = session.get_available_services()
+    for service in services:
+        restricted_regions[service] = session.get_available_regions(service)
+    return restricted_regions
+
+
+def get_regions():
+    return boto3.Session().get_available_regions('ec2')
+
+
 def assume_session(role: str, session_name: str) -> boto3.Session:
     sts = boto3.client('sts')
     credentials = sts.assume_role(
@@ -396,5 +412,7 @@ class KeyValueStore:
 
 
 import_plugins()
+
+restricted_regions = get_region_restrictions()
 
 kvs = KeyValueStore()

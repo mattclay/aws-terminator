@@ -19,6 +19,7 @@ from terminator import (
     get_concrete_subclasses,
     logger,
     Terminator,
+    get_regions,
 )
 
 
@@ -56,11 +57,20 @@ def main():
     if account_id != config['lambda_account_id']:
         exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
 
-    cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target)
+    if args.region in ('all', 'a'):
+        aws_regions = get_regions()
+    else:
+        aws_regions = [args.region]
+    for region in aws_regions:
+        cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target, region=region)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Terminate or destroy stale resources in the AWS test account.')
+
+    parser.add_argument('-r', '--region',
+                        default='us-east-1',
+                        help='regions to cleanup')
 
     parser.add_argument('-c', '--check',
                         action='store_true',
