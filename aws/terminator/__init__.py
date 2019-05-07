@@ -1,9 +1,11 @@
 import abc
 import datetime
 import inspect
+import json
 import logging
 import os
 import re
+import traceback
 
 from boto3.dynamodb.conditions import Attr
 import boto3
@@ -14,6 +16,15 @@ import dateutil
 logger = logging.getLogger('cleanup')
 
 AWS_REGION = 'us-east-1'
+
+
+def log_exception(message, *args):
+    payload = dict(
+        message=(message % args).strip(),
+        traceback=traceback.format_exc().strip(),
+    )
+
+    logger.error(json.dumps(payload))
 
 
 def import_plugins():
@@ -86,7 +97,7 @@ def cleanup_test_account(stage, check, force, api_name, test_account_id):
                 else:
                     logger.info('%s %s', status, instance)
         except Exception:
-            logger.exception('exception processing resource type: %s', terminator_type)
+            log_exception('exception processing resource type: %s', terminator_type)
 
 
 def cleanup_database(check, force):
@@ -146,9 +157,9 @@ def terminate(instance, check):
         if error_code == 'TooManyRequestsException':
             logger.warning('error "%s" terminating %s', error_code, instance, exc_info=1)
         else:
-            logger.exception('error "%s" terminating %s', error_code, instance)
+            log_exception('error "%s" terminating %s', error_code, instance)
     except Exception:
-        logger.exception('exception terminating %s', instance)
+        log_exception('exception terminating %s', instance)
 
     return 'terminated'
 
@@ -267,7 +278,7 @@ class Terminator(abc.ABC):
 
             return f'{type(self).__name__}: name={self.name}, {extra}age={self.age}, stale={self.stale}'
         except Exception:
-            logger.exception('exception converting %s to string', type(self).__name__)
+            log_exception('exception converting %s to string', type(self).__name__)
             return type(self).__name__
 
     @staticmethod
@@ -336,7 +347,7 @@ class DbTerminator(Terminator):
 
             self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tz.tzutc())
         except Exception:
-            logger.exception('exception accessing key/value store: %s', self)
+            log_exception('exception accessing key/value store: %s', self)
 
     @property
     @abc.abstractmethod
