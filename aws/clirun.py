@@ -1,9 +1,10 @@
 """
 a simple front end for to terminator for checking in isolation.
 """
-import click
 import logging
+
 import boto3
+import click
 
 from terminator import (
     cleanup, get_concrete_subclasses, kvs, Terminator, process_instance)
@@ -13,7 +14,7 @@ log = logging.getLogger('aws-terminator')
 
 @click.group()
 @click.option('--verbose', is_flag=True, default=False)
-def cli(verbose):
+def cli(verbose=None):
     """aws terminator cli
     """
     logging.basicConfig(level=verbose and logging.DEBUG or logging.INFO)
@@ -49,8 +50,8 @@ def cli_run(terminator, table, check, force):
     s = boto3.Session()
 
     # will scan/describe / create classes and insert instances
-    instances = klass.create(s)
-    log.info("Found %d resources of %s", len(instances), klass.__name__)
+    instances = found.create(s)
+    log.info("Found %d resources of %s", len(instances), found.__name__)
 
     for i in instances:
         status = process_instance(i, check, force)
@@ -65,7 +66,7 @@ def cli_run(terminator, table, check, force):
 def cli_cleanup(stage, api_name, check, force):
     """Run the full cleanup in the same manner as the lambda."""
     account_id = boto3.client('sts').get_caller_identity().get('AccountId')
-    cleanup(stage=stage, check=check, api_name=api_name,
+    cleanup(stage=stage, check=check, api_name=api_name, force=force,
             test_account_id=account_id)
 
 
