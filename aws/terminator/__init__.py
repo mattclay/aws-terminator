@@ -174,7 +174,7 @@ def get_concrete_subclasses(class_type):
 
 
 def get_account_id(session):
-    return session.client('sts').get_caller_identity('Account')
+    return session.client('sts').get_caller_identity().get('Account')
 
 
 def get_tag_dict_from_tag_list(tag_list):
