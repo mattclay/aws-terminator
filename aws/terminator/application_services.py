@@ -26,6 +26,38 @@ class CloudWatchLogGroup(Terminator):
         self.client.delete_log_group(logGroupName=self.name)
 
 
+class CodeBuild(Terminator):
+
+    @staticmethod
+    def create(credentials):
+        def paginate_projects(client):
+            project_names = client.get_paginator(
+                'list_projects').paginate().build_full_result()['projects']
+            projects = client.batch_get_projects(
+                names=project_names).get('projects', ())
+            return [
+                {'name': p['name'], 'created': p['created']} for p in projects]
+
+        return Terminator._create(
+            credentials, CodeBuild, 'codebuild',
+            paginate_projects)
+
+    @property
+    def created_time(self):
+        return self.instance['created']
+
+    @property
+    def id(self):
+        return self.instance['name']
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    def terminate(self):
+        self.client.delete_project(name=self.instance['name'])
+
+
 class CodeCommitRepository(DbTerminator):
     @staticmethod
     def create(credentials):
