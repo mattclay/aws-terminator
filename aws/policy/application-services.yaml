@@ -48,6 +48,7 @@ Statement:
       - ses:ListIdentityPolicies
       - ssm:DescribeParameters
       - dms:DescribeReplicationSubnetGroups
+      - codebuild:BatchGetProjects
       - codecommit:ListRepositories
       - sqs:CreateQueue
       - sqs:DeleteQueue
@@ -66,6 +67,9 @@ Statement:
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteReplicationSubnetGroup
       - dms:ModifyReplicationSubnetGroup
+      - codebuild:CreateProject
+      - codebuild:UpdateProject
+      - codebuild:DeleteProject
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
       - SNS:CreateTopic
@@ -86,6 +90,7 @@ Statement:
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
+      - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
       - arn:aws:codecommit:us-east-1:{{ aws_account_id }}:*
       - arn:aws:sns:us-east-1:{{ aws_account_id }}:*
       - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
