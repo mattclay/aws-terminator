@@ -38,6 +38,17 @@ def cleanup(stage, check, force, api_name, test_account_id):
     cleanup_database(check, force)
 
 
+
+def assume_session(role, session_name):
+    sts = boto3.client('sts')
+    credentials = sts.assume_role(
+        RoleArn=role, RoleSessionName=session_name).get('Credentials')
+    return boto3.Session(
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken'])
+
+
 def cleanup_test_account(stage, check, force, api_name, test_account_id):
     """
     :type stage: str
@@ -46,16 +57,9 @@ def cleanup_test_account(stage, check, force, api_name, test_account_id):
     :type api_name: str
     :type test_account_id: str
     """
-    sts = boto3.client('sts')
 
     role = f'arn:aws:iam::{test_account_id}:role/{api_name}-test-{stage}'
-
-    role_result = sts.assume_role(
-        RoleArn=role,
-        RoleSessionName='cleanup',
-    )
-
-    credentials = role_result['Credentials']
+    credentials = assume_session(role, 'cleanup')
 
     for terminator_type in sorted(get_concrete_subclasses(Terminator), key=lambda value: value.__name__):
         # noinspection PyBroadException
@@ -271,26 +275,17 @@ class Terminator(abc.ABC):
             return type(self).__name__
 
     @staticmethod
-    def _create(credentials, instance_type, client_name, describe_lambda):
+    def _create(session, instance_type, client_name, describe_lambda):
         """
-        :type credentials: dict[str, str]
+        :type session: boto3.Session
         :type instance_type: type
         :type client_name: str
         :type describe_lambda: lambda
         :rtype: list[Terminator]
         """
-        client = boto3.client(
-            client_name,
-            aws_access_key_id=credentials['AccessKeyId'],
-            aws_secret_access_key=credentials['SecretAccessKey'],
-            aws_session_token=credentials['SessionToken'],
-            region_name=AWS_REGION,
-        )
-
+        client = session.client(client_name, region_name=AWS_REGION)
         instances = describe_lambda(client)
-
         terminators = [instance_type(client, instance) for instance in instances]
-
         logger.debug('located %s: count=%d', instance_type.__name__, len(terminators))
 
         return terminators
