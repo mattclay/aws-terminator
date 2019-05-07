@@ -1,0 +1,10 @@
+# This is the account in which the lambda functions are run.
+# It must be different from the account which runs the integration tests.
+lambda_account_id: '900854079004'
+
+# This is the account in which the integration tests are run.
+# It must be different from the account which runs the lambda functions.
+test_account_id: '966509639900'
+
+# The API name is used to tag and prefix aws resources.
+api_name: 'ansible-core-ci'

@@ -1,0 +1,132 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ec2:DescribeAccountAttributes
+      - ec2:DescribeInstances
+      - ec2:TerminateInstances
+      - ec2:DescribeImages
+      - ec2:DescribeImageAttribute
+      - ec2:ModifyImageAttribute
+      - ec2:ModifyInstanceAttribute
+      - ec2:CreateImage
+      - ec2:RegisterImage
+      - ec2:DeregisterImage
+      - ec2:CreateSnapshot
+      - ec2:DeleteSnapshot
+      - ec2:DescribeSnapshots
+      - ec2:DescribeVolumes
+      - ec2:DescribeKeyPairs
+      - ec2:CreateKeyPair
+      - ec2:DeleteKeyPair
+      - ec2:ImportKeyPair
+      - ec2:DescribeTags
+      - ec2:CreateTags
+      - ec2:DeleteTags
+      - ec2:CreateTransitGateway
+      - ec2:DeleteTransitGateway
+    Resource:
+      - "*"
+    Condition:
+      StringEquals:
+        ec2:Region:
+          - us-east-1
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ec2:DescribeSpotPriceHistory
+      - ec2:DescribeAvailabilityZones
+      - ec2:DescribeTransitGateways
+      - ecr:DescribeRepositories
+      - ecr:CreateRepository
+      - rds:DescribeDBSubnetGroups
+      - rds:DescribeDBParameterGroups
+      - rds:DescribeDBClusters
+      - lambda:ListFunctions
+      - elasticloadbalancing:DescribeLoadBalancers
+      - elasticloadbalancing:DescribeLoadBalancerAttributes
+    Resource: "*"
+  - Sid: AllowEc2RunInstancesInstanceType
+    Effect: Allow
+    Action:
+      - ec2:RunInstances
+    Resource:
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:instance/*
+    Condition:
+      StringEquals:
+        ec2:InstanceType:
+          - t2.micro
+  - Sid: AllowEc2RunInstances
+    Effect: Allow
+    Action:
+      - ec2:RunInstances
+    Resource:
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:key-pair/*
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:network-interface/*
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:security-group/*
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:subnet/*
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
+      - arn:aws:ec2:us-east-1::image/*
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ec2:CreateVolume
+      - rds:CreateDBCluster
+      - elasticloadbalancing:CreateLoadBalancer
+      - lambda:InvokeFunction
+    Resource:
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
+      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
+      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ec2:DeleteVolume
+      - rds:DeleteDBSubnetGroup
+      - rds:CreateDBSubnetGroup
+      - rds:ModifyDBSubnetGroup
+      - rds:ModifyDBCluster
+      - rds:DeleteDBCluster
+      - rds:DescribeDBParameters
+      - rds:CreateDBParameterGroup
+      - rds:DeleteDBParameterGroup
+      - rds:ModifyDBParameterGroup
+      - rds:ListTagsForResource
+      - rds:AddTagsToResource
+      - rds:RemoveTagsFromResource
+      - elasticloadbalancing:ConfigureHealthCheck
+      - elasticloadbalancing:DeleteLoadBalancer
+      - elasticloadbalancing:ModifyLoadBalancerAttributes
+      - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
+      - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
+      - elasticloadbalancing:DeleteLoadBalancerListeners
+      - elasticloadbalancing:CreateLoadBalancerListeners
+      - ecr:GetLifecyclePolicy
+      - ecr:PutLifecyclePolicy
+      - ecr:DeleteLifecyclePolicy
+      - ecr:DeleteRepository
+      - ecr:GetRepositoryPolicy
+      - ecr:SetRepositoryPolicy
+      - ecr:DeleteRepositoryPolicy
+      - elasticbeanstalk:CreateApplication
+      - elasticbeanstalk:DeleteApplication
+      - elasticbeanstalk:DescribeApplications
+      - elasticbeanstalk:UpdateApplication
+      - lambda:GetFunction
+      - lambda:CreateFunction
+      - lambda:DeleteFunction
+      - lambda:GetPolicy
+      - lambda:AddPermission
+      - lambda:RemovePermission
+      - lambda:UpdateFunctionConfiguration
+    Resource:
+      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
+      - arn:aws:rds:us-east-1:{{ aws_account_id }}:subgrp:*
+      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
+      - arn:aws:rds:us-east-1:{{ aws_account_id }}:pg:*
+      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
+      - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
+      - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*

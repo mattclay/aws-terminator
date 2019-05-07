@@ -1,0 +1,20 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - polly:ListLexicons
+      - polly:SynthesizeSpeech
+    Resource: "*"
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - polly:GetLexicon
+      - polly:PutLexicon
+      - polly:DeleteLexicon
+      - rekognition:ListCollections
+      - rekognition:CreateCollection
+      - rekognition:DeleteCollection
+    Resource:
+      - arn:aws:polly:us-east-1:{{ aws_account_id }}:lexicon/*
+      - arn:aws:rekognition:us-east-1:{{ aws_account_id }}:collection/*
