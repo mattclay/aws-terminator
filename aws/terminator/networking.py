@@ -1,9 +1,9 @@
 import datetime
 
-from . import SimpleDbTerminator, Terminator, get_tag_dict_from_tag_list
+from . import DynamoDbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
-class Route53HostedZone(SimpleDbTerminator):
+class Route53HostedZone(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Route53HostedZone, 'route53', lambda client: client.list_hosted_zones()['HostedZones'])
@@ -35,7 +35,7 @@ class Route53HostedZone(SimpleDbTerminator):
         self.client.delete_hosted_zone(Id=self.id)
 
 
-class Ec2Eip(SimpleDbTerminator):
+class Ec2Eip(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2Eip, 'ec2', lambda client: client.describe_addresses()['Addresses'])
@@ -52,7 +52,7 @@ class Ec2Eip(SimpleDbTerminator):
         self.client.release_address(AllocationId=self.id)
 
 
-class Ec2CustomerGateway(SimpleDbTerminator):
+class Ec2CustomerGateway(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2CustomerGateway, 'ec2', lambda client: client.describe_customer_gateways()['CustomerGateways'])
@@ -69,7 +69,7 @@ class Ec2CustomerGateway(SimpleDbTerminator):
         self.client.delete_customer_gateway(CustomerGatewayId=self.id)
 
 
-class DhcpOptionsSet(SimpleDbTerminator):
+class DhcpOptionsSet(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, DhcpOptionsSet, 'ec2', lambda client: client.describe_dhcp_options()['DhcpOptions'])
@@ -90,7 +90,7 @@ class DhcpOptionsSet(SimpleDbTerminator):
         self.client.delete_dhcp_options(DhcpOptionsId=self.id)
 
 
-class Ec2Subnet(SimpleDbTerminator):
+class Ec2Subnet(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2Subnet, 'ec2', lambda client: client.describe_subnets()['Subnets'])
@@ -111,7 +111,7 @@ class Ec2Subnet(SimpleDbTerminator):
         self.client.delete_subnet(SubnetId=self.id)
 
 
-class Ec2InternetGateway(SimpleDbTerminator):
+class Ec2InternetGateway(DynamoDbTerminator):
     def __init__(self, client, instance):
         self._ignore = None
         super(Ec2InternetGateway, self).__init__(client, instance)
@@ -145,7 +145,7 @@ class Ec2InternetGateway(SimpleDbTerminator):
         self.client.delete_internet_gateway(InternetGatewayId=self.id)
 
 
-class Ec2EgressInternetGateway(SimpleDbTerminator):
+class Ec2EgressInternetGateway(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2EgressInternetGateway, 'ec2',
@@ -163,7 +163,7 @@ class Ec2EgressInternetGateway(SimpleDbTerminator):
         self.client.delete_egress_only_internet_gateway(EgressOnlyInternetGatewayId=self.id)
 
 
-class Ec2NatGateway(SimpleDbTerminator):
+class Ec2NatGateway(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2NatGateway, 'ec2', lambda client: client.describe_nat_gateways()['NatGateways'])
@@ -180,7 +180,7 @@ class Ec2NatGateway(SimpleDbTerminator):
         self.client.delete_nat_gateway(NatGatewayId=self.id)
 
 
-class Ec2NetworkAcl(SimpleDbTerminator):
+class Ec2NetworkAcl(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2NetworkAcl, 'ec2', lambda client: client.describe_network_acls()['NetworkAcls'])
@@ -201,7 +201,7 @@ class Ec2NetworkAcl(SimpleDbTerminator):
         self.client.delete_network_acl(NetworkAclId=self.id)
 
 
-class Ec2Eni(SimpleDbTerminator):
+class Ec2Eni(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2Eni, 'ec2', lambda client: client.describe_network_interfaces()['NetworkInterfaces'])
@@ -218,7 +218,7 @@ class Ec2Eni(SimpleDbTerminator):
         self.client.delete_network_interface(NetworkInterfaceId=self.id)
 
 
-class Ec2RouteTable(SimpleDbTerminator):
+class Ec2RouteTable(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2RouteTable, 'ec2', lambda client: client.describe_route_tables()['RouteTables'])
@@ -262,7 +262,7 @@ class Ec2VpcEndpoint(Terminator):
         self.client.delete_vpc_endpoints(VpcEndpointIds=[self.id])
 
 
-class Ec2Vpc(SimpleDbTerminator):
+class Ec2Vpc(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2Vpc, 'ec2', lambda client: client.describe_vpcs()['Vpcs'])
@@ -287,7 +287,7 @@ class Ec2Vpc(SimpleDbTerminator):
         self.client.delete_vpc(VpcId=self.id)
 
 
-class Ec2VpnConnection(SimpleDbTerminator):
+class Ec2VpnConnection(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2VpnConnection, 'ec2', lambda client: client.describe_vpn_connections()['VpnConnections'])
@@ -304,7 +304,7 @@ class Ec2VpnConnection(SimpleDbTerminator):
         self.client.delete_vpn_connection(VpnConnectionId=self.id)
 
 
-class Ec2VpnGateway(SimpleDbTerminator):
+class Ec2VpnGateway(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2VpnGateway, 'ec2', lambda client: client.describe_vpn_gateways()['VpnGateways'])
@@ -327,7 +327,7 @@ class Ec2VpnGateway(SimpleDbTerminator):
         self.client.delete_vpn_gateway(VpnGatewayId=self.id)
 
 
-class Ec2SecurityGroup(SimpleDbTerminator):
+class Ec2SecurityGroup(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2SecurityGroup, 'ec2', lambda client: client.describe_security_groups()['SecurityGroups'])

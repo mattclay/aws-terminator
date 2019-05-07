@@ -318,14 +318,14 @@ class Terminator(abc.ABC):
         return self.default_vpc.get('VpcId') == vpc_id
 
 
-class SimpleDbTerminator(Terminator):
+class DynamoDbTerminator(Terminator):
     """Base class for classes which find and terminate AWS resources with age tracked via SimpleDB."""
     def __init__(self, client, instance):
         """
         :type client: any
         :type instance: any
         """
-        super(SimpleDbTerminator, self).__init__(client, instance)
+        super(DynamoDbTerminator, self).__init__(client, instance)
 
         self._kvs_key = None
         self._kvs_value = None

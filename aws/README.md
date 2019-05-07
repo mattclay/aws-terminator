@@ -43,7 +43,7 @@ Check the permissions by running the integration tests:
 
 If tests create a resource:
   - add a new class for the resource in the corresponding file in the terminator directory (use Terminator base class
-    if resources have a created time, SimpleDbTerminator otherwise)
+    if resources have a created time, DynamoDbTerminator otherwise)
   - test terminator with `python cleanup.py --stage dev -c -v`, make sure modified terminator resource class shows up
     in the output
 

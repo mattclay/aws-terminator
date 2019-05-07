@@ -4,7 +4,7 @@ import datetime
 import botocore
 import botocore.exceptions
 
-from . import SimpleDbTerminator, Terminator
+from . import DynamoDbTerminator, Terminator
 
 
 class IamRole(Terminator):
@@ -42,7 +42,7 @@ class IamRole(Terminator):
         self.client.delete_role(RoleName=self.name)
 
 
-class Waf(SimpleDbTerminator):
+class Waf(DynamoDbTerminator):
     @property
     def age_limit(self):
         return datetime.timedelta(minutes=20)
@@ -235,7 +235,7 @@ class WafRegexPatternSet(Waf):
         self.client.delete_regex_pattern_set(RegexPatternSetId=self.id, ChangeToken=self.change_token)
 
 
-class InspectorAssessmentTemplate(SimpleDbTerminator):
+class InspectorAssessmentTemplate(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(
@@ -255,7 +255,7 @@ class InspectorAssessmentTemplate(SimpleDbTerminator):
         self.client.delete_assessment_template(assessmentTemplateArn=self.id)
 
 
-class InspectorAssessmentTarget(SimpleDbTerminator):
+class InspectorAssessmentTarget(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(

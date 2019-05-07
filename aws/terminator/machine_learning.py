@@ -1,4 +1,4 @@
-from . import SimpleDbTerminator, Terminator
+from . import DynamoDbTerminator, Terminator
 
 
 class PollyLexicon(Terminator):
@@ -26,7 +26,7 @@ class PollyLexicon(Terminator):
         self.client.delete_lexicon(Name=self.name)
 
 
-class RekognitionCollection(SimpleDbTerminator):
+class RekognitionCollection(DynamoDbTerminator):
     @staticmethod
     def create(credentials):
         def _paginate_rekognition_collections(client):
