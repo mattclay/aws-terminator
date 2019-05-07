@@ -49,6 +49,20 @@ def assume_session(role, session_name):
         aws_session_token=credentials['SessionToken'])
 
 
+def process_instance(instance, check, force=False):
+    if instance.ignore:
+        status = 'ignored'
+    elif force:
+        status = terminate(instance, check)
+    elif instance.age is None:
+        status = 'unsupported'
+    elif instance.stale:
+        status = terminate(instance, check)
+    else:
+        status = 'skipped'
+    return status
+
+
 def cleanup_test_account(stage, check, force, api_name, test_account_id):
     """
     :type stage: str
@@ -67,17 +81,7 @@ def cleanup_test_account(stage, check, force, api_name, test_account_id):
             instances = terminator_type.create(credentials)
 
             for instance in instances:
-                if instance.ignore:
-                    status = 'ignored'
-                elif force:
-                    status = terminate(instance, check)
-                elif instance.age is None:
-                    status = 'unsupported'
-                elif instance.stale:
-                    status = terminate(instance, check)
-                else:
-                    status = 'skipped'
-
+                status = process_instance(instance, check, force)
                 if instance.ignore:
                     logger.debug('%s %s', status, instance)
                 else:
