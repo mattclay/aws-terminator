@@ -22,7 +22,6 @@ Statement:
         iam:PolicyArn:
           - arn:aws:iam::aws:policy/IAMReadOnlyAccess
           - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
-
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
