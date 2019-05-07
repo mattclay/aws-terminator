@@ -26,7 +26,7 @@ class CloudWatchLogGroup(Terminator):
         self.client.delete_log_group(logGroupName=self.name)
 
 
-class CodeBuild(DbTerminator):
+class CodeBuild(Terminator):
 
     @staticmethod
     def create(credentials):
