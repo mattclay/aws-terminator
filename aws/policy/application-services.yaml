@@ -55,6 +55,7 @@ Statement:
       - sqs:GetQueueAttributes
       - sqs:ListQueues
       - sqs:SetQueueAttributes
+      - dynamodb:Scan
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -66,6 +67,9 @@ Statement:
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteReplicationSubnetGroup
       - dms:ModifyReplicationSubnetGroup
+      - dynamodb:DeleteItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
       - SNS:CreateTopic
@@ -91,6 +95,7 @@ Statement:
       - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
       - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
       - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
+      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
