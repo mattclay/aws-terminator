@@ -33,12 +33,14 @@ class CodeBuild(Terminator):
         def paginate_projects(client):
             project_names = client.get_paginator(
                 'list_projects').paginate().build_full_result()['projects']
-            projects = client.batch_get_projects(names=project_names)
-            # projects has a lot of info.. slim it down to minimal information we want
-            # to avoid storing alot of extra stuff in the db.
-            return [{'name': p['name'], 'created': p['created']} for p in projects]
+            projects = client.batch_get_projects(
+                names=project_names).get('projects', ())
+            return [
+                {'name': p['name'], 'created': p['created']} for p in projects]
 
-        super()._create(credentials, CodeBuild, 'codebuild', paginate_projects)
+        return Terminator._create(
+            credentials, CodeBuild, 'codebuild',
+            paginate_projects)
 
     @property
     def created_time(self):
