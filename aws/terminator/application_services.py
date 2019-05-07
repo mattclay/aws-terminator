@@ -26,6 +26,27 @@ class CloudWatchLogGroup(Terminator):
         self.client.delete_log_group(logGroupName=self.name)
 
 
+class CodePipeline(Terminator):
+
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, CodePipeline, 'codepipeline',
+            lambda client: client.list_pipelines().get('pipelines', ()))
+
+    @property
+    def id(self):
+        return self.instance['name']
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def terminate(self):
+        self.client.delete_pipeline(name=self.name)
+
+
 class CodeCommitRepository(DbTerminator):
     @staticmethod
     def create(credentials):
