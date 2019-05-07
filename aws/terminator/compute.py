@@ -4,10 +4,10 @@ import botocore
 import botocore.exceptions
 import dateutil
 
-from . import DynamoDbTerminator, Terminator, get_tag_dict_from_tag_list, get_account_id
+from . import DbTerminator, Terminator, get_tag_dict_from_tag_list, get_account_id
 
 
-class Ec2KeyPair(DynamoDbTerminator):
+class Ec2KeyPair(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2KeyPair, 'ec2', lambda client: client.describe_key_pairs()['KeyPairs'])
@@ -190,7 +190,7 @@ class ElasticBeanstalk(Terminator):
                 raise
 
 
-class NeptuneSubnetGroup(DynamoDbTerminator):
+class NeptuneSubnetGroup(DbTerminator):
     @staticmethod
     def create(credentials):
         def _paginate_neptune_subnet_groups(client):
@@ -213,7 +213,7 @@ class NeptuneSubnetGroup(DynamoDbTerminator):
         self.client.delete_db_subnet_group(DBSubnetGroupName=self.name)
 
 
-class RdsDbParameterGroup(DynamoDbTerminator):
+class RdsDbParameterGroup(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, RdsDbParameterGroup, 'rds', lambda client: client.describe_db_parameter_groups()['DBParameterGroups'])

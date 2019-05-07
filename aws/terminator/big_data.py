@@ -1,4 +1,4 @@
-from . import DynamoDbTerminator, Terminator, get_tag_dict_from_tag_list
+from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
 class GlueConnection(Terminator):
@@ -43,7 +43,7 @@ class Glacier(Terminator):
         self.client.delete_vault(vaultName=self.name)
 
 
-class IotThing(DynamoDbTerminator):
+class IotThing(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, IotThing, 'iot', lambda client: client.list_things()['things'])

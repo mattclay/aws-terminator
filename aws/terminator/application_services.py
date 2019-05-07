@@ -4,7 +4,7 @@ import time
 import botocore
 import botocore.exceptions
 
-from . import DynamoDbTerminator, Terminator
+from . import DbTerminator, Terminator
 
 
 class CloudWatchLogGroup(Terminator):
@@ -26,7 +26,7 @@ class CloudWatchLogGroup(Terminator):
         self.client.delete_log_group(logGroupName=self.name)
 
 
-class CodeCommitRepository(DynamoDbTerminator):
+class CodeCommitRepository(DbTerminator):
     @staticmethod
     def create(credentials):
         def paginate_repositories(client):
@@ -46,7 +46,7 @@ class CodeCommitRepository(DynamoDbTerminator):
         self.client.delete_repository(repositoryName=self.name)
 
 
-class DmsSubnetGroup(DynamoDbTerminator):
+class DmsSubnetGroup(DbTerminator):
     @staticmethod
     def create(credentials):
         def paginate_dms_subnet_groups(client):
@@ -123,7 +123,7 @@ class S3Bucket(Terminator):
             self.client.delete_bucket(Bucket=self.name)
 
 
-class SesIdentity(DynamoDbTerminator):
+class SesIdentity(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, SesIdentity, 'ses',
@@ -169,7 +169,7 @@ class SesReceiptRuleSet(Terminator):
         self.client.delete_receipt_rule_set(RuleSetName=self.name)
 
 
-class Sns(DynamoDbTerminator):
+class Sns(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Sns, 'sns', lambda client: client.list_topics()['Topics'])
@@ -186,7 +186,7 @@ class Sns(DynamoDbTerminator):
         self.client.delete_topic(TopicArn=self.id)
 
 
-class SqsQueue(DynamoDbTerminator):
+class SqsQueue(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, SqsQueue, 'sqs', lambda client: client.list_queues().get('QueueUrls', []))
@@ -203,7 +203,7 @@ class SqsQueue(DynamoDbTerminator):
         self.client.delete_queue(QueueUrl=self.id)
 
 
-class SsmParameter(DynamoDbTerminator):
+class SsmParameter(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, SsmParameter, 'ssm', lambda client: client.describe_parameters()['Parameters'])
