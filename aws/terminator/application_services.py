@@ -121,8 +121,8 @@ class Efs(Terminator):
 
     def terminate(self):
         # Cannot delete file system if in use: delete mounts targets first
-        for mt in self.client.describe_mount_targets(FileSystemId=self.id)['MountTargets']:
-            self.client.delete_mount_target(MountTargetId=mt['MountTargetId'])
+        for mount_target in self.client.describe_mount_targets(FileSystemId=self.id)['MountTargets']:
+            self.client.delete_mount_target(MountTargetId=mount_target['MountTargetId'])
         self.client.delete_file_system(FileSystemId=self.id)
 
 
@@ -141,8 +141,8 @@ class S3Bucket(Terminator):
 
     def terminate(self):
         def _paginated_list(bucket):
-            pg = self.client.get_paginator('list_objects_v2')
-            for page in pg.paginate(Bucket=bucket):
+            paginator = self.client.get_paginator('list_objects_v2')
+            for page in paginator.paginate(Bucket=bucket):
                 yield [d['Key'] for d in page.get('Contents', [])]
 
         try:
@@ -265,9 +265,9 @@ class DynamoDb(Terminator):
             table_names = client.get_paginator(
                 'list_tables').paginate().build_full_result().get('TableNames', ())
             tables = []
-            for t in table_names:
+            for table_name in table_names:
                 tables.append(
-                    client.describe_table(TableName=t).get('Table'))
+                    client.describe_table(TableName=table_name).get('Table'))
             return tables
 
         return Terminator._create(credentials, DynamoDb, 'dynamodb', get_tables)

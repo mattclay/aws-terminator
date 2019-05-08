@@ -96,7 +96,7 @@ def cleanup_test_account(stage, check, force, api_name, test_account_id):
                     logger.debug('%s %s', status, instance)
                 else:
                     logger.info('%s %s', status, instance)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             log_exception('exception processing resource type: %s', terminator_type)
 
 
@@ -158,7 +158,7 @@ def terminate(instance, check):
             logger.warning('error "%s" terminating %s', error_code, instance, exc_info=1)
         else:
             log_exception('error "%s" terminating %s', error_code, instance)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         log_exception('exception terminating %s', instance)
 
     return 'terminated'
@@ -277,7 +277,7 @@ class Terminator(abc.ABC):
                 extra = ''
 
             return f'{type(self).__name__}: name={self.name}, {extra}age={self.age}, stale={self.stale}'
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             log_exception('exception converting %s to string', type(self).__name__)
             return type(self).__name__
 
@@ -346,7 +346,7 @@ class DbTerminator(Terminator):
                 kvs.set(self._kvs_key, self._kvs_value)
 
             self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tz.tzutc())
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             log_exception('exception accessing key/value store: %s', self)
 
     @property
@@ -373,7 +373,7 @@ class DbTerminator(Terminator):
             logger.warning('skipping cleanup due to missing key/value data: %s', self)
             return
 
-        kvs.delete(self._kvs_key, self._kvs_value)
+        kvs.delete(self._kvs_key)
 
 
 class KeyValueStore:
@@ -398,11 +398,11 @@ class KeyValueStore:
             if self.table.table_status == 'DELETING':
                 self.table.wait_until_not_exists()
                 self.create_table()
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] == 'ResourceNotFoundException':
                 self.create_table()
             else:
-                raise e
+                raise ex
 
         self.initialized = True
 
@@ -456,10 +456,9 @@ class KeyValueStore:
         )
         self.table.wait_until_exists()
 
-    def delete(self, key, value):
+    def delete(self, key):
         """
         :type key: str
-        :type value: str
         """
         self.initialize()
 
