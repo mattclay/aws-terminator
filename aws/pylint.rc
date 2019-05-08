@@ -3,7 +3,6 @@ max-line-length=160
 reports=no
 score=no
 disable=
-  broad-except,
   invalid-name,
   missing-docstring,
   protected-access,

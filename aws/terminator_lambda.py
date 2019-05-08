@@ -9,6 +9,7 @@ from terminator import (
 
 # noinspection PyUnusedLocal
 def lambda_handler(event, context):
+    # pylint: disable=unused-argument
     logger.setLevel(logging.INFO)
 
     arn = context.invoked_function_arn.split(':')

@@ -185,8 +185,8 @@ class ElasticBeanstalk(Terminator):
     def terminate(self):
         try:
             self.client.delete_application(ApplicationName=self.id)
-        except botocore.exceptions.ClientError as e:
-            if 'It is currently pending deletion.' not in e.response['Error']['Message']:
+        except botocore.exceptions.ClientError as ex:
+            if 'It is currently pending deletion.' not in ex.response['Error']['Message']:
                 raise
 
 
