@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import traceback
+import typing
 
 from boto3.dynamodb.conditions import Attr
 import boto3
@@ -17,8 +18,10 @@ logger = logging.getLogger('cleanup')
 
 AWS_REGION = 'us-east-1'
 
+T = typing.TypeVar('T')
 
-def log_exception(message, *args):
+
+def log_exception(message: str, *args) -> None:
     payload = dict(
         message=(message % args).strip(),
         traceback=traceback.format_exc().strip(),
@@ -27,21 +30,14 @@ def log_exception(message, *args):
     logger.error(json.dumps(payload))
 
 
-def import_plugins():
+def import_plugins() -> None:
     skip_files = ('__init__.py',)
     import_names = [os.path.splitext(name)[0] for name in os.listdir(os.path.dirname(__file__)) if name.endswith('.py') and name not in skip_files]
     for import_name in import_names:
         __import__(f'terminator.{import_name}')
 
 
-def cleanup(stage, check, force, api_name, test_account_id):
-    """
-    :type stage: str
-    :type check: bool
-    :type force: bool
-    :type api_name: str
-    :type test_account_id: str
-    """
+def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str) -> None:
     kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
     kvs.initialize()
 
@@ -49,7 +45,7 @@ def cleanup(stage, check, force, api_name, test_account_id):
     cleanup_database(check, force)
 
 
-def assume_session(role, session_name):
+def assume_session(role: str, session_name: str) -> boto3.Session:
     sts = boto3.client('sts')
     credentials = sts.assume_role(
         RoleArn=role, RoleSessionName=session_name).get('Credentials')
@@ -59,7 +55,7 @@ def assume_session(role, session_name):
         aws_session_token=credentials['SessionToken'])
 
 
-def process_instance(instance, check, force=False):
+def process_instance(instance: typing.Any, check: bool, force: bool = False) -> str:
     if instance.ignore:
         status = 'ignored'
     elif force:
@@ -73,21 +69,14 @@ def process_instance(instance, check, force=False):
     return status
 
 
-def cleanup_test_account(stage, check, force, api_name, test_account_id):
-    """
-    :type stage: str
-    :type check: bool
-    :type force: bool
-    :type api_name: str
-    :type test_account_id: str
-    """
-
+def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str) -> None:
     role = f'arn:aws:iam::{test_account_id}:role/{api_name}-test-{stage}'
     credentials = assume_session(role, 'cleanup')
 
     for terminator_type in sorted(get_concrete_subclasses(Terminator), key=lambda value: value.__name__):
         # noinspection PyBroadException
         try:
+            # noinspection PyUnresolvedReferences
             instances = terminator_type.create(credentials)
 
             for instance in instances:
@@ -100,11 +89,7 @@ def cleanup_test_account(stage, check, force, api_name, test_account_id):
             log_exception('exception processing resource type: %s', terminator_type)
 
 
-def cleanup_database(check, force):
-    """
-    :type check: bool
-    :type force: bool
-    """
+def cleanup_database(check: bool, force: bool) -> None:
     scan_options = {}
 
     if not force:
@@ -138,12 +123,7 @@ def cleanup_database(check, force):
         logger.info('%s database item: %s', status, item['id'])
 
 
-def terminate(instance, check):
-    """
-    :type instance: Terminator
-    :type check: bool
-    :rtype: str
-    """
+def terminate(instance: 'Terminator', check: bool) -> str:
     if check:
         return 'checked'
 
@@ -155,7 +135,7 @@ def terminate(instance, check):
         error_code = ex.response['Error']['Code']
 
         if error_code == 'TooManyRequestsException':
-            logger.warning('error "%s" terminating %s', error_code, instance, exc_info=1)
+            logger.warning('error "%s" terminating %s', error_code, instance, exc_info=True)
         else:
             log_exception('error "%s" terminating %s', error_code, instance)
     except Exception:  # pylint: disable=broad-except
@@ -164,13 +144,9 @@ def terminate(instance, check):
     return 'terminated'
 
 
-def get_concrete_subclasses(class_type):
-    """
-    :type class_type: type
-    :rtype: set[class]
-    """
-    subclasses = set()
-    queue = [class_type]
+def get_concrete_subclasses(class_type: typing.Type[T]) -> typing.Set[typing.Type[T]]:
+    subclasses: typing.Set[typing.Type[T]] = set()
+    queue: typing.List[typing.Type[T]] = [class_type]
 
     while queue:
         parent = queue.pop()
@@ -184,15 +160,11 @@ def get_concrete_subclasses(class_type):
     return subclasses
 
 
-def get_account_id(session):
+def get_account_id(session: boto3.Session) -> str:
     return session.client('sts').get_caller_identity().get('Account')
 
 
-def get_tag_dict_from_tag_list(tag_list):
-    """
-    :type tag_list: list[dict[str, str]] | None
-    :rtype: dict[str, str]
-    """
+def get_tag_dict_from_tag_list(tag_list: typing.Optional[typing.List[typing.Dict[str, str]]]) -> typing.Dict[str, str]:
     if tag_list is None:
         return {}
 
@@ -203,72 +175,49 @@ class Terminator(abc.ABC):
     """Base class for classes which find and terminate AWS resources."""
     _default_vpc = None  # safe as long as executing only within a single region
 
-    def __init__(self, client, instance):
-        """
-        :type client: any
-        :type instance: any
-        """
+    def __init__(self, client: typing.Any, instance: typing.Any):
         self.client = client
         self.instance = instance
         self.now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tz.tzutc(), microsecond=0)
 
     @property
-    def age_limit(self):
+    def age_limit(self) -> datetime.timedelta:
         return datetime.timedelta(minutes=10)
 
     @property
-    def id(self):
-        """
-        :rtype: str | None
-        """
+    def id(self) -> typing.Optional[str]:
         return None
 
     @property
     @abc.abstractmethod
-    def name(self):
-        """
-        :rtype: str
-        """
+    def name(self) -> str:
+        pass
 
     @property
     @abc.abstractmethod
-    def created_time(self):
-        """
-        :rtype: datetime.datetime | None
-        """
+    def created_time(self) -> typing.Optional[datetime.datetime]:
+        pass
 
     @property
-    def ignore(self):
-        """
-        :rtype: bool
-        """
+    def ignore(self) -> bool:
         return False
 
     @abc.abstractmethod
-    def terminate(self):
+    def terminate(self) -> None:
         """Terminate or delete the AWS resource."""
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup to perform after termination."""
 
     @property
-    def age(self):
-        """
-        :rtype: datetime.timedelta | None
-        """
+    def age(self) -> typing.Optional[datetime.timedelta]:
         return self.now - self.created_time if self.created_time else None
 
     @property
-    def stale(self):
-        """
-        :rtype: bool
-        """
+    def stale(self) -> bool:
         return self.age > self.age_limit if self.age else False
 
-    def __str__(self):
-        """
-        :rtype: str
-        """
+    def __str__(self) -> str:
         # noinspection PyBroadException
         try:
             if self.id:
@@ -282,14 +231,7 @@ class Terminator(abc.ABC):
             return type(self).__name__
 
     @staticmethod
-    def _create(session, instance_type, client_name, describe_lambda):
-        """
-        :type session: boto3.Session
-        :type instance_type: type
-        :type client_name: str
-        :type describe_lambda: lambda
-        :rtype: list[Terminator]
-        """
+    def _create(session: boto3.Session, instance_type: typing.Type, client_name: str, describe_lambda: typing.Callable) -> typing.List['Terminator']:
         client = session.client(client_name, region_name=AWS_REGION)
         instances = describe_lambda(client)
         terminators = [instance_type(client, instance) for instance in instances]
@@ -298,10 +240,7 @@ class Terminator(abc.ABC):
         return terminators
 
     @property
-    def default_vpc(self):
-        """
-        :rtype: dict[str, any]
-        """
+    def default_vpc(self) -> typing.Dict[str, str]:
         if self._default_vpc is None:
             vpcs = self.client.describe_vpcs(Filters=[{'Name': 'isDefault', 'Values': ['true']}])['Vpcs']
 
@@ -312,21 +251,13 @@ class Terminator(abc.ABC):
 
         return self._default_vpc
 
-    def is_vpc_default(self, vpc_id):
-        """
-        :type vpc_id: str
-        :rtype: bool
-        """
+    def is_vpc_default(self, vpc_id: str) -> bool:
         return self.default_vpc.get('VpcId') == vpc_id
 
 
 class DbTerminator(Terminator):
     """Base class for classes which find and terminate AWS resources with age tracked via DynamoDB."""
-    def __init__(self, client, instance):
-        """
-        :type client: any
-        :type instance: any
-        """
+    def __init__(self, client: typing.Any, instance: typing.Any):
         super(DbTerminator, self).__init__(client, instance)
 
         self._kvs_key = None
@@ -351,23 +282,18 @@ class DbTerminator(Terminator):
 
     @property
     @abc.abstractmethod
-    def name(self):
-        """
-        :rtype: str
-        """
+    def name(self) -> str:
+        pass
 
     @property
-    def created_time(self):
-        """
-        :rtype: datetime.datetime | None
-        """
+    def created_time(self) -> typing.Optional[datetime.datetime]:
         return self._created_time
 
     @abc.abstractmethod
-    def terminate(self):
+    def terminate(self) -> None:
         """Terminate or delete the AWS resource."""
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup to perform after termination."""
         if not self._kvs_key or not self._kvs_value:
             logger.warning('skipping cleanup due to missing key/value data: %s', self)
@@ -378,17 +304,14 @@ class DbTerminator(Terminator):
 
 class KeyValueStore:
     """ DynamoDB data store for the AWS terminator """
-    def __init__(self, domain_name=None):
-        """
-        :type domain_name: str | None
-        """
+    def __init__(self, domain_name: typing.Optional[str] = None):
         self.ddb = boto3.resource('dynamodb', region_name=AWS_REGION)
         self.domain_name = domain_name
         self.table = None
         self.primary_key = 'id'
         self.initialized = False
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Deferred initialization of the DynamoDB database."""
         if self.initialized:
             return
@@ -406,11 +329,7 @@ class KeyValueStore:
 
         self.initialized = True
 
-    def get(self, key):
-        """
-        :type key: str
-        :rtype: str
-        """
+    def get(self, key: str) -> str:
         self.initialize()
 
         item = self.table.get_item(
@@ -420,11 +339,7 @@ class KeyValueStore:
 
         return item.get('created_time')
 
-    def set(self, key, value):
-        """
-        :type key: str
-        :type value: str
-        """
+    def set(self, key: str, value: str) -> None:
         self.initialize()
 
         # Don't replace an existing entry
@@ -440,7 +355,7 @@ class KeyValueStore:
             ConditionExpression=expression,
         )
 
-    def create_table(self):
+    def create_table(self) -> None:
         """Creates a new DynamoDB database."""
         self.table = self.ddb.create_table(
             TableName=self.domain_name,
@@ -456,10 +371,7 @@ class KeyValueStore:
         )
         self.table.wait_until_exists()
 
-    def delete(self, key):
-        """
-        :type key: str
-        """
+    def delete(self, key: str) -> None:
         self.initialize()
 
         self.table.delete_item(
