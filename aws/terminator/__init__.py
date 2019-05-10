@@ -22,13 +22,13 @@ AWS_REGION = 'us-east-1'
 T = typing.TypeVar('T')
 
 
-def log_exception(message: str, *args) -> None:
+def log_exception(message: str, *args, level: int = logging.ERROR) -> None:
     payload = dict(
         message=(message % args).strip(),
         traceback=traceback.format_exc().strip(),
     )
 
-    logger.error(json.dumps(payload))
+    logger.log(level, json.dumps(payload))
 
 
 def import_plugins() -> None:
@@ -136,7 +136,7 @@ def terminate(instance: 'Terminator', check: bool) -> str:
         error_code = ex.response['Error']['Code']
 
         if error_code == 'TooManyRequestsException':
-            logger.warning('error "%s" terminating %s', error_code, instance, exc_info=True)
+            log_exception('error "%s" terminating %s', error_code, instance, level=logging.WARNING)
         else:
             log_exception('error "%s" terminating %s', error_code, instance)
     except Exception:  # pylint: disable=broad-except
