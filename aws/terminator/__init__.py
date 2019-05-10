@@ -180,6 +180,11 @@ class Terminator(abc.ABC):
         self.instance = instance
         self.now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tz.tzutc(), microsecond=0)
 
+    @staticmethod
+    @abc.abstractmethod
+    def create(credentials: boto3.Session):
+        pass
+
     @property
     def age_limit(self) -> datetime.timedelta:
         return datetime.timedelta(minutes=10)
