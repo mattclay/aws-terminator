@@ -11,6 +11,7 @@ import typing
 from boto3.dynamodb.conditions import Attr
 import boto3
 import botocore
+import botocore.client
 import botocore.exceptions
 import dateutil.tz
 
@@ -55,7 +56,7 @@ def assume_session(role: str, session_name: str) -> boto3.Session:
         aws_session_token=credentials['SessionToken'])
 
 
-def process_instance(instance: typing.Any, check: bool, force: bool = False) -> str:
+def process_instance(instance: 'Terminator', check: bool, force: bool = False) -> str:
     if instance.ignore:
         status = 'ignored'
     elif force:
@@ -175,14 +176,14 @@ class Terminator(abc.ABC):
     """Base class for classes which find and terminate AWS resources."""
     _default_vpc = None  # safe as long as executing only within a single region
 
-    def __init__(self, client: typing.Any, instance: typing.Any):
+    def __init__(self, client: botocore.client.BaseClient, instance: typing.Dict[str, typing.Any]):
         self.client = client
         self.instance = instance
         self.now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tzutc(), microsecond=0)
 
     @staticmethod
     @abc.abstractmethod
-    def create(credentials: boto3.Session):
+    def create(credentials: boto3.Session) -> typing.List['Terminator']:
         pass
 
     @property
@@ -236,7 +237,8 @@ class Terminator(abc.ABC):
             return type(self).__name__
 
     @staticmethod
-    def _create(session: boto3.Session, instance_type: typing.Type, client_name: str, describe_lambda: typing.Callable) -> typing.List['Terminator']:
+    def _create(session: boto3.Session, instance_type: typing.Type['Terminator'], client_name: str,
+                describe_lambda: typing.Callable[[botocore.client.BaseClient], typing.List[typing.Dict[str, typing.Any]]]) -> typing.List['Terminator']:
         client = session.client(client_name, region_name=AWS_REGION)
         instances = describe_lambda(client)
         terminators = [instance_type(client, instance) for instance in instances]
@@ -262,7 +264,7 @@ class Terminator(abc.ABC):
 
 class DbTerminator(Terminator):
     """Base class for classes which find and terminate AWS resources with age tracked via DynamoDB."""
-    def __init__(self, client: typing.Any, instance: typing.Any):
+    def __init__(self, client: botocore.client.BaseClient, instance: typing.Dict[str, typing.Any]):
         super(DbTerminator, self).__init__(client, instance)
 
         self._kvs_key = None
