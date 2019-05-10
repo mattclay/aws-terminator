@@ -56,7 +56,10 @@ Statement:
     Condition:
       StringEquals:
         ec2:InstanceType:
+          - t2.nano
           - t2.micro
+          - t3.nano
+          - t3.micro
   - Sid: AllowEc2RunInstances
     Effect: Allow
     Action:
