@@ -12,7 +12,7 @@ from boto3.dynamodb.conditions import Attr
 import boto3
 import botocore
 import botocore.exceptions
-import dateutil
+import dateutil.tz
 
 logger = logging.getLogger('cleanup')
 
@@ -93,7 +93,7 @@ def cleanup_database(check: bool, force: bool) -> None:
     scan_options = {}
 
     if not force:
-        now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tz.tzutc(), microsecond=0) - datetime.timedelta(minutes=60)
+        now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tzutc(), microsecond=0) - datetime.timedelta(minutes=60)
         scan_options['FilterExpression'] = Attr('created_time').lt(now.isoformat())
 
     scan_options['ProjectionExpression'] = kvs.primary_key
@@ -178,7 +178,7 @@ class Terminator(abc.ABC):
     def __init__(self, client: typing.Any, instance: typing.Any):
         self.client = client
         self.instance = instance
-        self.now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tz.tzutc(), microsecond=0)
+        self.now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tzutc(), microsecond=0)
 
     @staticmethod
     @abc.abstractmethod
@@ -281,7 +281,7 @@ class DbTerminator(Terminator):
                 self._kvs_value = self.now.isoformat()
                 kvs.set(self._kvs_key, self._kvs_value)
 
-            self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tz.tzutc())
+            self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tzutc())
         except Exception:  # pylint: disable=broad-except
             log_exception('exception accessing key/value store: %s', self)
 

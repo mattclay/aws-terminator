@@ -2,7 +2,7 @@ import datetime
 
 import botocore
 import botocore.exceptions
-import dateutil
+import dateutil.tz
 
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list, get_account_id
 
@@ -110,7 +110,7 @@ class Ec2Image(Terminator):
     @property
     def created_time(self):
         return datetime.datetime.strptime(self.instance['CreationDate'].replace('Z', ''), '%Y-%m-%dT%H:%M:%S.%f').replace(
-            tzinfo=dateutil.tz.tz.tzutc(), microsecond=0)
+            tzinfo=dateutil.tz.tzutc(), microsecond=0)
 
     def terminate(self):
         self.client.deregister_image(ImageId=self.id)
@@ -259,7 +259,7 @@ class LambdaFunction(Terminator):
     @property
     def created_time(self):
         return datetime.datetime.strptime(self.instance['LastModified'].replace('+0000', ''), '%Y-%m-%dT%H:%M:%S.%f').replace(
-            tzinfo=dateutil.tz.tz.tzutc(), microsecond=0)
+            tzinfo=dateutil.tz.tzutc(), microsecond=0)
 
     def terminate(self):
         self.client.delete_function(FunctionName=self.name)
