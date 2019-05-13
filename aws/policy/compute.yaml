@@ -5,6 +5,7 @@ Statement:
     Action:
       - ec2:DescribeAccountAttributes
       - ec2:DescribeInstances
+      - ec2:DescribeInstanceAttribute
       - ec2:TerminateInstances
       - ec2:DescribeImages
       - ec2:DescribeImageAttribute
