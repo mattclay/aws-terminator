@@ -5,10 +5,11 @@ from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
 try:
-    from botocore.session import get_session
-    HAS_BOTOCORE = True
+    import boto3
+    from botocore.exceptions import ClientError
+    HAS_BOTO3 = True
 except ImportError:
-    HAS_BOTOCORE = False
+    HAS_BOTO3 = False
 
 
 class LookupModule(LookupBase):
@@ -18,15 +19,15 @@ class LookupModule(LookupBase):
         if not HAS_BOTOCORE:
             raise AnsibleError("The aws_regions lookup requires the botocore library")
 
-        loader = get_session().get_component('data_loader')
-        endpoint_data = loader.load_data('endpoints')
-
         if not terms:
+            client = boto3.client('ec2', 'us-east-1')
+            # It's possible ec2 regions and regions of other resources could diverge but this is currently not the case.
+            ret = [region['RegionName'] for region in client.describe_regions()['Regions']]
             ret = list(endpoint_data['partitions'][0]['regions'].keys())
         else:
             ret = []
             for service in terms:
-                regions = list(endpoint_data['partitions'][0]['services'][service]['endpoints'].keys())
+                regions = boto3.Session().get_available_regions(service)
                 ret.append({service: regions})
 
         return ret
