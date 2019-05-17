@@ -38,9 +38,11 @@ def import_plugins() -> None:
         __import__(f'terminator.{import_name}')
 
 
-def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
+def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, region: str, targets: typing.Optional[typing.List[str]] = None) -> None:
     kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
     kvs.initialize()
+
+    logger.info('Cleaning up region: %s' % region)
 
     cleanup_test_account(stage, check, force, api_name, test_account_id, targets)
 

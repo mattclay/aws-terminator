@@ -4,6 +4,7 @@
 
 import argparse
 import logging
+import multiprocessing.dummy
 import os
 import yaml
 
@@ -21,6 +22,15 @@ from terminator import (
     Terminator,
     get_regions,
 )
+
+
+def run_cleanup(args, api_name, test_account_id, aws_regions, targets):
+    def parallel_cleanup(region):
+        cleanup(stage=args.stage, check=args.check, force=args.force,
+                api_name=api_name, test_account_id=test_account_id, region=region, targets=targets)
+
+    with multiprocessing.dummy.Pool(len(aws_regions)) as p:
+        p.map(parallel_cleanup, aws_regions)
 
 
 def main():
@@ -57,20 +67,23 @@ def main():
     if account_id != config['lambda_account_id']:
         exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
 
-    if args.region in ('all', 'a'):
+    if 'all' in args.regions:
         aws_regions = get_regions()
     else:
-        aws_regions = [args.region]
-    for region in aws_regions:
-        cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target, region=region)
+        aws_regions = args.regions
+
+    run_cleanup(args, api_name, test_account_id, aws_regions, args.target)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Terminate or destroy stale resources in the AWS test account.')
 
-    parser.add_argument('-r', '--region',
-                        default='us-east-1',
-                        help='regions to cleanup')
+    parser.add_argument('-r', '--regions',
+                        default=[os.environ.get('AWS_REGION', 'us-east-1')],
+                        dest='regions',
+                        choices=['all'] + get_regions(),
+                        nargs='+',
+                        help='region(s) to cleanup (multiple allowed either by providing a space separated list or "all" for all)')
 
     parser.add_argument('-c', '--check',
                         action='store_true',
