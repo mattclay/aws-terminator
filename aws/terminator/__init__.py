@@ -1,4 +1,5 @@
 import abc
+import contextvars
 import datetime
 import inspect
 import json
@@ -39,12 +40,14 @@ def import_plugins() -> None:
 
 
 def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, region: str, targets: typing.Optional[typing.List[str]] = None) -> None:
-    kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
-    kvs.initialize()
+
+    domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
+    kvs.set(KeyValueStore(region, domain_name))
+    kvs.get().initialize()
 
     logger.info('Cleaning up region: %s' % region)
 
-    cleanup_test_account(stage, check, force, api_name, test_account_id, targets)
+    cleanup_test_account(stage, check, force, api_name, test_account_id, region, targets)
 
     if not targets or 'Database' in targets:
         cleanup_database(check, force)
@@ -66,14 +69,15 @@ def get_regions():
     return boto3.Session().get_available_regions('ec2')
 
 
-def assume_session(role: str, session_name: str) -> boto3.Session:
-    sts = boto3.client('sts')
+def assume_session(role: str, session_name: str, region: str) -> boto3.Session:
+    sts = boto3.client('sts', region)
     credentials = sts.assume_role(
         RoleArn=role, RoleSessionName=session_name).get('Credentials')
     return boto3.Session(
         aws_access_key_id=credentials['AccessKeyId'],
         aws_secret_access_key=credentials['SecretAccessKey'],
-        aws_session_token=credentials['SessionToken'])
+        aws_session_token=credentials['SessionToken'],
+        region_name=region)
 
 
 def process_instance(instance: 'Terminator', check: bool, force: bool = False) -> str:
@@ -90,9 +94,9 @@ def process_instance(instance: 'Terminator', check: bool, force: bool = False) -
     return status
 
 
-def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
+def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, region: str, targets: typing.Optional[typing.List[str]] = None) -> None:
     role = f'arn:aws:iam::{test_account_id}:role/{api_name}-test-{stage}'
-    credentials = assume_session(role, 'cleanup')
+    credentials = assume_session(role, 'cleanup', region)
 
     for terminator_type in sorted(get_concrete_subclasses(Terminator), key=lambda value: value.__name__):
         if targets and terminator_type.__name__ not in targets:
@@ -120,11 +124,11 @@ def cleanup_database(check: bool, force: bool) -> None:
         now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tzutc(), microsecond=0) - datetime.timedelta(minutes=60)
         scan_options['FilterExpression'] = Attr('created_time').lt(now.isoformat())
 
-    scan_options['ProjectionExpression'] = kvs.primary_key
+    scan_options['ProjectionExpression'] = kvs.get().primary_key
     scan_options['Limit'] = 25
     scan_options['ConsistentRead'] = False
 
-    result = kvs.table.scan(
+    result = kvs.get().table.scan(
         **scan_options
     )
 
@@ -134,9 +138,9 @@ def cleanup_database(check: bool, force: bool) -> None:
     items = result['Items']
 
     if items and not check:
-        with kvs.table.batch_writer():
+        with kvs.get().table.batch_writer():
             for item in items:
-                kvs.table.delete_item(Key=item)
+                kvs.get().table.delete_item(Key=item)
 
     if check:
         status = 'checked'
@@ -262,10 +266,12 @@ class Terminator(abc.ABC):
     @staticmethod
     def _create(session: boto3.Session, instance_type: typing.Type['Terminator'], client_name: str,
                 describe_lambda: typing.Callable[[botocore.client.BaseClient], typing.List[typing.Dict[str, typing.Any]]]) -> typing.List['Terminator']:
-        client = session.client(client_name, region_name=AWS_REGION)
+        if session.region_name not in restricted_regions[client_name]:
+            return []
+        client = session.client(client_name, region_name=session.region_name)
         instances = describe_lambda(client)
         terminators = [instance_type(client, instance) for instance in instances]
-        logger.debug('located %s: count=%d', instance_type.__name__, len(terminators))
+        logger.debug('located %s: count=%d region=%s', instance_type.__name__, len(terminators), session.region_name)
 
         return terminators
 
@@ -304,7 +310,7 @@ class DbTerminator(Terminator):
 
             if not self._kvs_value:
                 self._kvs_value = self.now.isoformat()
-                kvs.set(self._kvs_key, self._kvs_value)
+                kvs.get().set(self._kvs_key, self._kvs_value)
 
             self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tzutc())
         except Exception:  # pylint: disable=broad-except
@@ -329,13 +335,13 @@ class DbTerminator(Terminator):
             logger.warning('skipping cleanup due to missing key/value data: %s', self)
             return
 
-        kvs.delete(self._kvs_key)
+        kvs.get().delete(self._kvs_key)
 
 
 class KeyValueStore:
     """ DynamoDB data store for the AWS terminator """
-    def __init__(self, domain_name: typing.Optional[str] = None):
-        self.ddb = None
+    def __init__(self, region: str, domain_name: typing.Optional[str] = None):
+        self.ddb = boto3.resource('dynamodb', region_name=region)
         self.domain_name = domain_name
         self.table = None
         self.primary_key = 'id'
@@ -417,4 +423,4 @@ import_plugins()
 
 restricted_regions = get_region_restrictions()
 
-kvs = KeyValueStore()
+kvs = contextvars.ContextVar('kvs')
