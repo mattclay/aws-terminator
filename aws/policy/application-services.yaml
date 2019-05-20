@@ -59,6 +59,7 @@ Statement:
       - sqs:SetQueueAttributes
       - dynamodb:Scan
       - dynamodb:ListTables
+      - dynamodb:DescribeTable
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
