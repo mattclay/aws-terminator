@@ -16,14 +16,13 @@ class LookupModule(LookupBase):
 
     def run(self, terms, variables=None, **kwargs):
 
-        if not HAS_BOTOCORE:
+        if not HAS_BOTO3:
             raise AnsibleError("The aws_regions lookup requires the botocore library")
 
         if not terms:
             client = boto3.client('ec2', 'us-east-1')
             # It's possible ec2 regions and regions of other resources could diverge but this is currently not the case.
             ret = [region['RegionName'] for region in client.describe_regions()['Regions']]
-            ret = list(endpoint_data['partitions'][0]['regions'].keys())
         else:
             ret = []
             for service in terms:

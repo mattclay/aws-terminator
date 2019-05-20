@@ -79,8 +79,27 @@
         include:
           - "{{ playbook_dir }}/terminator_lambda.py"
           - "{{ playbook_dir }}/terminator/*.py"
-    - include_tasks: deploy_terminator.yml
-      vars:
+
+- name: add each region that needs deployment as a host
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Add each region as a host
+      add_host:
         aws_region: "{{ item }}"
-      tags: always
+        group: all_regions
+        ansible_connection: local
+        name: "{{ item }}"
       loop: "{{ lookup('aws_regions', wantlist=True) }}"
+      tags: always
+
+- hosts: all_regions
+  gather_facts: False
+  serial: "100%"
+  vars:
+    stage: "prod"
+    terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
+    packaging_dir: "/tmp/packaging"
+
+    - include_tasks: deploy_terminator.yml
+      tags: always
