@@ -100,6 +100,6 @@
     stage: "prod"
     terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
     packaging_dir: "/tmp/packaging"
-
+  tasks:
     - include_tasks: deploy_terminator.yml
       tags: always

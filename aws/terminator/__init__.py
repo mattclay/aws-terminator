@@ -57,12 +57,12 @@ def get_region_restrictions():
     """ Get regions specific for each service so unsupported regions for services and global services can be skipped
     :rtype: dict [str, list]
     """
-    restricted_regions = {}
+    regions = {}
     session = boto3.Session()
     services = session.get_available_services()
     for service in services:
-        restricted_regions[service] = session.get_available_regions(service)
-    return restricted_regions
+        regions[service] = session.get_available_regions(service)
+    return regions
 
 
 def get_regions():
