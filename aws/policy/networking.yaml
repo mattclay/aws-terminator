@@ -37,6 +37,7 @@ Statement:
       - ec2:DescribeNatGateways
       - ec2:DescribeNetworkAcls
       - ec2:CreateNetworkInterface
+      - ec2:AttachNetworkInterface
       - ec2:DeleteNetworkInterface
       - ec2:DescribeNetworkInterfaces
       - ec2:DetachNetworkInterface
