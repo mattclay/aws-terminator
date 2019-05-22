@@ -27,14 +27,6 @@
       tags: always
       assert:
         that: "aws_account_id == test_account_id"
-    - name: remove obsolete resource-restricted and non-resource-restricted policies
-      tags: iam
-      iam_managed_policy:
-        policy_name: "{{ item }}"
-        state: absent
-      loop:
-        - "{{ api_name }}-test-rsrc-restricted-{{ stage }}"
-        - "{{ api_name }}-test-non-rsrc-restricted-{{ stage }}"
     - name: Create a list of policy file names without the path or extension
       tags: iam
       set_fact:
