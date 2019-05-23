@@ -76,6 +76,7 @@ Statement:
       - dynamodb:UpdateItem
       - dynamodb:CreateTable
       - dynamodb:DeleteTable
+      - dynamodb:TagResource
       - codebuild:CreateProject
       - codebuild:UpdateProject
       - codebuild:DeleteProject
