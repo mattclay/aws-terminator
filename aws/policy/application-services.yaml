@@ -74,6 +74,8 @@ Statement:
       - dynamodb:DeleteItem
       - dynamodb:PutItem
       - dynamodb:UpdateItem
+      - dynamodb:CreateTable
+      - dynamodb:DeleteTable
       - codebuild:CreateProject
       - codebuild:UpdateProject
       - codebuild:DeleteProject
