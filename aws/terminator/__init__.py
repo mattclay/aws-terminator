@@ -317,7 +317,7 @@ class DbTerminator(Terminator):
 class KeyValueStore:
     """ DynamoDB data store for the AWS terminator """
     def __init__(self, domain_name: typing.Optional[str] = None):
-        self.ddb = boto3.resource('dynamodb', region_name=AWS_REGION)
+        self.ddb = None
         self.domain_name = domain_name
         self.table = None
         self.primary_key = 'id'
@@ -327,6 +327,8 @@ class KeyValueStore:
         """Deferred initialization of the DynamoDB database."""
         if self.initialized:
             return
+
+        self.ddb = boto3.resource('dynamodb', region_name=AWS_REGION)
 
         try:
             self.table = self.ddb.Table(self.domain_name)
