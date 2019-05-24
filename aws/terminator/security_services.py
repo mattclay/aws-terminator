@@ -42,6 +42,34 @@ class IamRole(Terminator):
         self.client.delete_role(RoleName=self.name)
 
 
+class IamInstanceProfile(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, IamInstanceProfile, 'iam', lambda client: client.list_instance_profiles()['InstanceProfiles'])
+
+    @property
+    def id(self):
+        return self.instance['InstanceProfileId']
+
+    @property
+    def name(self):
+        return self.instance['InstanceProfileName']
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test-sts-')
+
+    @property
+    def created_time(self):
+        return self.instance['CreateDate']
+
+    def terminate(self):
+        for role in self.instance['Roles']:
+            self.client.remove_role_from_instance_profile(InstanceProfileName=self.name, RoleName=role['RoleName'])
+
+        self.client.delete_instance_profile(InstanceProfileName=self.name)
+
+
 class Waf(DbTerminator):
     @property
     def age_limit(self):

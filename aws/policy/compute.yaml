@@ -12,6 +12,8 @@ Statement:
       - ec2:DescribeImageAttribute
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
+      - ec2:DescribeIamInstanceProfileAssociations
+      - ec2:ReplaceIamInstanceProfileAssociation
       - ec2:CreateImage
       - ec2:RegisterImage
       - ec2:DeregisterImage

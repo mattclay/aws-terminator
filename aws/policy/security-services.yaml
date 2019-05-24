@@ -7,6 +7,11 @@ Statement:
       - sts:AssumeRole
       - iam:DeleteRole
       - iam:ListInstanceProfilesForRole
+      - iam:GetInstanceProfile
+      - iam:CreateInstanceProfile
+      - iam:DeleteInstanceProfile
+      - iam:AddRoleToInstanceProfile
+      - iam:RemoveRoleFromInstanceProfile
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
@@ -28,6 +33,7 @@ Statement:
     Action:
       - iam:ListAccountAliases
       - iam:ListPolicies
+      - iam:ListInstanceProfiles
       - iam:GetUser
       - waf:CreateXssMatchSet
       - waf:UpdateXssMatchSet
@@ -97,9 +103,10 @@ Statement:
       - iam:ListAttachedRolePolicies
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/*
-  - Sid: AllowLambdaTests
+  - Sid: AllowPassRole
     Effect: Allow
     Action:
       - iam:PassRole
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
+      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
