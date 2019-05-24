@@ -64,6 +64,9 @@ class IamInstanceProfile(Terminator):
         return self.instance['CreateDate']
 
     def terminate(self):
+        for role in self.instance['Roles']:
+            self.client.remove_role_from_instance_profile(InstanceProfileName=self.name, RoleName=role['RoleName'])
+
         self.client.delete_instance_profile(InstanceProfileName=self.name)
 
 
