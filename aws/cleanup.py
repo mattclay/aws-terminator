@@ -16,7 +16,9 @@ except ImportError:
 
 from terminator import (
     cleanup,
+    get_concrete_subclasses,
     logger,
+    Terminator,
 )
 
 
@@ -54,7 +56,7 @@ def main():
     if account_id != config['lambda_account_id']:
         exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
 
-    cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id)
+    cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target)
 
 
 def parse_args():
@@ -76,6 +78,12 @@ def parse_args():
                         choices=['prod', 'dev'],
                         required=True,
                         help='stage to use for database and policy access')
+
+    parser.add_argument('--target',
+                        choices=sorted([value.__name__ for value in get_concrete_subclasses(Terminator)] + ['Database']),
+                        metavar='target',
+                        action='append',
+                        help='class to run')
 
     if argcomplete:
         argcomplete.autocomplete(parser)

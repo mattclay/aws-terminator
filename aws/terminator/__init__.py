@@ -38,12 +38,14 @@ def import_plugins() -> None:
         __import__(f'terminator.{import_name}')
 
 
-def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str) -> None:
+def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
     kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
     kvs.initialize()
 
-    cleanup_test_account(stage, check, force, api_name, test_account_id)
-    cleanup_database(check, force)
+    cleanup_test_account(stage, check, force, api_name, test_account_id, targets)
+
+    if not targets or 'Database' in targets:
+        cleanup_database(check, force)
 
 
 def assume_session(role: str, session_name: str) -> boto3.Session:
@@ -70,11 +72,14 @@ def process_instance(instance: 'Terminator', check: bool, force: bool = False) -
     return status
 
 
-def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str) -> None:
+def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
     role = f'arn:aws:iam::{test_account_id}:role/{api_name}-test-{stage}'
     credentials = assume_session(role, 'cleanup')
 
     for terminator_type in sorted(get_concrete_subclasses(Terminator), key=lambda value: value.__name__):
+        if targets and terminator_type.__name__ not in targets:
+            continue
+
         # noinspection PyBroadException
         try:
             # noinspection PyUnresolvedReferences
