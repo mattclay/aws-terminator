@@ -55,6 +55,7 @@ Statement:
     Effect: Allow
     Action:
       - ec2:RunInstances
+      - ec2:StartInstances
     Resource:
       - arn:aws:ec2:us-east-1:{{ aws_account_id }}:instance/*
     Condition:
