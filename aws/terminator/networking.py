@@ -233,6 +233,9 @@ class Ec2RouteTable(DbTerminator):
 
     @property
     def ignore(self):
+        # The main route table of a VPC cannot be deleted.
+        # See: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html
+        # They will be removed when the VPC is deleted.
         return any([association['Main'] for association in self.instance.get('Associations', [])])
 
     def terminate(self):
