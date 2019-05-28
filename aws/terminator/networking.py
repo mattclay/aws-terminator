@@ -236,8 +236,9 @@ class Ec2RouteTable(DbTerminator):
         return any([association['Main'] for association in self.instance.get('Associations', [])])
 
     def terminate(self):
-        for association_id in self.instance.get('Associations', []):
-            self.client.disassociate_route_table(AssociationId=association_id)
+        for association in self.instance.get('Associations', []):
+            self.client.disassociate_route_table(AssociationId=association['RouteTableAssociationId'])
+
         self.client.delete_route_table(RouteTableId=self.id)
 
 
