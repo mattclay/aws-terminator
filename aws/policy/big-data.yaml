@@ -27,6 +27,9 @@ Statement:
       - redshift:DescribeClusters
       - redshift:DeleteCluster
       - redshift:ModifyCluster
+      - redshift:RebootCluster
+      - redshift:DeleteTags
+      - redshift:CreateTags
     Resource:
       - arn:aws:iot:us-east-1:{{ aws_account_id }}:thing/*
       - arn:aws:glacier:us-east-1:{{ aws_account_id }}:vaults/*
