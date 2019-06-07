@@ -1,5 +1,4 @@
 import abc
-import contextvars
 import datetime
 import inspect
 import json
@@ -41,16 +40,14 @@ def import_plugins() -> None:
 
 def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, region: str, targets: typing.Optional[typing.List[str]] = None) -> None:
 
-    domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
-    kvs.set(KeyValueStore(region, domain_name))
-    kvs.get().initialize()
+    ds.kvs_domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
 
     logger.info('Cleaning up region: %s' % region)
 
     cleanup_test_account(stage, check, force, api_name, test_account_id, region, targets)
 
     if not targets or 'Database' in targets:
-        cleanup_database(check, force)
+        cleanup_database(check, force, region)
 
 
 def get_region_restrictions():
@@ -117,18 +114,20 @@ def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, te
             log_exception('exception processing resource type: %s', terminator_type)
 
 
-def cleanup_database(check: bool, force: bool) -> None:
+def cleanup_database(check: bool, force: bool, region: str) -> None:
+
+    kvs = ds.kvs(region)
     scan_options = {}
 
     if not force:
         now = datetime.datetime.utcnow().replace(tzinfo=dateutil.tz.tzutc(), microsecond=0) - datetime.timedelta(minutes=60)
         scan_options['FilterExpression'] = Attr('created_time').lt(now.isoformat())
 
-    scan_options['ProjectionExpression'] = kvs.get().primary_key
+    scan_options['ProjectionExpression'] = kvs.primary_key
     scan_options['Limit'] = 25
     scan_options['ConsistentRead'] = False
 
-    result = kvs.get().table.scan(
+    result = kvs.table.scan(
         **scan_options
     )
 
@@ -138,9 +137,9 @@ def cleanup_database(check: bool, force: bool) -> None:
     items = result['Items']
 
     if items and not check:
-        with kvs.get().table.batch_writer():
+        with kvs.table.batch_writer():
             for item in items:
-                kvs.get().table.delete_item(Key=item)
+                kvs.table.delete_item(Key=item)
 
     if check:
         status = 'checked'
@@ -296,6 +295,7 @@ class DbTerminator(Terminator):
     def __init__(self, client: botocore.client.BaseClient, instance: typing.Dict[str, typing.Any]):
         super(DbTerminator, self).__init__(client, instance)
 
+        self._kvs = ds.kvs(client.meta.region_name)
         self._kvs_key = None
         self._kvs_value = None
         self._created_time = None
@@ -306,11 +306,11 @@ class DbTerminator(Terminator):
         # noinspection PyBroadException
         try:
             self._kvs_key = f'{type(self).__name__}:{self.id or self.name}'
-            self._kvs_value = kvs.get(self._kvs_key)
+            self._kvs_value = self._kvs.get(self._kvs_key)
 
             if not self._kvs_value:
                 self._kvs_value = self.now.isoformat()
-                kvs.get().set(self._kvs_key, self._kvs_value)
+                self._kvs.set(self._kvs_key, self._kvs_value)
 
             self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tzutc())
         except Exception:  # pylint: disable=broad-except
@@ -335,7 +335,7 @@ class DbTerminator(Terminator):
             logger.warning('skipping cleanup due to missing key/value data: %s', self)
             return
 
-        kvs.get().delete(self._kvs_key)
+        self._kvs.delete(self._kvs_key)
 
 
 class KeyValueStore:
@@ -343,33 +343,25 @@ class KeyValueStore:
     def __init__(self, region: str, domain_name: typing.Optional[str] = None):
         self.ddb = boto3.resource('dynamodb', region_name=region)
         self.domain_name = domain_name
-        self.table = None
         self.primary_key = 'id'
-        self.initialized = False
+        self.table = self.initialize()
 
     def initialize(self) -> None:
         """Deferred initialization of the DynamoDB database."""
-        if self.initialized:
-            return
-
-        self.ddb = boto3.resource('dynamodb', region_name=AWS_REGION)
-
         try:
-            self.table = self.ddb.Table(self.domain_name)
-            if self.table.table_status == 'DELETING':
-                self.table.wait_until_not_exists()
-                self.create_table()
+            table = self.ddb.Table(self.domain_name)
+            if table.table_status == 'DELETING':
+                table.wait_until_not_exists()
+                table = self.create_table()
         except botocore.exceptions.ClientError as ex:
             if ex.response['Error']['Code'] == 'ResourceNotFoundException':
-                self.create_table()
+                table = self.create_table()
             else:
                 raise ex
 
-        self.initialized = True
+        return table
 
     def get(self, key: str) -> str:
-        self.initialize()
-
         item = self.table.get_item(
             Key={self.primary_key: key},
             ProjectionExpression='created_time',
@@ -378,8 +370,6 @@ class KeyValueStore:
         return item.get('created_time')
 
     def set(self, key: str, value: str) -> None:
-        self.initialize()
-
         # Don't replace an existing entry
         expression = Attr(self.primary_key).ne(key)
 
@@ -395,7 +385,7 @@ class KeyValueStore:
 
     def create_table(self) -> None:
         """Creates a new DynamoDB database."""
-        self.table = self.ddb.create_table(
+        table = self.ddb.create_table(
             TableName=self.domain_name,
             AttributeDefinitions=[{
                 'AttributeName': self.primary_key,
@@ -407,11 +397,10 @@ class KeyValueStore:
             }],
             BillingMode='PAY_PER_REQUEST',
         )
-        self.table.wait_until_exists()
+        table.wait_until_exists()
+        return table
 
     def delete(self, key: str) -> None:
-        self.initialize()
-
         self.table.delete_item(
             Key={
                 self.primary_key: key
@@ -419,8 +408,25 @@ class KeyValueStore:
         )
 
 
+class DataStore:
+    def __init__(self):
+        self.kvs_domain_name: typing.Optional[str] = None
+        self.kvs_by_region: typing.Dict[str, KeyValueStore] = {}
+
+    def kvs(self, region: str) -> KeyValueStore:
+        kvs = self.kvs_by_region.get(region)
+
+        if not kvs:
+            if not self.kvs_domain_name:
+                raise Exception('DataStore.kvs_domain_name not set')
+
+            self.kvs_by_region[region] = kvs = KeyValueStore(region, self.kvs_domain_name)
+
+        return kvs
+
+
 import_plugins()
 
 restricted_regions = get_region_restrictions()
 
-kvs = contextvars.ContextVar('kvs')
+ds = DataStore()
