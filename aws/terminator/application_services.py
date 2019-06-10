@@ -82,6 +82,31 @@ class CodeCommitRepository(DbTerminator):
         self.client.delete_repository(repositoryName=self.name)
 
 
+class CodePipeline(Terminator):
+
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, CodePipeline, 'codepipeline',
+            lambda client: client.list_pipelines().get('pipelines', ()))
+
+    @property
+    def created_time(self):
+        return self.instance['created']
+
+    @property
+    def id(self):
+        return self.instance['name']
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def terminate(self):
+        self.client.delete_pipeline(name=self.name)
+
+
 class DmsSubnetGroup(DbTerminator):
     @staticmethod
     def create(credentials):
