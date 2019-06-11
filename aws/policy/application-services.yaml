@@ -51,6 +51,8 @@ Statement:
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
       - codecommit:ListRepositories
+      - codepipeline:ListPipelines
+      - codepipeline:GetPipeline
       - sqs:CreateQueue
       - sqs:DeleteQueue
       - sqs:GetQueueUrl
@@ -82,6 +84,9 @@ Statement:
       - codebuild:DeleteProject
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
+      - codepipeline:CreatePipeline
+      - codepipeline:DeletePipeline
+      - codepipeline:UpdatePipeline
       - SNS:CreateTopic
       - SNS:DeleteTopic
       - SNS:GetTopicAttributes
@@ -102,6 +107,7 @@ Statement:
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
       - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
       - arn:aws:codecommit:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:codepipeline:us-east-1:{{ aws_account_id }}:*
       - arn:aws:sns:us-east-1:{{ aws_account_id }}:*
       - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
       - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
