@@ -102,7 +102,6 @@ class CodePipeline(Terminator):
     def name(self):
         return self.instance['name']
 
-    @property
     def terminate(self):
         self.client.delete_pipeline(name=self.name)
 
