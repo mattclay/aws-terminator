@@ -19,6 +19,7 @@ Statement:
       - ec2:DescribeImages
       - ec2:DescribeInstanceAttribute
       - ec2:DescribeInstances
+      - ec2:DescribeInstanceStatus
       - ec2:DescribeKeyPairs
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
@@ -28,7 +29,6 @@ Statement:
       - ec2:ModifyInstanceAttribute
       - ec2:RegisterImage
       - ec2:ReplaceIamInstanceProfileAssociation
-      - ec2:ReportInstanceStatus
       - ec2:StopInstances
       - ec2:TerminateInstances
     Resource:
