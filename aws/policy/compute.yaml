@@ -3,33 +3,34 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ec2:CreateImage
+      - ec2:CreateKeyPair
+      - ec2:CreateSnapshot
+      - ec2:CreateTags
+      - ec2:CreateTransitGateway
+      - ec2:DeleteKeyPair
+      - ec2:DeleteSnapshot
+      - ec2:DeleteTags
+      - ec2:DeleteTransitGateway
+      - ec2:DeregisterImage
       - ec2:DescribeAccountAttributes
-      - ec2:DescribeInstances
-      - ec2:DescribeInstanceAttribute
-      - ec2:StopInstances
-      - ec2:TerminateInstances
-      - ec2:DescribeImages
+      - ec2:DescribeIamInstanceProfileAssociations
       - ec2:DescribeImageAttribute
+      - ec2:DescribeImages
+      - ec2:DescribeInstanceAttribute
+      - ec2:DescribeInstances
+      - ec2:DescribeInstanceStatus
+      - ec2:DescribeKeyPairs
+      - ec2:DescribeSnapshots
+      - ec2:DescribeTags
+      - ec2:DescribeVolumes
+      - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
-      - ec2:DescribeIamInstanceProfileAssociations
-      - ec2:ReplaceIamInstanceProfileAssociation
-      - ec2:CreateImage
       - ec2:RegisterImage
-      - ec2:DeregisterImage
-      - ec2:CreateSnapshot
-      - ec2:DeleteSnapshot
-      - ec2:DescribeSnapshots
-      - ec2:DescribeVolumes
-      - ec2:DescribeKeyPairs
-      - ec2:CreateKeyPair
-      - ec2:DeleteKeyPair
-      - ec2:ImportKeyPair
-      - ec2:DescribeTags
-      - ec2:CreateTags
-      - ec2:DeleteTags
-      - ec2:CreateTransitGateway
-      - ec2:DeleteTransitGateway
+      - ec2:ReplaceIamInstanceProfileAssociation
+      - ec2:StopInstances
+      - ec2:TerminateInstances
     Resource:
       - "*"
     Condition:
@@ -39,17 +40,17 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ec2:DescribeSpotPriceHistory
       - ec2:DescribeAvailabilityZones
+      - ec2:DescribeSpotPriceHistory
       - ec2:DescribeTransitGateways
-      - ecr:DescribeRepositories
       - ecr:CreateRepository
-      - rds:DescribeDBSubnetGroups
-      - rds:DescribeDBParameterGroups
-      - rds:DescribeDBClusters
-      - lambda:ListFunctions
-      - elasticloadbalancing:DescribeLoadBalancers
+      - ecr:DescribeRepositories
       - elasticloadbalancing:DescribeLoadBalancerAttributes
+      - elasticloadbalancing:DescribeLoadBalancers
+      - lambda:ListFunctions
+      - rds:DescribeDBClusters
+      - rds:DescribeDBParameterGroups
+      - rds:DescribeDBSubnetGroups
     Resource: "*"
   - Sid: AllowEc2RunInstancesInstanceType
     Effect: Allow
@@ -92,43 +93,43 @@ Statement:
     Effect: Allow
     Action:
       - ec2:DeleteVolume
-      - rds:DeleteDBSubnetGroup
-      - rds:CreateDBSubnetGroup
-      - rds:ModifyDBSubnetGroup
-      - rds:ModifyDBCluster
-      - rds:DeleteDBCluster
-      - rds:DescribeDBParameters
-      - rds:CreateDBParameterGroup
-      - rds:DeleteDBParameterGroup
-      - rds:ModifyDBParameterGroup
-      - rds:ListTagsForResource
-      - rds:AddTagsToResource
-      - rds:RemoveTagsFromResource
-      - elasticloadbalancing:ConfigureHealthCheck
-      - elasticloadbalancing:DeleteLoadBalancer
-      - elasticloadbalancing:ModifyLoadBalancerAttributes
-      - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
-      - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
-      - elasticloadbalancing:DeleteLoadBalancerListeners
-      - elasticloadbalancing:CreateLoadBalancerListeners
-      - ecr:GetLifecyclePolicy
-      - ecr:PutLifecyclePolicy
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
-      - ecr:GetRepositoryPolicy
-      - ecr:SetRepositoryPolicy
       - ecr:DeleteRepositoryPolicy
+      - ecr:GetLifecyclePolicy
+      - ecr:GetRepositoryPolicy
+      - ecr:PutLifecyclePolicy
+      - ecr:SetRepositoryPolicy
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:DescribeApplications
       - elasticbeanstalk:UpdateApplication
-      - lambda:GetFunction
+      - elasticloadbalancing:ConfigureHealthCheck
+      - elasticloadbalancing:CreateLoadBalancerListeners
+      - elasticloadbalancing:DeleteLoadBalancer
+      - elasticloadbalancing:DeleteLoadBalancerListeners
+      - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
+      - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
+      - elasticloadbalancing:ModifyLoadBalancerAttributes
+      - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
+      - lambda:GetFunction
       - lambda:GetPolicy
-      - lambda:AddPermission
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
+      - rds:AddTagsToResource
+      - rds:CreateDBParameterGroup
+      - rds:CreateDBSubnetGroup
+      - rds:DeleteDBCluster
+      - rds:DeleteDBParameterGroup
+      - rds:DeleteDBSubnetGroup
+      - rds:DescribeDBParameters
+      - rds:ListTagsForResource
+      - rds:ModifyDBCluster
+      - rds:ModifyDBParameterGroup
+      - rds:ModifyDBSubnetGroup
+      - rds:RemoveTagsFromResource
     Resource:
       - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
       - arn:aws:rds:us-east-1:{{ aws_account_id }}:subgrp:*
