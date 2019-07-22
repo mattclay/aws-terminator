@@ -288,3 +288,27 @@ class NeptuneCluster(Terminator):
 
     def terminate(self):
         self.client.delete_db_cluster(DBClusterIdentifier=self.name, SkipFinalSnapshot=True)
+
+
+class EksCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_cluster_results(client):
+            cluster_list = client.list_clusters()['clusters']
+            results = []
+            for cluster in cluster_list:
+                results.append(client.describe_cluster(name=cluster)['cluster'])
+            return results
+
+        return Terminator._create(credentials, EksCluster, 'eks', _build_cluster_results)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_cluster(name=self.name)
