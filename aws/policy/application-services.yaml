@@ -75,6 +75,7 @@ Statement:
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteReplicationSubnetGroup
       - dms:ModifyReplicationSubnetGroup
+      - dynamodb:GetItem
       - dynamodb:DeleteItem
       - dynamodb:PutItem
       - dynamodb:UpdateItem
