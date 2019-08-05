@@ -59,7 +59,7 @@ If there are modifications to the terminator:
 
 ### Structure
 
-Policy docs are in `aws/policy/{group}.json`, arranged by the test group.
+Policy docs are in `aws/policy/{group}.yaml`, arranged by the test group.
 
 ### Policy Groups
 - Application Services: CloudFormation, S3, SQS, SNS, SES
