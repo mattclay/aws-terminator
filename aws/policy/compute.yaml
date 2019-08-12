@@ -104,6 +104,7 @@ Statement:
       - ecr:GetRepositoryPolicy
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
+      - eks:ListClusters
       - eks:DescribeCluster
       - eks:DeleteCluster
       - elasticbeanstalk:CreateApplication
@@ -145,6 +146,7 @@ Statement:
       - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
       - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
+      - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
   - Sid: AllowEksCreateCluster
     Effect: Allow
     Action:
