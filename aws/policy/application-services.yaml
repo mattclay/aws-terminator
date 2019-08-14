@@ -94,6 +94,12 @@ Statement:
       - SNS:GetTopicAttributes
       - SNS:ListTopics
       - SNS:ListSubscriptionsByTopic
+      - states:DescribeStateMachine
+      - states:DeleteStateMachine
+      - states:ListStateMachines
+      - states:ListTagsForResource
+      - states:TagResource
+      - states:UntagResource
       - logs:DescribeLogGroups
       - elasticfilesystem:DescribeFileSystems
       - elasticfilesystem:DescribeMountTargets
@@ -115,9 +121,17 @@ Statement:
       - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
       - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
       - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
+      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - states:CreateStateMachine
+      - states:UpdateStateMachine
+    Resource:
+      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
