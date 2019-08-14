@@ -302,3 +302,26 @@ class DynamoDb(DbTerminator):
 
     def terminate(self):
         return self.client.delete_table(TableName=self.instance)
+
+
+class StepFunctions(Terminator):
+    @staticmethod
+    def create(credentials):
+
+        def get_state_machines(client):
+            state_machines = client.get_paginator(
+                'list_state_machines').paginate().build_full_result().get('stateMachines', ())
+            return state_machines
+
+        return Terminator._create(credentials, StepFunctions, 'stepfunctions', get_state_machines)
+
+    @property
+    def created_time(self):
+        return self.instance['creationDate']
+
+    @property
+    def name(self):
+        return self.instance['stateMachineArn']
+
+    def terminate(self):
+        return self.client.delete_state_machine(stateMachineArn=self.name)
