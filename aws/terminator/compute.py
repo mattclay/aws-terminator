@@ -312,3 +312,72 @@ class EksCluster(Terminator):
 
     def terminate(self):
         self.client.delete_cluster(name=self.name)
+
+
+class ElasticLoadBalancing(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_elastic_lbs(client):
+            return client.get_paginator(
+                'describe_load_balancers').paginate().build_full_result()[
+                'LoadBalancerDescriptions']
+        return Terminator._create(credentials, ElasticLoadBalancing, 'elb', _paginate_elastic_lbs)
+
+    @property
+    def name(self):
+        return self.instance['LoadBalancerName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        self.client.delete_load_balancer(LoadBalancerName=self.name)
+
+
+class ElasticLoadBalancingv2(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_elastic_lbs(client):
+            return client.get_paginator(
+                'describe_load_balancers').paginate().build_full_result()[
+                'LoadBalancers']
+        return Terminator._create(credentials, ElasticLoadBalancingv2, 'elbv2', _paginate_elastic_lbs)
+
+    @property
+    def name(self):
+        return self.instance['LoadBalancerArn']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def _find_listeners(self):
+        # Listeners can't be listed or described without providing an ELB or Listener ARN, so we have to handle them here
+        return [listener['ListenerArn'] for listener in self.client.describe_listeners(LoadBalancerArn=self.name)['Listeners']]
+
+    def terminate(self):
+        self.client.delete_load_balancer(LoadBalancerArn=self.name)
+        for listener in self._find_listeners():
+            self.client.delete_listender(ListenerArn=listener)
+
+
+class Elbv2TargetGroups(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_target_groups(client):
+            return client.get_paginator(
+                'describe_target_groups').paginate().build_full_result()[
+                'TargetGroups']
+        return Terminator._create(credentials, Elbv2TargetGroups, 'elbv2', _paginate_target_groups)
+
+    @property
+    def id(self):
+        return self.instance['TargetGroupArn']
+
+    @property
+    def name(self):
+        return self.instance['TargetGroupName']
+
+    def terminate(self):
+        self.client.delete_target_group(TargetGroupArn=self.id)

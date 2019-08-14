@@ -64,7 +64,7 @@ Policy docs are in `aws/policy/{group}.yaml`, arranged by the test group.
 ### Policy Groups
 - Application Services: CloudFormation, S3, SQS, SNS, SES
 - Big Data: Glacier, Glue, Redshift, etc
-- Compute: EC2, RDS, Lambda, etc
+- Compute: EC2, EKS, RDS, Lambda, etc
 - Machine Learning: Lex, Polly, Macie, etc
 - Networking: VPC, ACLs, route tables, NAT Gateways, IGW/VGW, security groups, etc
 - Security Services: IAM, Shield, WAF, Config, Inspector, etc
