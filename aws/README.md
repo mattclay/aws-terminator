@@ -65,10 +65,14 @@ If you want to test the terminator class with your own account you can use the c
 
 Warning: Always use the --check (or -c) flag and the --target flag to avoid accidentally deleting wanted resources.
 
+It is safest if you can use two separate AWS accounts for running cleanup.py (for example, one you typically use
+for dev work and an emptyish/test account for the terminator classes to use), or a single emptyish/test account.
+
 Using cleanup.py with your own account:
   - Ensure you're using Python 3.7+
-  - Modify config.yml so that lambda_account_id and test_account_id are both set to your account.
-    If you're just running the cleanup.py script these can be the same account; ignore the warning in config.yml.
+  - Modify config.yml to use your own accounts. These can be the same account if you're just using cleanup.py.
+    If you are using two separate accounts, lambda_account_id should be the account of the profile that's going
+    to assume the IAM role in the test_account_id. The test_account_id is where the terminator class(es) will run.
   - Make sure you have a role called ansible-core-ci-test-dev that your AWS profile can assume. This role should have
     the permissions to use your cleanup.py class.
   - Set the environment variable AWS_PROFILE with the profile you want to use.
