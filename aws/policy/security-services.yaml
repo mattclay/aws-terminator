@@ -93,6 +93,8 @@ Statement:
       - inspector:DescribeAssessmentTemplates
       - inspector:ListTagsForResource
       - inspector:ListEventSubscriptions
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -120,10 +122,3 @@ Statement:
       - acm:DeleteCertificate
     Resource:
       - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
-  - Sid: AllowACMRestrictable
-    Effect: Allow
-    Action:
-      - acm:ListCertificates
-      - acm:ListTagsForCertificate
-    Resource: "*"
-
