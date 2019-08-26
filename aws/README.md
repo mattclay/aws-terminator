@@ -1,3 +1,89 @@
+# Contributor process
+
+If you have a pull request that contains tests that need to be enabled in CI you can get the ball rolling by
+submitting a pull request. Start by updating the appropriate test policy in the policy directory (policy
+groups are defined below).
+
+Good integration tests should be contained in a block with an always statement that cleans up any stray resources
+if the integration tests fail. Despite this, bugs in the module and flaky AWS services could cause there to be leaked
+resources. Because of this, if your tests create a resource and the tests are run in CI, that resource must also have
+a terminator class. We deploy a lambda function that runs these terminator classes.
+
+To create your terminator class, you'll need to decide whether to use the Terminator base class or the DbTerminator
+base class.
+
+We terminate resources found based on their age. Not all AWS resources return the creation date timestamp so those
+resources get stored in a database with the time the terminator classes first found them and we approximate when to
+delete them from that. If the resource has a creation date timestamp use the Terminator base class. Otherwise use
+DbTerminator.
+
+Your terminator class should have the staticmethod `create`, the properties `id` and `name` (and `created_time` if
+you are using the Terminator base class), and the method `terminate`.
+
+The create method returns the credentials to create the client, the class name, the boto3 resource name to create the
+client, and a function for the client to use which will list all the given resources for that resource type.
+
+Here's an example:
+
+```python
+class Ec2Instance(Terminator):
+
+    @staticmethod
+    def create(credentials):
+
+        def get_instances(client):
+            return [i for r in client.describe_instances()['Reservations'] for i in r['Instances']]
+
+        return Terminator._create(credentials, Ec2Instance, 'ec2', get_instances)
+```
+
+The `id`, `name`, and `created_time` properties should return an appropriate value from self.instance which is
+a dictionary from the list of resources returned by the function defined in `create`:
+
+```python
+    @property
+    def id(self):
+        return self.instance['InstanceId']
+
+    @property
+    def name(self):
+        return self.instance['PrivateDnsName']
+
+    @property
+    def created_time(self):
+        return self.instance['LaunchTime']
+```
+
+The `terminate` method should use self.client to delete the resource.
+
+```python
+    def terminate(self):
+        self.client.terminate_instances(InstanceIds=[self.id])
+```
+
+If you want to test the terminator class with your own account you can use the cleanup.py script.
+
+Warning: Always use the --check (or -c) flag and the --target flag to avoid accidentally deleting wanted resources.
+
+Using cleanup.py with your own account:
+  - Ensure you're using Python 3.7+
+  - Modify config.yml so that lambda_account_id and test_account_id are both set to your account.
+    If you're just running the cleanup.py script these can be the same account; ignore the warning in config.yml.
+  - Make sure you have a role called ansible-core-ci-test-dev that your AWS profile can assume. This role should have
+    the permissions to use your cleanup.py class.
+  - Set the environment variable AWS_PROFILE with the profile you want to use.
+  - Run the cleanup.py script for the new target you added to find any stray resources in us-east-1: |
+        $ python cleanup.py --stage dev --target Ec2Instance -v -c
+        cleanup     : DEBUG    located Ec2Instance: count=2
+        cleanup     : DEBUG    ignored Ec2Instance: name=, id=i-0c18f88091e78898e age=0 days, 0:05:32, stale=False
+        cleanup     : DEBUG    ignored Ec2Instance: name=, id=i-0630e2ba640d7dbf1 age=1 days, 20:49:03, stale=True
+  - Make sure your stray resources become stale. This indicates that when --check or -c isn't specified the terminator
+    class will delete it.
+  - Once the resources show stale=True you can test that they're terminated by your new class by removing the check
+    mode flag: `python cleanup.py --stage dev --target Ec2Instance -v`
+
+Submit your pull request. A core developer will review and deploy your changes as outlined below.
+
 # Deploying to AWS
 Deploying to AWS is done using an Ansible playbook, which can be easily run with make using the provided Makefile.
 
