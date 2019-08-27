@@ -320,9 +320,10 @@ class ACMCertificate(Terminator):
     @property
     def created_time(self):
         if self.instance['Type'] == 'IMPORTED':
-            return self.instance['ImportedAt']
+            result = self.instance['ImportedAt']
         else:  # AMAZON_ISSUED
-            return self.instance['CreatedAt']
+            result = self.instance['CreatedAt']
+        return result
 
     @property
     def id(self):
