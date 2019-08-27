@@ -301,3 +301,36 @@ class InspectorAssessmentTarget(DbTerminator):
 
     def terminate(self):
         self.client.delete_assessment_target(assessmentTargetArn=self.id)
+        
+
+class ACMCertificate(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_paginated_certificates(client):
+            return client.get_paginator('list_certificates').paginate().build_full_result()['CertificateSummaryList']
+
+        def get_detailed_certificates(client):
+            detailed_certs = []
+            for certificate in get_paginated_certificates(client):
+                detailed_certs.append(client.describe_certificate(CertificateArn=certificate['CertificateArn'])['Certificate'])
+            return detailed_certs
+
+        return Terminator._create(credentials, ACMCertificate, 'acm', get_detailed_certificates)
+
+    @property
+    def created_time(self):
+        if self.instance['Type'] == 'IMPORTED':
+            return self.instance['ImportedAt']
+        else: # AMAZON_ISSUES
+            return self.instance['CreatedAt']
+
+    @property
+    def id(self):
+        return self.instance['CertificateArn']
+
+    @property
+    def name(self):
+        return self.instance['DomainName']
+
+    def terminate(self):
+        self.client.delete_certificate(CertificateArn=self.id)
