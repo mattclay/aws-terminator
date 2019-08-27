@@ -301,7 +301,7 @@ class InspectorAssessmentTarget(DbTerminator):
 
     def terminate(self):
         self.client.delete_assessment_target(assessmentTargetArn=self.id)
-        
+
 
 class ACMCertificate(Terminator):
     @staticmethod
@@ -321,7 +321,7 @@ class ACMCertificate(Terminator):
     def created_time(self):
         if self.instance['Type'] == 'IMPORTED':
             return self.instance['ImportedAt']
-        else: # AMAZON_ISSUES
+        else:  # AMAZON_ISSUED
             return self.instance['CreatedAt']
 
     @property
