@@ -93,9 +93,14 @@ Statement:
       - inspector:DescribeAssessmentTemplates
       - inspector:ListTagsForResource
       - inspector:ListEventSubscriptions
+      - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
     Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - us-east-1
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -115,7 +120,6 @@ Statement:
   - Sid: AllowACMRestrictable
     Effect: Allow
     Action:
-      - acm:ImportCertificate
       - acm:DescribeCertificate
       - acm:GetCertificate
       - acm:AddTagsToCertificate
