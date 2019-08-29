@@ -92,7 +92,9 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ec2:AssignPrivateIpAddresses
       - ec2:DeleteVolume
+      - ec2:UnassignPrivateIpAddresses
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
