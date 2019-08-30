@@ -86,6 +86,8 @@ Statement:
       - codebuild:DeleteProject
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
+      - codecommit:GetRepository
+      - codecommit:UpdateRepositoryDescription
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:UpdatePipeline
