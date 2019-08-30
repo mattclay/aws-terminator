@@ -319,8 +319,7 @@ class ElasticLoadBalancing(Terminator):
     def create(credentials):
         def _paginate_elastic_lbs(client):
             return client.get_paginator(
-                'describe_load_balancers').paginate().build_full_result()[
-                'LoadBalancerDescriptions']
+                'describe_load_balancers').paginate().build_full_result()['LoadBalancerDescriptions']
         return Terminator._create(credentials, ElasticLoadBalancing, 'elb', _paginate_elastic_lbs)
 
     @property
@@ -340,8 +339,7 @@ class ElasticLoadBalancingv2(Terminator):
     def create(credentials):
         def _paginate_elastic_lbs(client):
             return client.get_paginator(
-                'describe_load_balancers').paginate().build_full_result()[
-                'LoadBalancers']
+                'describe_load_balancers').paginate().build_full_result()['LoadBalancers']
         return Terminator._create(credentials, ElasticLoadBalancingv2, 'elbv2', _paginate_elastic_lbs)
 
     @property
@@ -367,8 +365,7 @@ class Elbv2TargetGroups(DbTerminator):
     def create(credentials):
         def _paginate_target_groups(client):
             return client.get_paginator(
-                'describe_target_groups').paginate().build_full_result()[
-                'TargetGroups']
+                'describe_target_groups').paginate().build_full_result()['TargetGroups']
         return Terminator._create(credentials, Elbv2TargetGroups, 'elbv2', _paginate_target_groups)
 
     @property
