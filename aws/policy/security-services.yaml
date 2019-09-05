@@ -1,6 +1,6 @@
 Version: '2012-10-17'
 Statement:
-  - Sid: AllowStsAssumeRoleTests
+  - Sid: AllowAssumeRoleTests
     Effect: Allow
     Action:
       - iam:CreateRole
@@ -14,14 +14,17 @@ Statement:
       - iam:RemoveRoleFromInstanceProfile
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
-  - Sid: AllowStsAssumeRoleTestsAttachAndDetachRole
+       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
+       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+  - Sid: AllowAssumeRoleTestsAttachAndDetachRole
     Effect: Allow
     Action:
       - iam:AttachRolePolicy
       - iam:DetachRolePolicy
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
+      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
     Condition:
       ArnLike:
         iam:PolicyArn:
@@ -110,3 +113,4 @@ Statement:
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
+      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
