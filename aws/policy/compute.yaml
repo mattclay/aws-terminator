@@ -3,6 +3,7 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ec2:AssignPrivateIpAddresses
       - ec2:CreateImage
       - ec2:CreateKeyPair
       - ec2:CreateSnapshot
@@ -31,6 +32,7 @@ Statement:
       - ec2:ReplaceIamInstanceProfileAssociation
       - ec2:StopInstances
       - ec2:TerminateInstances
+      - ec2:UnassignPrivateIpAddresses
     Resource:
       - "*"
     Condition:
@@ -92,9 +94,7 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ec2:AssignPrivateIpAddresses
       - ec2:DeleteVolume
-      - ec2:UnassignPrivateIpAddresses
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
