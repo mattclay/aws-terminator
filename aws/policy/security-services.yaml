@@ -14,8 +14,8 @@ Statement:
       - iam:RemoveRoleFromInstanceProfile
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
-       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
+      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
   - Sid: AllowAssumeRoleTestsAttachAndDetachRole
     Effect: Allow
