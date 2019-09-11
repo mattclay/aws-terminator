@@ -150,6 +150,41 @@ class Efs(Terminator):
         self.client.delete_file_system(FileSystemId=self.id)
 
 
+class KinesisStream(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_streams(client):
+            result = []
+            names = client.get_paginator('list_streams').paginate().build_full_result()['StreamNames']
+
+            if not names:
+                return []
+
+            return [
+                client.describe_stream(StreamName=n)['StreamDescription'] for n in names
+            ]
+
+        return Terminator._create(credentials, KinesisStream, 'kinesis', paginate_streams)
+
+    @property
+    def created_time(self):
+        return self.instance['StreamCreationTimestamp']
+
+    @property
+    def id(self):
+        return self.instance['StreamName']
+
+    @property
+    def name(self):
+        return self.instance['StreamName']
+
+    def terminate(self):
+        self.client.delete_stream(
+            StreamName=self.instance['StreamName'],
+            EnforceConsumerDeletion=True
+        )
+
+
 class S3Bucket(Terminator):
     @staticmethod
     def create(credentials):
