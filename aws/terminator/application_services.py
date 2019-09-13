@@ -154,7 +154,11 @@ class KinesisStream(Terminator):
     @staticmethod
     def create(credentials):
         def paginate_streams(client):
-            names = client.get_paginator('list_streams').paginate().build_full_result()['StreamNames']
+            names = client.get_paginator('list_streams').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['StreamNames']
 
             if not names:
                 return []
