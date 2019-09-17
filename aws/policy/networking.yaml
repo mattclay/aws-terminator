@@ -17,6 +17,8 @@ Statement:
       - ec2:AllocateAddress
       - ec2:DescribeAddresses
       - ec2:ReleaseAddress
+      - ec2:AssociateAddress
+      - ec2:DisassociateAddress
       - ec2:CreateCustomerGateway
       - ec2:DeleteCustomerGateway
       - ec2:DescribeCustomerGateways
