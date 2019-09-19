@@ -181,6 +181,10 @@ class KinesisStream(Terminator):
     def name(self):
         return self.instance['StreamName']
 
+    @property
+    def ignore(self):
+        return self.instance['StreamStatus'] == 'DELETING'
+
     def terminate(self):
         self.client.delete_stream(
             StreamName=self.instance['StreamName'],
