@@ -56,6 +56,7 @@ Statement:
       - ec2:DeleteSubnet
       - ec2:ModifySubnetAttribute
       - ec2:AssociateVpcCidrBlock
+      - ec2:DisassociateVpcCidrBlock
       - ec2:DescribeVpcs
       - ec2:CreateVpc
       - ec2:DeleteVpc
