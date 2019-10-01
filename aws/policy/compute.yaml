@@ -68,6 +68,7 @@ Statement:
           - t2.micro
           - t3.nano
           - t3.micro
+          - m1.large
   - Sid: AllowEc2RunInstances
     Effect: Allow
     Action:
