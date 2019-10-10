@@ -142,8 +142,12 @@ Statement:
     Action:
       - cloudwatch:PutMetricAlarm
       - cloudwatch:DeleteAlarms
-      - cloudwatch:DescribeAlarms
     Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:ansible-test*
+  - Sid: DescribeCloudwatchAlarms
+    Effect: Allow
+    Action:
+      - cloudwatch:DescribeAlarms
+    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
