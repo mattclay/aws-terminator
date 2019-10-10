@@ -47,6 +47,7 @@ Statement:
       - ec2:DescribeTransitGateways
       - ecr:CreateRepository
       - ecr:DescribeRepositories
+      - ecr:PutImageTagMutability
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
       - lambda:ListFunctions
