@@ -69,6 +69,7 @@ Statement:
           - t2.micro
           - t3.nano
           - t3.micro
+          - m1.large  # lowest cost instance type with EBS optimization supported
   - Sid: AllowEc2RunInstances
     Effect: Allow
     Action:
