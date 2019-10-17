@@ -12,6 +12,7 @@ Statement:
       - iam:DeleteInstanceProfile
       - iam:AddRoleToInstanceProfile
       - iam:RemoveRoleFromInstanceProfile
+      - iam:DisassociateIamInstanceProfile
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
@@ -31,6 +32,7 @@ Statement:
           - arn:aws:iam::aws:policy/IAMReadOnlyAccess
           - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
           - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:

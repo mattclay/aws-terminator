@@ -110,6 +110,7 @@ Statement:
       - dynamodb:UpdateItem
       - dynamodb:CreateTable
       - dynamodb:DeleteTable
+      - dynamodb:UpdateTable
       - dynamodb:TagResource
       - codebuild:CreateProject
       - codebuild:UpdateProject
