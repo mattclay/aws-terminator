@@ -25,6 +25,7 @@ Statement:
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
       - ec2:DescribeVolumes
+      - ec2:DisassociateIamInstanceProfile
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
