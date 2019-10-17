@@ -367,3 +367,16 @@ class StepFunctions(Terminator):
 
     def terminate(self):
         return self.client.delete_state_machine(stateMachineArn=self.name)
+
+
+class CloudWatchAlarm(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, CloudWatchAlarm, 'cloudwatch', lambda client: client.describe_alarms()['MetricAlarms'])
+
+    @property
+    def name(self):
+        return self.instance['AlarmName']
+
+    def terminate(self):
+        self.client.delete_alarms(AlarmNames=[self.name])

@@ -137,6 +137,17 @@ Statement:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
+  - Sid: ModifyCloudwatchAlarms
+    Effect: Allow
+    Action:
+      - cloudwatch:PutMetricAlarm
+      - cloudwatch:DeleteAlarms
+    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:ansible-test*
+  - Sid: DescribeCloudwatchAlarms
+    Effect: Allow
+    Action:
+      - cloudwatch:DescribeAlarms
+    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
