@@ -8,6 +8,7 @@ from . import DbTerminator, Terminator
 
 
 class Cloudformation(Terminator):
+    @staticmethod
     def create(credentials):
         def paginate_stacks(client):
             return client.get_paginator('list_stacks').paginate().build_full_result()['StackSummaries']
