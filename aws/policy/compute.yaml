@@ -48,12 +48,10 @@ Statement:
       - ecr:CreateRepository
       - ecr:DescribeRepositories
       - ecr:PutImageTagMutability
-      - elasticloadbalancing:DescribeListenerCertificates
       - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
       - elasticloadbalancing:DescribeRules
-      - elasticloadbalancing:DescribeSSLPolicies
       - elasticloadbalancing:DescribeTags
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
@@ -94,17 +92,13 @@ Statement:
     Action:
       - ec2:CreateVolume
       - rds:CreateDBCluster
-      - elasticloadbalancing:AddListenerCertificates
       - elasticloadbalancing:CreateLoadBalancer
-      - elasticloadbalancing:CreateRule
       - lambda:InvokeFunction
     Resource:
       - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
       - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
-      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:listener-rule/*
-      - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -128,21 +122,13 @@ Statement:
       - elasticloadbalancing:CreateListener
       - elasticloadbalancing:CreateLoadBalancerListeners
       - elasticloadbalancing:CreateTargetGroup
-      - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:DeleteLoadBalancer
       - elasticloadbalancing:DeleteLoadBalancerListeners
-      - elasticloadbalancing:DeleteRule
-      - elasticloadbalancing:DeleteTags
       - elasticloadbalancing:DeleteTargetGroup
-      - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
-      - elasticloadbalancing:ModifyTargetGroup
-      - elasticloadbalancing:ModifyTargetGroupAttributes
-      - elasticloadbalancing:ModifyRule
       - elasticloadbalancing:RegisterTargets
-      - elasticloadbalancing:RemoveListenerCertificates
       - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
@@ -172,9 +158,7 @@ Statement:
       - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
       - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
-      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:listener-rule/*
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:targetgroup/*
-      - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
   - Sid: AllowEksCreateCluster
     Effect: Allow
     Action:
