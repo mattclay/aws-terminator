@@ -33,6 +33,12 @@ Statement:
       - ec2:StopInstances
       - ec2:TerminateInstances
       - ec2:UnassignPrivateIpAddresses
+      - lightsail:DeleteInstance
+      - lightsail:GetInstance
+      - lightsail:GetInstances
+      - lightsail:RebootInstance
+      - lightsail:StartInstance
+      - lightsail:StopInstance
     Resource:
       - "*"
     Condition:
@@ -181,3 +187,9 @@ Statement:
       - eks:CreateCluster
     Resource:
       - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
+  - Sid: AllowLightsailCreateInstances
+    Effect: Allow
+    Action:
+      - lightsail:CreateInstances
+    Resource:
+      - arn:aws:lightsail:us-east-1:{{ aws_account_id }}:*
