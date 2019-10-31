@@ -43,6 +43,7 @@ Statement:
       - ec2:DeleteNetworkInterface
       - ec2:DescribeNetworkInterfaces
       - ec2:DetachNetworkInterface
+      - ec2:ModifyNetworkInterfaceAttribute
       - ec2:CreateRoute
       - ec2:DeleteRoute
       - ec2:AssociateRouteTable
