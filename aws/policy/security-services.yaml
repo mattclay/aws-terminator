@@ -96,7 +96,14 @@ Statement:
       - inspector:DescribeAssessmentTemplates
       - inspector:ListTagsForResource
       - inspector:ListEventSubscriptions
+      - acm:ImportCertificate
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
     Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - us-east-1
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -114,3 +121,12 @@ Statement:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+  - Sid: AllowACMRestrictable
+    Effect: Allow
+    Action:
+      - acm:DescribeCertificate
+      - acm:GetCertificate
+      - acm:AddTagsToCertificate
+      - acm:DeleteCertificate
+    Resource:
+      - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
