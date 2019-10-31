@@ -30,6 +30,8 @@ Statement:
       - s3:ListAllMyBuckets
       - s3:GetBucketNotification
       - s3:PutBucketNotification
+      - s3:GetBucketLogging
+      - s3:PutBucketLogging
       - ses:DescribeActiveReceiptRuleSet
       - ses:CreateReceiptRuleSet
       - ses:DeleteReceiptRuleSet
@@ -49,6 +51,31 @@ Statement:
       - ses:DeleteIdentityPolicy
       - ses:ListIdentityPolicies
       - ssm:DescribeParameters
+      - ssm:DescribeAssociation
+      - ssm:GetDeployablePatchSnapshotForInstance
+      - ssm:GetDocument
+      - ssm:DescribeDocument
+      - ssm:GetManifest
+      - ssm:ListAssociations
+      - ssm:ListInstanceAssociations
+      - ssm:PutInventory
+      - ssm:PutComplianceItems
+      - ssm:PutConfigurePackageResult
+      - ssm:UpdateAssociationStatus
+      - ssm:UpdateInstanceAssociationStatus
+      - ssm:UpdateInstanceInformation
+      - ssm:StartSession
+      - ssm:TerminateSession
+      - ssmmessages:CreateControlChannel
+      - ssmmessages:CreateDataChannel
+      - ssmmessages:OpenControlChannel
+      - ssmmessages:OpenDataChannel
+      - ec2messages:AcknowledgeMessage
+      - ec2messages:DeleteMessage
+      - ec2messages:FailMessage
+      - ec2messages:GetEndpoint
+      - ec2messages:GetMessages
+      - ec2messages:SendReply
       - dms:DescribeReplicationSubnetGroups
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
@@ -64,6 +91,8 @@ Statement:
       - dynamodb:Scan
       - dynamodb:ListTables
       - dynamodb:DescribeTable
+      - kinesis:ListStreams
+      - kinesis:DescribeStream
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -112,6 +141,8 @@ Statement:
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
+      - kinesis:CreateStream
+      - kinesis:DeleteStream
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
@@ -124,12 +155,24 @@ Statement:
       - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
       - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
+  - Sid: ModifyCloudwatchAlarms
+    Effect: Allow
+    Action:
+      - cloudwatch:PutMetricAlarm
+      - cloudwatch:DeleteAlarms
+    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:ansible-test*
+  - Sid: DescribeCloudwatchAlarms
+    Effect: Allow
+    Action:
+      - cloudwatch:DescribeAlarms
+    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:

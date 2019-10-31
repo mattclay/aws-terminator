@@ -47,8 +47,15 @@ Statement:
       - ec2:DescribeTransitGateways
       - ecr:CreateRepository
       - ecr:DescribeRepositories
+      - ecr:PutImageTagMutability
+      - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
+      - elasticloadbalancing:DescribeRules
+      - elasticloadbalancing:DescribeTags
+      - elasticloadbalancing:DescribeTargetGroupAttributes
+      - elasticloadbalancing:DescribeTargetGroups
+      - elasticloadbalancing:DescribeTargetHealth
       - lambda:ListFunctions
       - rds:DescribeDBClusters
       - rds:DescribeDBParameterGroups
@@ -68,6 +75,7 @@ Statement:
           - t2.micro
           - t3.nano
           - t3.micro
+          - m1.large  # lowest cost instance type with EBS optimization supported
   - Sid: AllowEc2RunInstances
     Effect: Allow
     Action:
@@ -102,17 +110,25 @@ Statement:
       - ecr:GetRepositoryPolicy
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
+      - eks:ListClusters
+      - eks:DescribeCluster
+      - eks:DeleteCluster
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:DescribeApplications
       - elasticbeanstalk:UpdateApplication
+      - elasticloadbalancing:AddTags
       - elasticloadbalancing:ConfigureHealthCheck
+      - elasticloadbalancing:CreateListener
       - elasticloadbalancing:CreateLoadBalancerListeners
+      - elasticloadbalancing:CreateTargetGroup
       - elasticloadbalancing:DeleteLoadBalancer
       - elasticloadbalancing:DeleteLoadBalancerListeners
+      - elasticloadbalancing:DeleteTargetGroup
       - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
+      - elasticloadbalancing:RegisterTargets
       - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
@@ -141,3 +157,11 @@ Statement:
       - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
       - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
+      - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
+      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:targetgroup/*
+  - Sid: AllowEksCreateCluster
+    Effect: Allow
+    Action:
+      - eks:CreateCluster
+    Resource:
+      - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
