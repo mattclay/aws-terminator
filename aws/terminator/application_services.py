@@ -150,6 +150,48 @@ class Efs(Terminator):
         self.client.delete_file_system(FileSystemId=self.id)
 
 
+class KinesisStream(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_streams(client):
+            names = client.get_paginator('list_streams').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['StreamNames']
+
+            if not names:
+                return []
+
+            return [
+                client.describe_stream(StreamName=n)['StreamDescription'] for n in names
+            ]
+
+        return Terminator._create(credentials, KinesisStream, 'kinesis', paginate_streams)
+
+    @property
+    def created_time(self):
+        return self.instance['StreamCreationTimestamp']
+
+    @property
+    def id(self):
+        return self.instance['StreamName']
+
+    @property
+    def name(self):
+        return self.instance['StreamName']
+
+    @property
+    def ignore(self):
+        return self.instance['StreamStatus'] == 'DELETING'
+
+    def terminate(self):
+        self.client.delete_stream(
+            StreamName=self.instance['StreamName'],
+            EnforceConsumerDeletion=True
+        )
+
+
 class S3Bucket(Terminator):
     @staticmethod
     def create(credentials):
@@ -325,3 +367,16 @@ class StepFunctions(Terminator):
 
     def terminate(self):
         return self.client.delete_state_machine(stateMachineArn=self.name)
+
+
+class CloudWatchAlarm(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, CloudWatchAlarm, 'cloudwatch', lambda client: client.describe_alarms()['MetricAlarms'])
+
+    @property
+    def name(self):
+        return self.instance['AlarmName']
+
+    def terminate(self):
+        self.client.delete_alarms(AlarmNames=[self.name])

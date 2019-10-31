@@ -57,7 +57,7 @@ class IamInstanceProfile(Terminator):
 
     @property
     def ignore(self):
-        return not self.name.startswith('ansible-test-sts-')
+        return not self.name.startswith('ansible-test-')
 
     @property
     def created_time(self):
