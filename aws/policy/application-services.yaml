@@ -93,6 +93,7 @@ Statement:
       - dynamodb:DescribeTable
       - kinesis:ListStreams
       - kinesis:DescribeStream
+      - cloudformation:ListStacks
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -194,4 +195,4 @@ Statement:
       - cloudformation:DescribeChangeSet
       - cloudformation:ListChangeSets
       - cloudformation:ListStackResources
-    Resource: arn:aws:cloudformation:*:*:stack/*/*
+    Resource: arn:aws:cloudformation:us-east-1:{{ aws_account_id }}:stack/ansible-test*
