@@ -1,4 +1,6 @@
 - hosts: localhost
+  collections:
+    - mattclay.aws
   gather_facts: False
   vars:
     aws_region: "us-east-1"

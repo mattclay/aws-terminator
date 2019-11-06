@@ -1,4 +1,6 @@
 - hosts: localhost
+  collections:
+    - mattclay.aws
   gather_facts: False
   vars:
     stage: "{{ lookup('env', 'STAGE') }}"
