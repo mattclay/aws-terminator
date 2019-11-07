@@ -12,7 +12,6 @@ Statement:
       - iam:DeleteInstanceProfile
       - iam:AddRoleToInstanceProfile
       - iam:RemoveRoleFromInstanceProfile
-      - iam:DisassociateIamInstanceProfile
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
