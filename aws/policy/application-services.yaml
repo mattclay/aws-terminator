@@ -178,6 +178,8 @@ Statement:
     Effect: Allow
     Action:
       - states:CreateStateMachine
+      - states:StartExecution
+      - states:StopExecution
       - states:UpdateStateMachine
     Resource:
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
