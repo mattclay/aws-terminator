@@ -7,6 +7,26 @@ import botocore.exceptions
 from . import DbTerminator, Terminator
 
 
+class Cloudformation(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_stacks(client):
+            return client.get_paginator('list_stacks').paginate().build_full_result()['StackSummaries']
+
+        return Terminator._create(credentials, Cloudformation, 'cloudformation', paginate_stacks)
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def name(self):
+        return self.instance['StackName']
+
+    def terminate(self):
+        self.client.delete_stack(StackName=self.name)
+
+
 class CloudWatchLogGroup(Terminator):
     @staticmethod
     def create(credentials):
