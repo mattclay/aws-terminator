@@ -378,3 +378,22 @@ class Elbv2TargetGroups(DbTerminator):
 
     def terminate(self):
         self.client.delete_target_group(TargetGroupArn=self.id)
+
+
+class Lightsail(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_instances(client):
+            return client.get_paginator('get_instances').paginate().build_full_result()['instances']
+        return Terminator._create(credentials, Lightsail, 'lightsail', _paginate_lightsail_instances)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_instance(instanceName=self.name)
