@@ -93,7 +93,7 @@ Statement:
       - dynamodb:DescribeTable
       - kinesis:ListStreams
       - kinesis:DescribeStream
-      - cloudformation:ListStacks
+      - cloudformation:DescribeStacks
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
