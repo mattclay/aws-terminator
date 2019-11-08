@@ -11,14 +11,7 @@ class Cloudformation(Terminator):
     @staticmethod
     def create(credentials):
         def paginate_stacks(client):
-            # Don't show DELETE_COMPLETE stacks
-            status_filter = ['CREATE_IN_PROGRESS', 'CREATE_FAILED', 'CREATE_COMPLETE', 'ROLLBACK_IN_PROGRESS',
-                             'ROLLBACK_FAILED', 'ROLLBACK_COMPLETE', 'DELETE_IN_PROGRESS', 'DELETE_FAILED',
-                             'UPDATE_IN_PROGRESS', 'UPDATE_COMPLETE_CLEANUP_IN_PROGRESS', 'UPDATE_COMPLETE',
-                             'UPDATE_ROLLBACK_IN_PROGRESS', 'UPDATE_ROLLBACK_FAILED',
-                             'UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS', 'UPDATE_ROLLBACK_COMPLETE',
-                             'REVIEW_IN_PROGRESS']
-            return client.get_paginator('list_stacks').paginate(StackStatusFilter=status_filter).build_full_result()['StackSummaries']
+            return client.get_paginator('describe_stacks').paginate().build_full_result()['Stacks']
 
         return Terminator._create(credentials, Cloudformation, 'cloudformation', paginate_stacks)
 
