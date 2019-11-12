@@ -25,6 +25,7 @@ Statement:
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
       - ec2:DescribeVolumes
+      - ec2:DisassociateIamInstanceProfile
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
@@ -165,3 +166,15 @@ Statement:
       - eks:CreateCluster
     Resource:
       - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
+  - Sid: AllowLightsail
+    Effect: Allow
+    Action:
+      - lightsail:CreateInstances
+      - lightsail:DeleteInstance
+      - lightsail:GetInstance
+      - lightsail:GetInstances
+      - lightsail:RebootInstance
+      - lightsail:StartInstance
+      - lightsail:StopInstance
+    Resource:
+      - arn:aws:lightsail:us-east-1:{{ aws_account_id }}:*
