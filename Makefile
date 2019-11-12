@@ -8,12 +8,10 @@ default:
 
 .PHONY: test-all
 test-all: test
-	make test -C ansible
 	make test -C aws
 
 .PHONY: test-all-requirements
 test-all-requirements: test-requirements
-	make test-requirements -C ansible
 	make test-requirements -C aws
 
 .PHONY: test
