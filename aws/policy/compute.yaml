@@ -172,8 +172,10 @@ Statement:
       - lightsail:CreateInstances
       - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
+      - lightsail:DeleteKeyPair
       - lightsail:GetInstance
       - lightsail:GetInstances
+      - lightsail:GetKeyPairs
       - lightsail:RebootInstance
       - lightsail:StartInstance
       - lightsail:StopInstance
