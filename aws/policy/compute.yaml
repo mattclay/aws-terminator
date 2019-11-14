@@ -170,6 +170,7 @@ Statement:
     Effect: Allow
     Action:
       - lightsail:CreateInstances
+      - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
       - lightsail:GetInstance
       - lightsail:GetInstances
