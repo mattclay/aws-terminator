@@ -57,6 +57,8 @@ Statement:
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
       - elasticloadbalancing:DescribeTargetHealth
+      - elasticloadbalancing:DeregisterTargets
+      - elasticloadbalancing:ModifyTargetGroupAttributes
       - lambda:ListFunctions
       - rds:DescribeDBClusters
       - rds:DescribeDBParameterGroups
