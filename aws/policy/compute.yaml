@@ -136,6 +136,7 @@ Statement:
       - lambda:CreateFunction
       - lambda:DeleteFunction
       - lambda:GetFunction
+      - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
