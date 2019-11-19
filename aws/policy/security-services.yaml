@@ -13,18 +13,18 @@ Statement:
       - iam:AddRoleToInstanceProfile
       - iam:RemoveRoleFromInstanceProfile
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:role/shippable-*
+      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:instance-profile/shippable-*
   - Sid: AllowAssumeRoleTestsAttachAndDetachRole
     Effect: Allow
     Action:
       - iam:AttachRolePolicy
       - iam:DetachRolePolicy
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:role/shippable-*
     Condition:
       ArnLike:
         iam:PolicyArn:
@@ -120,8 +120,8 @@ Statement:
       - iam:PassRole
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
       - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:role/shippable-*
   - Sid: AllowACMRestrictable
     Effect: Allow
     Action:
