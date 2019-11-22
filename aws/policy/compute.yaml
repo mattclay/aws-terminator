@@ -60,6 +60,9 @@ Statement:
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyTargetGroupAttributes
       - lambda:ListFunctions
+      - lambda:ListVersionsByFunction
+      - lambda:ListAliases
+      - lambda:ListEventSourceMappings
       - rds:DescribeDBClusters
       - rds:DescribeDBParameterGroups
       - rds:DescribeDBSubnetGroups
@@ -138,9 +141,6 @@ Statement:
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
-      - lambda:ListVersionsByFunction
-      - lambda:ListAliases
-      - lambda:ListEventSourceMappings
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
       - rds:AddTagsToResource
