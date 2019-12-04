@@ -167,6 +167,7 @@ Statement:
   - Sid: ModifyCloudwatchLogsMetricFilter
     Effect: Allow
     Action:
+      - logs:DescribeMetricFilter
       - logs:DeleteMetricFilter
       - logs:PutMetricFilter
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
