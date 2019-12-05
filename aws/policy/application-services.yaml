@@ -127,8 +127,10 @@ Statement:
       - SNS:GetTopicAttributes
       - SNS:ListTopics
       - SNS:ListSubscriptionsByTopic
+      - states:DescribeExecution
       - states:DescribeStateMachine
       - states:DeleteStateMachine
+      - states:ListExecutions
       - states:ListStateMachines
       - states:ListTagsForResource
       - states:TagResource
