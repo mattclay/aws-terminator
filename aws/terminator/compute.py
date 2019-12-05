@@ -397,3 +397,22 @@ class Lightsail(Terminator):
 
     def terminate(self):
         self.client.delete_instance(instanceName=self.name)
+
+
+class LightsailKeyPair(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_key_pairs(client):
+            return client.get_paginator('get_key_pairs').paginate().build_full_result()['keyPairs']
+        return Terminator._create(credentials, LightsailKeyPair, 'lightsail', _paginate_lightsail_key_pairs)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_key_pair(keyPairName=self.name)
