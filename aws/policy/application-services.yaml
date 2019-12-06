@@ -163,11 +163,8 @@ Statement:
     Action:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
-    Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
-  - Sid: ModifyCloudwatchLogsMetricFilter
-    Effect: Allow
-    Action:
-      - logs:DescribeMetricFilter
+      - logs:PutRetentionPolicy
+      - logs:DescribeMetricFilters
       - logs:DeleteMetricFilter
       - logs:PutMetricFilter
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
