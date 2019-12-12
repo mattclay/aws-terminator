@@ -165,6 +165,10 @@ Statement:
     Action:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
+      - logs:PutRetentionPolicy
+      - logs:DescribeMetricFilters
+      - logs:DeleteMetricFilter
+      - logs:PutMetricFilter
     Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
   - Sid: ModifyCloudwatchAlarms
     Effect: Allow
