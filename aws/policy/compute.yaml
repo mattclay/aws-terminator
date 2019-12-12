@@ -57,7 +57,12 @@ Statement:
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
       - elasticloadbalancing:DescribeTargetHealth
+      - elasticloadbalancing:DeregisterTargets
+      - elasticloadbalancing:ModifyTargetGroupAttributes
       - lambda:ListFunctions
+      - lambda:ListVersionsByFunction
+      - lambda:ListAliases
+      - lambda:ListEventSourceMappings
       - rds:DescribeDBClusters
       - rds:DescribeDBParameterGroups
       - rds:DescribeDBSubnetGroups
@@ -134,6 +139,7 @@ Statement:
       - lambda:CreateFunction
       - lambda:DeleteFunction
       - lambda:GetFunction
+      - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
@@ -170,9 +176,12 @@ Statement:
     Effect: Allow
     Action:
       - lightsail:CreateInstances
+      - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
+      - lightsail:DeleteKeyPair
       - lightsail:GetInstance
       - lightsail:GetInstances
+      - lightsail:GetKeyPairs
       - lightsail:RebootInstance
       - lightsail:StartInstance
       - lightsail:StopInstance
