@@ -206,4 +206,4 @@ Statement:
       - cloudformation:ListStackResources
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
-    Resource: arn:aws:cloudformation:us-east-1:{{ aws_account_id }}:stack/ansible-test*
+    Resource: arn:aws:cloudformation:us-east-1:{{ aws_account_id }}:stack/*
