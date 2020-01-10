@@ -4,6 +4,7 @@ Statement:
     Effect: Allow
     Action:
       - ec2:AssignPrivateIpAddresses
+      - ec2:AttachVolume
       - ec2:CreateImage
       - ec2:CreateKeyPair
       - ec2:CreateSnapshot
@@ -25,6 +26,7 @@ Statement:
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
       - ec2:DescribeVolumes
+      - ec2:DetachVolume
       - ec2:DisassociateIamInstanceProfile
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
