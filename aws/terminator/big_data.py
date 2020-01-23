@@ -67,7 +67,15 @@ class IotThing(DbTerminator):
 class RedshiftCluster(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RedshiftCluster, 'redshift', lambda client: client.describe_clusters()['Clusters'])
+
+        def get_available_clusters(client):
+            # describe_clusters does not have a parameter to filter results
+            # The key "ClusterCreateTime" does not exist while the cluster is being created.
+            ignore_states = ('creating', 'deleting',)
+            clusters = client.describe_clusters()['Clusters']
+            return [cluster for cluster in clusters if cluster['ClusterStatus'] not in ignore_states]
+
+        return Terminator._create(credentials, RedshiftCluster, 'redshift', get_available_clusters)
 
     @property
     def name(self):
