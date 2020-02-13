@@ -203,6 +203,7 @@ Statement:
       - cloudformation:GetStackPolicy
       - cloudformation:GetTemplate
       - cloudformation:ListChangeSets
+      - cloudformation:ListExports
       - cloudformation:ListStackResources
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
