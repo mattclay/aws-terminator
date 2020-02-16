@@ -109,9 +109,12 @@ Statement:
     Effect: Allow
     Action:
       - iam:GetRole
+      - iam:ListAttachedRolePolicies
       - iam:ListRoles
       - iam:ListRolePolicies
-      - iam:ListAttachedRolePolicies
+      - iam:ListRoleTags
+      - iam:TagRole
+      - iam:UntagRole
     Resource:
       - arn:aws:iam::{{ aws_account_id }}:role/*
   - Sid: AllowPassRole
