@@ -94,6 +94,7 @@ Statement:
       - kinesis:ListStreams
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
+      - cloudformation:ListExports
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
