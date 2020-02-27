@@ -322,6 +322,5 @@ class ACMCertificate(DbTerminator):
     def name(self):
         return self.instance['CertificateArn']
 
-
     def terminate(self):
         self.client.delete_certificate(CertificateArn=self.id)
