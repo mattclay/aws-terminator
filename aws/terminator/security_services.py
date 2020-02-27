@@ -303,27 +303,16 @@ class InspectorAssessmentTarget(DbTerminator):
         self.client.delete_assessment_target(assessmentTargetArn=self.id)
 
 
-class ACMCertificate(Terminator):
+class ACMCertificate(DbTerminator):
+    # ACM provides a created time, but there are cases where describe_certificate can fail
+    # We need to be able to delete anyway, so use DbTerminator
+    # https://github.com/ansible/ansible/issues/67788
     @staticmethod
     def create(credentials):
-        def get_paginated_certificates(client):
-            return client.get_paginator('list_certificates').paginate().build_full_result()['CertificateSummaryList']
-
-        def get_detailed_certificates(client):
-            detailed_certs = []
-            for certificate in get_paginated_certificates(client):
-                detailed_certs.append(client.describe_certificate(CertificateArn=certificate['CertificateArn'])['Certificate'])
-            return detailed_certs
-
-        return Terminator._create(credentials, ACMCertificate, 'acm', get_detailed_certificates)
-
-    @property
-    def created_time(self):
-        if self.instance['Type'] == 'IMPORTED':
-            result = self.instance['ImportedAt']
-        else:  # AMAZON_ISSUED
-            result = self.instance['CreatedAt']
-        return result
+        return Terminator._create(
+            credentials, ACMCertificate, 'acm',
+            lambda client: client.get_paginator('list_certificates').paginate().build_full_result()['CertificateSummaryList']
+        )
 
     @property
     def id(self):
@@ -331,7 +320,8 @@ class ACMCertificate(Terminator):
 
     @property
     def name(self):
-        return self.instance['DomainName']
+        return self.instance['CertificateArn']
+
 
     def terminate(self):
         self.client.delete_certificate(CertificateArn=self.id)
