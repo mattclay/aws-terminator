@@ -137,6 +137,7 @@ Statement:
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
       - elasticloadbalancing:RegisterTargets
+      - elasticloadbalancing:SetSecurityGroups
       - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
