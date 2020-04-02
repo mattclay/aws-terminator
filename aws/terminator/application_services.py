@@ -24,6 +24,7 @@ class Cloudformation(Terminator):
         return self.instance['StackName']
 
     def terminate(self):
+        self.client.update_termination_protection(StackName=self.name, EnableTerminationProtection=False)
         self.client.delete_stack(StackName=self.name)
 
 
