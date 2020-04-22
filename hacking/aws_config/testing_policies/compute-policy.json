@@ -293,6 +293,14 @@
                 "kinesis:UpdateShardCount"
             ],
             "Resource": "arn:aws:kinesis:*:*:*"
+        },
+        {
+            "Sid": "AllowKinesisWithoutResource",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:ListStreams"
+            ],
+            "Resource": "*"
         }
     ]
 }
