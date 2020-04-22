@@ -146,8 +146,11 @@ Statement:
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
-      - kinesis:CreateStream
-      - kinesis:DeleteStream
+      - kinesis:AddTagsToStream
+      - kinesis:ListTagsForStream
+      - kinesis:RemoveTagsFromStream
+      - kinesis:StartStreamEncryption
+      - kinesis:StopStreamEncryption
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
@@ -161,6 +164,22 @@ Statement:
       - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
       - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - states:CreateStateMachine
+      - states:StartExecution
+      - states:StopExecution
+      - states:UpdateStateMachine
+      - kinesis:CreateStream
+      - kinesis:DecreaseStreamRetentionPeriod
+      - kinesis:DeleteStream
+      - kinesis:IncreaseStreamRetentionPeriod
+      - kinesis:UpdateShardCount
+    Resource:
+      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
@@ -182,15 +201,6 @@ Statement:
     Action:
       - cloudwatch:DescribeAlarms
     Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - states:CreateStateMachine
-      - states:StartExecution
-      - states:StopExecution
-      - states:UpdateStateMachine
-    Resource:
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
   - Sid: Cloudformation
     Effect: Allow
     Action:
