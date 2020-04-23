@@ -65,9 +65,6 @@ Statement:
       - lambda:ListVersionsByFunction
       - lambda:ListAliases
       - lambda:ListEventSourceMappings
-      - rds:DescribeDBClusters
-      - rds:DescribeDBParameterGroups
-      - rds:DescribeDBSubnetGroups
     Resource: "*"
   - Sid: AllowEc2RunInstancesInstanceType
     Effect: Allow
@@ -99,12 +96,10 @@ Statement:
     Effect: Allow
     Action:
       - ec2:CreateVolume
-      - rds:CreateDBCluster
       - elasticloadbalancing:CreateLoadBalancer
       - lambda:InvokeFunction
     Resource:
       - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
@@ -145,23 +140,8 @@ Statement:
       - lambda:GetPolicy
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
-      - rds:AddTagsToResource
-      - rds:CreateDBParameterGroup
-      - rds:CreateDBSubnetGroup
-      - rds:DeleteDBCluster
-      - rds:DeleteDBParameterGroup
-      - rds:DeleteDBSubnetGroup
-      - rds:DescribeDBParameters
-      - rds:ListTagsForResource
-      - rds:ModifyDBCluster
-      - rds:ModifyDBParameterGroup
-      - rds:ModifyDBSubnetGroup
-      - rds:RemoveTagsFromResource
     Resource:
       - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:subgrp:*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:pg:*
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
       - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
       - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
