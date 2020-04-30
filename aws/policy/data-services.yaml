@@ -19,6 +19,9 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:CreateReplicationSubnetGroup
+      - dms:DeleteReplicationSubnetGroup
+      - dms:ModifyReplicationSubnetGroup
       - dynamodb:GetItem
       - dynamodb:DeleteItem
       - dynamodb:PutItem
@@ -33,30 +36,12 @@ Statement:
       - glacier:ListTagsForVault
       - glacier:AddTagsToVault
       - glacier:RemoveTagsFromVault
-      - rds:CreateDBCluster
       - redshift:DescribeClusters
       - redshift:DeleteCluster
       - redshift:ModifyCluster
       - redshift:RebootCluster
       - redshift:DeleteTags
       - redshift:CreateTags
-    Resource:
-      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
-      - arn:aws:glacier:us-east-1:{{ aws_account_id }}:vaults/*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
-      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - redshift:CreateCluster
-    Resource:
-      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*
-  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
-    Effect: Allow
-    Action:
-      - dms:CreateReplicationSubnetGroup
-      - dms:DeleteReplicationSubnetGroup
-      - dms:ModifyReplicationSubnetGroup
       - rds:AddTagsToResource
       - rds:CreateDBParameterGroup
       - rds:CreateDBSubnetGroup
@@ -71,6 +56,17 @@ Statement:
       - rds:RemoveTagsFromResource
     Resource:
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
+      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
+      - arn:aws:glacier:us-east-1:{{ aws_account_id }}:vaults/*
+      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*
       - arn:aws:rds:us-east-1:{{ aws_account_id }}:subgrp:*
       - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
       - arn:aws:rds:us-east-1:{{ aws_account_id }}:pg:*
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - rds:CreateDBCluster
+      - redshift:CreateCluster
+    Resource:
+      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
+      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*

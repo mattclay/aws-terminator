@@ -1,6 +1,26 @@
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
+class DmsSubnetGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_dms_subnet_groups(client):
+            return client.get_paginator('describe_replication_subnet_groups').paginate().build_full_result()['ReplicationSubnetGroups']
+
+        return Terminator._create(credentials, DmsSubnetGroup, 'dms', paginate_dms_subnet_groups)
+
+    @property
+    def id(self):
+        return self.instance['ReplicationSubnetGroupIdentifier']
+
+    @property
+    def name(self):
+        return self.instance['ReplicationSubnetGroupIdentifier']
+
+    def terminate(self):
+        self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
+
+
 class GlueConnection(Terminator):
     @staticmethod
     def create(credentials):
@@ -43,25 +63,21 @@ class Glacier(Terminator):
         self.client.delete_vault(vaultName=self.name)
 
 
-class IotThing(DbTerminator):
+class RdsDbParameterGroup(DbTerminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, IotThing, 'iot', lambda client: client.list_things()['things'])
+        return Terminator._create(credentials, RdsDbParameterGroup, 'rds', lambda client: client.describe_db_parameter_groups()['DBParameterGroups'])
 
     @property
     def id(self):
-        return self.instance['thingArn']
+        return self.instance['DBParameterGroupArn']
 
     @property
     def name(self):
-        return self.instance['thingName']
-
-    @property
-    def version(self):
-        return self.instance['version']
+        return self.instance['DBParameterGroupName']
 
     def terminate(self):
-        self.client.delete_thing(thingName=self.name, expectedVersion=self.version)
+        self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
 
 class RedshiftCluster(Terminator):
