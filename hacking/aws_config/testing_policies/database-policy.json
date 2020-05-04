@@ -36,13 +36,11 @@
             "Sid": "AllowRDSModuleTests",
             "Effect": "Allow",
             "Action": [
-                "rds:AddTagsToResource",
                 "rds:CreateDBInstance",
                 "rds:DeleteDBInstance",
                 "rds:ModifyDBInstance",
                 "rds:PromoteReadReplica",
                 "rds:RebootDBInstance",
-                "rds:RemoveTagsFromResource",
                 "rds:RestoreDBInstanceToPointInTime",
                 "rds:StartDBInstance",
                 "rds:StopDBInstance"
@@ -67,46 +65,6 @@
                 "arn:aws:rds:{{aws_region}}:{{aws_account}}:snapshot:ansible-test*",
                 "arn:aws:rds:{{aws_region}}:{{aws_account}}:db:ansible-test*"
            ]
-        },
-        {
-            "Sid": "AllowRDSParameterGroupManagement",
-            "Effect": "Allow",
-            "Action": [
-                "rds:CreateDBParameterGroup",
-                "rds:DeleteDBParameterGroup",
-                "rds:ModifyDBParameterGroup",
-                "rds:AddTagsToResource",
-                "rds:RemoveTagsFromResource"
-            ],
-            "Resource": [
-                "arn:aws:rds:{{aws_region}}:{{aws_account}}:pg:*"
-            ]
-        },
-        {
-          "Sid": "AllowRedshiftManagment",
-          "Action": [
-              "redshift:CreateCluster",
-              "redshift:CreateTags",
-              "redshift:DeleteCluster",
-              "redshift:DeleteTags",
-              "redshift:DescribeClusters",
-              "redshift:DescribeTags",
-              "redshift:ModifyCluster",
-              "redshift:RebootCluster"
-          ],
-          "Effect": "Allow",
-          "Resource": "*"
-        },
-        {
-            "Sid": "AllowRDSSubnetGroups",
-            "Effect": "Allow",
-            "Action": [
-                "rds:CreateDBSubnetGroup",
-                "rds:DeleteDBSubnetGroup",
-                "rds:DescribeDBSubnetGroups",
-                "rds:ModifyDBSubnetGroup"
-            ],
-            "Resource": ["*"]
         },
         {
           "Sid": "DMSEndpoints",

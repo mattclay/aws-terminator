@@ -48,6 +48,7 @@ Statement:
       - ec2:DeleteRoute
       - ec2:AssociateRouteTable
       - ec2:DisassociateRouteTable
+      - ec2:ReplaceRouteTableAssociation
       - ec2:CreateRouteTable
       - ec2:DeleteRouteTable
       - ec2:DescribeRouteTables
@@ -105,6 +106,7 @@ Statement:
     Action:
       - apigateway:DELETE
       - apigateway:GET
+      - apigateway:PATCH
       - apigateway:POST
       - apigateway:PUT
     Resource:
