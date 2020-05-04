@@ -168,7 +168,7 @@ Statement:
       - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
       - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
-      - arn:aws:glue:us-east-1:{{ aws_account_id }}:glue/job/*
+      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
