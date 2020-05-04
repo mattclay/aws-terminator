@@ -148,6 +148,13 @@ Statement:
       - elasticfilesystem:DeleteMountTarget
       - kinesis:CreateStream
       - kinesis:DeleteStream
+      - glue:CreateJob
+      - glue:DeleteJob
+      - glue:UpdateJob
+      - glue:GetJob
+      - glue:GetTags
+      - glue:TagResource
+      - glue:UntagResource
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
       - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
@@ -161,6 +168,7 @@ Statement:
       - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
       - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+      - arn:aws:glue:us-east-1:{{ aws_account_id }}:glue/job/*
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:

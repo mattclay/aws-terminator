@@ -276,5 +276,19 @@
             ],
             "Resource": "arn:aws:sqs:*:*:*"
         },
+        {
+            "Sid": "AllowGlue",
+            "Effect": "Allow",
+            "Action": [
+                "glue:CreateJob",
+                "glue:UpdateJob",
+                "glue:DeleteJob",
+                "glue:GetJob", 
+                "glue:GetTags", 
+                "glue:TagResource", 
+                "glue:UntagResource"
+            ],
+            "Resource": "arn:aws:glue:*:*:*"
+        }
     ]
 }
