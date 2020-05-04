@@ -25,6 +25,8 @@ Statement:
     Condition:
       ArnLike:
         iam:PolicyArn:
+          - 'arn:aws:iam::aws:policy/AWSDenyAll'
+          - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
           - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
           - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM'
           - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
@@ -114,6 +116,7 @@ Statement:
       StringEquals:
         aws:RequestedRegion:
           - '{{ aws_region }}'
+
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -135,6 +138,7 @@ Statement:
       # Legacy - We need to backport ansible-collections/community.aws/63 or
       # wait until community.aws drops CI support for Ansible 2.9
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
+
   - Sid: AllowACMRestrictable
     Effect: Allow
     Action:
