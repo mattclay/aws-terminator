@@ -1,55 +1,97 @@
-# Usage: ansible-playbook setup-iam.yml -e iam_group=ansible_test -vv
+# Usage: ansible-playbook setup-iam.yml -vv
 #
-# Creates IAM policies and associates them with iam_group. This group
-# can then be associated with an appropriate user
+# Creates IAM policies and associates them with two iam_groups. These groups
+# can then be associated with an appropriate user:
 #
-# You can pass -e profile=boto_profile_name if you have a profile that
-# you can use, otherwise use normal AWS methods (env variables, instance
-# profile, etc)
+# Groups:
+# - ansible-integration-ci
+#   - Mirrors the permissions used by the the AWS collections CI
+# - ansible-integrayion-unsupported
+#   - Additional Permissions on top of the 'CI' permissions
+#     required to run the 'unsupported' tests
 #
-# If you want to use a region other than us-east-1 (and only us-east-2
-# works with ansible-test), pass -e region=us-east-2
+# Policies:
+# - AnsibleIntegration-CI-*
+#   - Managed Policies used by the {{ iam_group_prefix }}-ci group
+# - AnsibleIntegration-Unsupported-*
+#   - Managed Policies used by the {{ iam_group_prefix }}-unsupported group
 #
-# Requires 2.4 for iam_managed_policy and iam_group
+# Supported variables:
+# - region: The AWS region that many of the policies will be restricted to
+# - iam_group_prefix: (default: ansible-integration) the prefix used when
+#       creating IAM groups
+# - iam_policy_prefix: (default: AnsibleIntegration) the prefix used when
+#       creating IAM policies
+# - iam_user: (default: None) An IAM user to attach to the groups
+#
+# Note:
+# - In general you will want any test user to be a member of **both** the -ci
+#   and the -unsupported groups
 
 - hosts: localhost
   connection: local
   gather_facts: no
   vars:
-    aws_region: "{{ region|default('us-east-1') }}"
+    aws_region: "{{ region | default('us-east-1') }}"
+    iam_group_prefix: "{{ group_prefix | default('ansible-integration') }}"
+    iam_policy_prefix: "{{ policy_prefix | default('AnsibleIntegratation') }}"
+
+  module_defaults:
+    group/aws:
+      profile: '{{ profile | default(omit) }}'
+
+  # Needed if you're running Ansible 2.10+
+  #collections:
+  #  - amazon.aws
+  #  - community.aws
 
   tasks:
-    - name: Check that required variables are set
-      fail:
-        msg: "You must set the iam_group variable"
-      when: iam_group is not defined
 
     - name: Get aws account ID
       aws_caller_info:
-        profile: "{{ profile|default(omit) }}"
       register: aws_caller_info
 
-    - name: Set aws_account_fact
+    - name: Set aws_account fact
       set_fact:
-        aws_account: "{{ aws_caller_info.account }}"
+        aws_account_id: "{{ aws_caller_info.account }}"
 
-
-    - name: Ensure Managed IAM policies exist
+    - name: Ensure Managed IAM policies exist (CI)
+      vars:
+        _policy: "{{ (item | basename | regex_replace('\\.yaml', '') | regex_replace('\\W+', ' ')).split(' ') | map('capitalize') | join('') }}"
       iam_managed_policy:
-        policy_name: "AnsibleTest{{ item|basename|regex_replace('-.*', '')|capitalize }}Policy"
-        policy: "{{ lookup('template', item) }}"
+        policy_name: "{{ iam_policy_prefix }}-CI-{{ _policy }}"
+        policy: "{{ lookup('template', item) | from_yaml | to_json }}"
         state: present
-        profile: "{{ profile|default(omit) }}"
-      with_fileglob: "testing_policies/*.json"
-      register: iam_managed_policies
+      with_fileglob: "ci_policies/*.yaml"
+      register: iam_managed_policies_ci
+
+    - name: Ensure Managed IAM policies exist (unsupported)
+      vars:
+        _policy: "{{ (item | basename | regex_replace('\\.yaml', '') | regex_replace('\\W+', ' ')).split(' ') | map('capitalize') | join('') }}"
+      iam_managed_policy:
+        policy_name: "{{ iam_policy_prefix }}-Unsupported-{{ _policy }}"
+        policy: "{{ lookup('template', item) | from_yaml | to_json }}"
+        state: present
+      with_fileglob: "test_policies/*.yaml"
+      register: iam_managed_policies_unsupported
 
     - debug:
-        msg: "{{ iam_managed_policies | json_query('results[].policy.policy_name') }}"
+        msg: "{{ iam_managed_policies_ci | json_query('results[].policy.policy_name') }}"
+    - debug:
+        msg: "{{ iam_managed_policies_unsupported | json_query('results[].policy.policy_name') }}"
 
-    - name: Ensure IAM group exists and attach managed policies
+    - name: Ensure IAM CI group exists and attach managed policies
       iam_group:
-        name: "{{ iam_group }}"
+        name: "{{ iam_group_prefix }}-ci"
         state: present
-        managed_policy: "{{ iam_managed_policies | json_query('results[].policy.policy_name') }}"
-        profile: "{{ profile|default(omit) }}"
+        managed_policy: "{{ iam_managed_policies_ci | json_query('results[].policy.policy_name') }}"
         purge_policy: yes
+        users: '{{ iam_user | default(omit)}}'
+
+    - name: Ensure IAM Unsupported group exists and attach managed policies
+      iam_group:
+        name: "{{ iam_group_prefix }}-unsupported"
+        state: present
+        managed_policy: "{{ iam_managed_policies_unsupported | json_query('results[].policy.policy_name') }}"
+        purge_policy: yes
+        users: '{{ iam_user | default(omit)}}'
