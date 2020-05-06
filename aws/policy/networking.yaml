@@ -100,7 +100,7 @@ Statement:
     Condition:
       StringEquals:
         ec2:Region:
-          - us-east-1
+          - {{ aws_region }}
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -110,4 +110,4 @@ Statement:
       - apigateway:POST
       - apigateway:PUT
     Resource:
-      - arn:aws:apigateway:us-east-1::/restapis*
+      - arn:aws:apigateway:{{ aws_region }}::/restapis*

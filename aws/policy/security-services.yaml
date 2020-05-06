@@ -127,7 +127,7 @@ Statement:
     Condition:
       StringEquals:
         aws:RequestedRegion:
-          - us-east-1
+          - {{ aws_region }}
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -156,4 +156,4 @@ Statement:
       - acm:AddTagsToCertificate
       - acm:DeleteCertificate
     Resource:
-      - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
+      - arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*
