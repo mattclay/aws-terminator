@@ -39,7 +39,7 @@ Statement:
       - lambda:UpdateEventSourceMapping
       - lambda:UpdateFunctionCode
     Resource:
-      - arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -64,15 +64,15 @@ Statement:
       - elasticloadbalancing:Deregister*
       - elasticloadbalancing:Remove*
     Resource:
-      - arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:*
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowRoleManagement
     Effect: Allow
     Action:
       - iam:PassRole
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ecsInstanceRole
-      - arn:aws:iam::{{ aws_account_id }}:role/ec2InstanceRole
-      - arn:aws:iam::{{ aws_account_id }}:role/ecsServiceRole
-      - arn:aws:iam::{{ aws_account_id }}:role/aws_eks_cluster_role
-      - arn:aws:iam::{{ aws_account_id }}:role/ecsTaskExecutionRole
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ecsInstanceRole'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ec2InstanceRole'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ecsServiceRole'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws_eks_cluster_role'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ecsTaskExecutionRole'

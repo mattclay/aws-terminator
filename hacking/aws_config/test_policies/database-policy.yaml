@@ -2,13 +2,13 @@ Version: '2012-10-17'
 Statement:
   - Action: iam:CreateServiceLinkedRole
     Effect: Allow
-    Resource: arn:aws:iam::*:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS
+    Resource: 'arn:aws:iam::*:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS'
     Condition:
       StringLike:
         iam:AWSServiceName: rds.amazonaws.com
   - Action: iam:CreateServiceLinkedRole
     Effect: Allow
-    Resource: arn:aws:iam::*:role/aws-service-role/redshift.amazonaws.com/AWSServiceRoleForRedshift
+    Resource: 'arn:aws:iam::*:role/aws-service-role/redshift.amazonaws.com/AWSServiceRoleForRedshift'
     Condition:
       StringLike:
         iam:AWSServiceName: redshift.amazonaws.com
@@ -38,8 +38,8 @@ Statement:
       - rds:RebootDBInstance
       - rds:AddTagsToResource
     Resource:
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:ansible-test*
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:ansible-test*
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:ansible-test*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:ansible-test*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -58,5 +58,5 @@ Statement:
       - rds:RestoreDBInstanceFromDBSnapshot
       - rds:CreateDBInstanceReadReplica
     Resource:
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:ansible-test*
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:ansible-test*
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:ansible-test*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:ansible-test*'

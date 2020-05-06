@@ -55,18 +55,18 @@ Statement:
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
     Resource:
-      - arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*
-      - arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*
-      - arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*
-      - arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
+      - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - rds:CreateDBCluster
       - redshift:CreateCluster
     Resource:
-      - arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*
-      - arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'

@@ -13,22 +13,22 @@ Statement:
       - iam:RemoveRoleFromInstanceProfile
       - sts:AssumeRole
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
   - Sid: AllowAssumeRoleTestsAttachAndDetachRole
     Effect: Allow
     Action:
       - iam:AttachRolePolicy
       - iam:DetachRolePolicy
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
     Condition:
       ArnLike:
         iam:PolicyArn:
-          - arn:aws:iam::aws:policy/IAMReadOnlyAccess
-          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
-          - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
+          - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -127,7 +127,7 @@ Statement:
     Condition:
       StringEquals:
         aws:RequestedRegion:
-          - {{ aws_region }}
+          - '{{ aws_region }}'
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -139,15 +139,15 @@ Statement:
       - iam:TagRole
       - iam:UntagRole
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/*
+      - 'arn:aws:iam::{{ aws_account_id }}:role/*'
   - Sid: AllowPassRole
     Effect: Allow
     Action:
       - iam:PassRole
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # Legacy - We need to backport ansible-collections/community.aws/63
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
   - Sid: AllowACMRestrictable
     Effect: Allow
     Action:
@@ -156,4 +156,4 @@ Statement:
       - acm:AddTagsToCertificate
       - acm:DeleteCertificate
     Resource:
-      - arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*
+      - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'

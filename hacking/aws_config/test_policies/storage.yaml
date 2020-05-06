@@ -22,13 +22,13 @@ Statement:
       - s3:ListAccessPoints
       - s3:ListMultipartUploadParts
     Resource:
-      - arn:aws:s3:::ansible-test-*
-      - arn:aws:s3:::ansible-test-*/*
+      - 'arn:aws:s3:::ansible-test-*'
+      - 'arn:aws:s3:::ansible-test-*/*'
 
 #  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
 #    Effect: Allow
 #    Action:
 #      - 
 #    Resource:
-#      - arn:aws:s3:::ansible-test-*
-#      - arn:aws:s3:::ansible-test-*/*
+#      - 'arn:aws:s3:::ansible-test-*'
+#      - 'arn:aws:s3:::ansible-test-*/*'

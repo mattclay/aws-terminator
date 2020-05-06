@@ -94,11 +94,11 @@ Statement:
       - iam:UpdateUser
       - logs:DescribeLogGroups
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:policy/ansible-test-*
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
-      - arn:aws:iam::{{ aws_account_id }}:user/ansible-test*
-      - arn:aws:iam::{{ aws_account_id }}:group/ansible-test*
-      - arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*
+      - 'arn:aws:iam::{{ aws_account_id }}:policy/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:user/ansible-test*'
+      - 'arn:aws:iam::{{ aws_account_id }}:group/ansible-test*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -110,9 +110,9 @@ Statement:
       - cloudtrail:*
       - secretsmanager:*
     Resource:
-      - arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:trail/ansible-test-*
-      - arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*
-      - arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*
+      - 'arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:trail/ansible-test-*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
+      - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
   - Sid: AllowReplacementOfSpecificInstanceProfiles
     Effect: Allow
@@ -121,4 +121,4 @@ Statement:
     Resource: '*'
     Condition:
       ArnEquals:
-        ec2:InstanceProfile: arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
+        ec2:InstanceProfile: 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
