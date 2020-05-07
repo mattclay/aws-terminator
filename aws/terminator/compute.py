@@ -213,23 +213,6 @@ class NeptuneSubnetGroup(DbTerminator):
         self.client.delete_db_subnet_group(DBSubnetGroupName=self.name)
 
 
-class RdsDbParameterGroup(DbTerminator):
-    @staticmethod
-    def create(credentials):
-        return Terminator._create(credentials, RdsDbParameterGroup, 'rds', lambda client: client.describe_db_parameter_groups()['DBParameterGroups'])
-
-    @property
-    def id(self):
-        return self.instance['DBParameterGroupArn']
-
-    @property
-    def name(self):
-        return self.instance['DBParameterGroupName']
-
-    def terminate(self):
-        self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
-
-
 class EcrRepository(Terminator):
     @staticmethod
     def create(credentials):
