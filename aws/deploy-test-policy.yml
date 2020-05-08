@@ -33,6 +33,12 @@
       tags: iam
       set_fact:
         policies: '{{ lookup("fileglob", "policy/*.yaml", wantlist=True) | map("basename") | map("regex_findall", "^(.*?)\.yaml") | list | flatten }}'
+    - name: Check policies do not exceed AWS size limits
+      assert:
+        that:
+          - "{{ lookup('template', 'policy/' + item + '.yaml') | from_yaml | to_json |length < 6144 }}"
+        fail_msg: "{{ 'policy/' + item  + '.yaml'}} exceeds the 6144 max character count for AWS managed policies"
+      loop: "{{ policies }}"
     - name: Create a list of managed policies
       tags: iam
       set_fact:

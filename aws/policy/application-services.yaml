@@ -76,7 +76,6 @@ Statement:
       - ec2messages:GetEndpoint
       - ec2messages:GetMessages
       - ec2messages:SendReply
-      - dms:DescribeReplicationSubnetGroups
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
       - codecommit:ListRepositories
@@ -88,9 +87,6 @@ Statement:
       - sqs:GetQueueAttributes
       - sqs:ListQueues
       - sqs:SetQueueAttributes
-      - dynamodb:Scan
-      - dynamodb:ListTables
-      - dynamodb:DescribeTable
       - kinesis:ListStreams
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
@@ -103,16 +99,6 @@ Statement:
       - ssm:DeleteParameter
       - ssm:GetParametersByPath
       - ssm:GetParameters
-      - dms:CreateReplicationSubnetGroup
-      - dms:DeleteReplicationSubnetGroup
-      - dms:ModifyReplicationSubnetGroup
-      - dynamodb:DeleteItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:CreateTable
-      - dynamodb:DeleteTable
-      - dynamodb:UpdateTable
-      - dynamodb:TagResource
       - codebuild:CreateProject
       - codebuild:UpdateProject
       - codebuild:DeleteProject
@@ -157,7 +143,6 @@ Statement:
       - glue:UntagResource
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
-      - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
       - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
       - arn:aws:codecommit:us-east-1:{{ aws_account_id }}:*
       - arn:aws:codepipeline:us-east-1:{{ aws_account_id }}:*
@@ -165,7 +150,6 @@ Statement:
       - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
       - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
       - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
-      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
       - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
       - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
