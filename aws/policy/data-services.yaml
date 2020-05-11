@@ -26,10 +26,15 @@ Statement:
       - dynamodb:DeleteItem
       - dynamodb:PutItem
       - dynamodb:UpdateItem
+      - dynamodb:ListTables
       - dynamodb:CreateTable
       - dynamodb:DeleteTable
       - dynamodb:UpdateTable
       - dynamodb:TagResource
+      - dynamodb:UntagResource
+      - dynamodb:ListTagsOfResource
+      - dynamodb:DescribeContinuousBackups
+      - dynamodb:UpdateContinuousBackups
       - glacier:ListVaults
       - glacier:CreateVault
       - glacier:DeleteVault
