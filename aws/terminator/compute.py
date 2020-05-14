@@ -213,23 +213,6 @@ class NeptuneSubnetGroup(DbTerminator):
         self.client.delete_db_subnet_group(DBSubnetGroupName=self.name)
 
 
-class RdsDbParameterGroup(DbTerminator):
-    @staticmethod
-    def create(credentials):
-        return Terminator._create(credentials, RdsDbParameterGroup, 'rds', lambda client: client.describe_db_parameter_groups()['DBParameterGroups'])
-
-    @property
-    def id(self):
-        return self.instance['DBParameterGroupArn']
-
-    @property
-    def name(self):
-        return self.instance['DBParameterGroupName']
-
-    def terminate(self):
-        self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
-
-
 class EcrRepository(Terminator):
     @staticmethod
     def create(credentials):
@@ -288,3 +271,131 @@ class NeptuneCluster(Terminator):
 
     def terminate(self):
         self.client.delete_db_cluster(DBClusterIdentifier=self.name, SkipFinalSnapshot=True)
+
+
+class EksCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_cluster_results(client):
+            cluster_list = client.list_clusters()['clusters']
+            results = []
+            for cluster in cluster_list:
+                results.append(client.describe_cluster(name=cluster)['cluster'])
+            return results
+
+        return Terminator._create(credentials, EksCluster, 'eks', _build_cluster_results)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_cluster(name=self.name)
+
+
+class ElasticLoadBalancing(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_elastic_lbs(client):
+            return client.get_paginator(
+                'describe_load_balancers').paginate().build_full_result()['LoadBalancerDescriptions']
+        return Terminator._create(credentials, ElasticLoadBalancing, 'elb', _paginate_elastic_lbs)
+
+    @property
+    def name(self):
+        return self.instance['LoadBalancerName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        self.client.delete_load_balancer(LoadBalancerName=self.name)
+
+
+class ElasticLoadBalancingv2(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_elastic_lbs(client):
+            return client.get_paginator(
+                'describe_load_balancers').paginate().build_full_result()['LoadBalancers']
+        return Terminator._create(credentials, ElasticLoadBalancingv2, 'elbv2', _paginate_elastic_lbs)
+
+    @property
+    def name(self):
+        return self.instance['LoadBalancerArn']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def _find_listeners(self):
+        # Listeners can't be listed or described without providing an ELB or Listener ARN, so we have to handle them here
+        return [listener['ListenerArn'] for listener in self.client.describe_listeners(LoadBalancerArn=self.name)['Listeners']]
+
+    def terminate(self):
+        self.client.delete_load_balancer(LoadBalancerArn=self.name)
+        for listener in self._find_listeners():
+            self.client.delete_listender(ListenerArn=listener)
+
+
+class Elbv2TargetGroups(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_target_groups(client):
+            return client.get_paginator(
+                'describe_target_groups').paginate().build_full_result()['TargetGroups']
+        return Terminator._create(credentials, Elbv2TargetGroups, 'elbv2', _paginate_target_groups)
+
+    @property
+    def id(self):
+        return self.instance['TargetGroupArn']
+
+    @property
+    def name(self):
+        return self.instance['TargetGroupName']
+
+    def terminate(self):
+        self.client.delete_target_group(TargetGroupArn=self.id)
+
+
+class Lightsail(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_instances(client):
+            return client.get_paginator('get_instances').paginate().build_full_result()['instances']
+        return Terminator._create(credentials, Lightsail, 'lightsail', _paginate_lightsail_instances)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_instance(instanceName=self.name)
+
+
+class LightsailKeyPair(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_key_pairs(client):
+            return client.get_paginator('get_key_pairs').paginate().build_full_result()['keyPairs']
+        return Terminator._create(credentials, LightsailKeyPair, 'lightsail', _paginate_lightsail_key_pairs)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_key_pair(keyPairName=self.name)

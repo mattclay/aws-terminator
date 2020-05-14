@@ -57,7 +57,7 @@ class IamInstanceProfile(Terminator):
 
     @property
     def ignore(self):
-        return not self.name.startswith('ansible-test-sts-')
+        return not self.name.startswith('ansible-test-')
 
     @property
     def created_time(self):
@@ -301,3 +301,26 @@ class InspectorAssessmentTarget(DbTerminator):
 
     def terminate(self):
         self.client.delete_assessment_target(assessmentTargetArn=self.id)
+
+
+class ACMCertificate(DbTerminator):
+    # ACM provides a created time, but there are cases where describe_certificate can fail
+    # We need to be able to delete anyway, so use DbTerminator
+    # https://github.com/ansible/ansible/issues/67788
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ACMCertificate, 'acm',
+            lambda client: client.get_paginator('list_certificates').paginate().build_full_result()['CertificateSummaryList']
+        )
+
+    @property
+    def id(self):
+        return self.instance['CertificateArn']
+
+    @property
+    def name(self):
+        return self.instance['CertificateArn']
+
+    def terminate(self):
+        self.client.delete_certificate(CertificateArn=self.id)

@@ -17,6 +17,8 @@ Statement:
       - ec2:AllocateAddress
       - ec2:DescribeAddresses
       - ec2:ReleaseAddress
+      - ec2:AssociateAddress
+      - ec2:DisassociateAddress
       - ec2:CreateCustomerGateway
       - ec2:DeleteCustomerGateway
       - ec2:DescribeCustomerGateways
@@ -41,6 +43,7 @@ Statement:
       - ec2:DeleteNetworkInterface
       - ec2:DescribeNetworkInterfaces
       - ec2:DetachNetworkInterface
+      - ec2:ModifyNetworkInterfaceAttribute
       - ec2:CreateRoute
       - ec2:DeleteRoute
       - ec2:AssociateRouteTable
@@ -56,6 +59,7 @@ Statement:
       - ec2:DeleteSubnet
       - ec2:ModifySubnetAttribute
       - ec2:AssociateVpcCidrBlock
+      - ec2:DisassociateVpcCidrBlock
       - ec2:DescribeVpcs
       - ec2:CreateVpc
       - ec2:DeleteVpc
@@ -84,6 +88,12 @@ Statement:
       - ec2:DescribeSecurityGroups
       - ec2:CreateSecurityGroup
       - ec2:DeleteSecurityGroup
+      - ec2:CreateNetworkAcl
+      - ec2:CreateNetworkAclEntry
+      - ec2:DeleteNetworkAcl
+      - ec2:DeleteNetworkAclEntry
+      - ec2:ReplaceNetworkAclAssociation
+      - ec2:ReplaceNetworkAclEntry
     Resource:
       - "*"
     Condition:

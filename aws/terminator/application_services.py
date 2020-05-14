@@ -7,6 +7,27 @@ import botocore.exceptions
 from . import DbTerminator, Terminator
 
 
+class Cloudformation(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_stacks(client):
+            return client.get_paginator('describe_stacks').paginate().build_full_result()['Stacks']
+
+        return Terminator._create(credentials, Cloudformation, 'cloudformation', paginate_stacks)
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def name(self):
+        return self.instance['StackName']
+
+    def terminate(self):
+        self.client.update_termination_protection(StackName=self.name, EnableTerminationProtection=False)
+        self.client.delete_stack(StackName=self.name)
+
+
 class CloudWatchLogGroup(Terminator):
     @staticmethod
     def create(credentials):
@@ -82,24 +103,28 @@ class CodeCommitRepository(DbTerminator):
         self.client.delete_repository(repositoryName=self.name)
 
 
-class DmsSubnetGroup(DbTerminator):
+class CodePipeline(Terminator):
+
     @staticmethod
     def create(credentials):
-        def paginate_dms_subnet_groups(client):
-            return client.get_paginator('describe_replication_subnet_groups').paginate().build_full_result()['ReplicationSubnetGroups']
+        return Terminator._create(
+            credentials, CodePipeline, 'codepipeline',
+            lambda client: client.list_pipelines().get('pipelines', ()))
 
-        return Terminator._create(credentials, DmsSubnetGroup, 'dms', paginate_dms_subnet_groups)
+    @property
+    def created_time(self):
+        return self.instance['created']
 
     @property
     def id(self):
-        return self.instance['ReplicationSubnetGroupIdentifier']
+        return self.instance['name']
 
     @property
     def name(self):
-        return self.instance['ReplicationSubnetGroupIdentifier']
+        return self.instance['name']
 
     def terminate(self):
-        self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
+        self.client.delete_pipeline(name=self.name)
 
 
 class Efs(Terminator):
@@ -124,6 +149,48 @@ class Efs(Terminator):
         for mount_target in self.client.describe_mount_targets(FileSystemId=self.id)['MountTargets']:
             self.client.delete_mount_target(MountTargetId=mount_target['MountTargetId'])
         self.client.delete_file_system(FileSystemId=self.id)
+
+
+class KinesisStream(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_streams(client):
+            names = client.get_paginator('list_streams').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['StreamNames']
+
+            if not names:
+                return []
+
+            return [
+                client.describe_stream(StreamName=n)['StreamDescription'] for n in names
+            ]
+
+        return Terminator._create(credentials, KinesisStream, 'kinesis', paginate_streams)
+
+    @property
+    def created_time(self):
+        return self.instance['StreamCreationTimestamp']
+
+    @property
+    def id(self):
+        return self.instance['StreamName']
+
+    @property
+    def name(self):
+        return self.instance['StreamName']
+
+    @property
+    def ignore(self):
+        return self.instance['StreamStatus'] == 'DELETING'
+
+    def terminate(self):
+        self.client.delete_stream(
+            StreamName=self.instance['StreamName'],
+            EnforceConsumerDeletion=True
+        )
 
 
 class S3Bucket(Terminator):
@@ -278,3 +345,39 @@ class DynamoDb(DbTerminator):
 
     def terminate(self):
         return self.client.delete_table(TableName=self.instance)
+
+
+class StepFunctions(Terminator):
+    @staticmethod
+    def create(credentials):
+
+        def get_state_machines(client):
+            state_machines = client.get_paginator(
+                'list_state_machines').paginate().build_full_result().get('stateMachines', [])
+            return state_machines
+
+        return Terminator._create(credentials, StepFunctions, 'stepfunctions', get_state_machines)
+
+    @property
+    def created_time(self):
+        return self.instance['creationDate']
+
+    @property
+    def name(self):
+        return self.instance['stateMachineArn']
+
+    def terminate(self):
+        return self.client.delete_state_machine(stateMachineArn=self.name)
+
+
+class CloudWatchAlarm(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, CloudWatchAlarm, 'cloudwatch', lambda client: client.describe_alarms()['MetricAlarms'])
+
+    @property
+    def name(self):
+        return self.instance['AlarmName']
+
+    def terminate(self):
+        self.client.delete_alarms(AlarmNames=[self.name])
