@@ -276,5 +276,31 @@
             ],
             "Resource": "arn:aws:sqs:*:*:*"
         },
+        {
+            "Sid": "AllowKinesis",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:AddTagsToStream",
+                "kinesis:CreateStream",
+                "kinesis:DeleteStream",
+                "kinesis:DecreaseStreamRetentionPeriod",
+                "kinesis:DescribeStream",
+                "kinesis:IncreaseStreamRetentionPeriod",
+                "kinesis:ListTagsForStream",
+                "kinesis:RemoveTagsFromStream",
+                "kinesis:StartStreamEncryption",
+                "kinesis:StopStreamEncryption",
+                "kinesis:UpdateShardCount"
+            ],
+            "Resource": "arn:aws:kinesis:*:*:*"
+        },
+        {
+            "Sid": "AllowKinesisWithoutResource",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:ListStreams"
+            ],
+            "Resource": "*"
+        }
     ]
 }
