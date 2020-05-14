@@ -127,26 +127,6 @@ class CodePipeline(Terminator):
         self.client.delete_pipeline(name=self.name)
 
 
-class DmsSubnetGroup(DbTerminator):
-    @staticmethod
-    def create(credentials):
-        def paginate_dms_subnet_groups(client):
-            return client.get_paginator('describe_replication_subnet_groups').paginate().build_full_result()['ReplicationSubnetGroups']
-
-        return Terminator._create(credentials, DmsSubnetGroup, 'dms', paginate_dms_subnet_groups)
-
-    @property
-    def id(self):
-        return self.instance['ReplicationSubnetGroupIdentifier']
-
-    @property
-    def name(self):
-        return self.instance['ReplicationSubnetGroupIdentifier']
-
-    def terminate(self):
-        self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
-
-
 class Efs(Terminator):
     @staticmethod
     def create(credentials):
