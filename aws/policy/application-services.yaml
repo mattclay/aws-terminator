@@ -134,7 +134,6 @@ Statement:
       - elasticfilesystem:DeleteMountTarget
       - kinesis:CreateStream
       - kinesis:DeleteStream
-      - glue:CreateJob
       - glue:DeleteJob
       - glue:UpdateJob
       - glue:GetJob
@@ -181,8 +180,10 @@ Statement:
       - states:StartExecution
       - states:StopExecution
       - states:UpdateStateMachine
+      - glue:CreateJob
     Resource:
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
   - Sid: Cloudformation
     Effect: Allow
     Action:
