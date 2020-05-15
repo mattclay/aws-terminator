@@ -132,6 +132,15 @@ Statement:
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
       - elasticloadbalancing:RegisterTargets
+      - elasticfilesystem:DescribeFileSystems
+      - elasticfilesystem:DescribeMountTargets
+      - elasticfilesystem:DescribeMountTargetSecurityGroups
+      - elasticfilesystem:DescribeTags
+      - elasticfilesystem:CreateFileSystem
+      - elasticfilesystem:CreateMountTarget
+      - elasticfilesystem:CreateTags
+      - elasticfilesystem:DeleteFileSystem
+      - elasticfilesystem:DeleteMountTarget
       - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
@@ -145,6 +154,7 @@ Statement:
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
       - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
       - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
+      - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
       - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
       - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
       - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:targetgroup/*
