@@ -39,12 +39,15 @@ Statement:
       - ses:SetActiveReceiptRuleSet
       - ses:GetIdentityNotificationAttributes
       - ses:GetIdentityVerificationAttributes
+      - ses:GetIdentityDkimAttributes
       - ses:DeleteIdentity
       - ses:ListIdentities
       - ses:SetIdentityFeedbackForwardingEnabled
       - ses:SetIdentityHeadersInNotificationsEnabled
       - ses:SetIdentityNotificationTopic
       - ses:VerifyDomainIdentity
+      - ses:VerifyDomainDkim
+      - ses:SetIdentityDkimEnabled
       - ses:VerifyEmailIdentity
       - ses:GetIdentityPolicies
       - ses:PutIdentityPolicy
@@ -137,6 +140,11 @@ Statement:
       - elasticfilesystem:DeleteMountTarget
       - kinesis:CreateStream
       - kinesis:DeleteStream
+      - kinesis:AddTagsToStream
+      - kinesis:ListTagsForStream
+      - kinesis:RemoveTagsFromStream
+      - kinesis:StartStreamEncryption
+      - kinesis:StopStreamEncryption
       - glue:DeleteJob
       - glue:UpdateJob
       - glue:GetJob
@@ -148,7 +156,23 @@ Statement:
       - arn:aws:sns:us-east-1:{{ aws_account_id }}:*
       - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
       - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
-      - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
+      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
+      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - states:CreateStateMachine
+      - states:StartExecution
+      - states:StopExecution
+      - states:UpdateStateMachine
+      - kinesis:CreateStream
+      - kinesis:DecreaseStreamRetentionPeriod
+      - kinesis:DeleteStream
+      - kinesis:IncreaseStreamRetentionPeriod
+      - kinesis:UpdateShardCount
+      - glue:CreateJob
+    Resource:
       - arn:aws:states:us-east-1:{{ aws_account_id }}:*
       - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
       - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
@@ -173,17 +197,6 @@ Statement:
     Action:
       - cloudwatch:DescribeAlarms
     Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - states:CreateStateMachine
-      - states:StartExecution
-      - states:StopExecution
-      - states:UpdateStateMachine
-      - glue:CreateJob
-    Resource:
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
   - Sid: Cloudformation
     Effect: Allow
     Action:
