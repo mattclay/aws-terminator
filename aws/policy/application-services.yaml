@@ -91,6 +91,9 @@ Statement:
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
       - cloudformation:ListExports
+      - glue:GetTags
+      - glue:TagResource
+      - glue:UntagResource
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -137,9 +140,6 @@ Statement:
       - glue:DeleteJob
       - glue:UpdateJob
       - glue:GetJob
-      - glue:GetTags
-      - glue:TagResource
-      - glue:UntagResource
     Resource:
       - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
       - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
