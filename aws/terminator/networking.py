@@ -58,6 +58,10 @@ class Ec2CustomerGateway(DbTerminator):
         return Terminator._create(credentials, Ec2CustomerGateway, 'ec2', lambda client: client.describe_customer_gateways()['CustomerGateways'])
 
     @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
     def id(self):
         return self.instance['CustomerGatewayId']
 
@@ -96,6 +100,10 @@ class Ec2Subnet(DbTerminator):
         return Terminator._create(credentials, Ec2Subnet, 'ec2', lambda client: client.describe_subnets()['Subnets'])
 
     @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
     def id(self):
         return self.instance['SubnetId']
 
@@ -119,6 +127,10 @@ class Ec2InternetGateway(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2InternetGateway, 'ec2', lambda client: client.describe_internet_gateways()['InternetGateways'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
 
     @property
     def id(self):
@@ -205,6 +217,10 @@ class Ec2Eni(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2Eni, 'ec2', lambda client: client.describe_network_interfaces()['NetworkInterfaces'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
 
     @property
     def id(self):
@@ -335,6 +351,10 @@ class Ec2SecurityGroup(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, Ec2SecurityGroup, 'ec2', lambda client: client.describe_security_groups()['SecurityGroups'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
 
     @property
     def id(self):
