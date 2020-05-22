@@ -122,6 +122,10 @@ class Ec2Volume(Terminator):
         return Terminator._create(credentials, Ec2Volume, 'ec2', lambda client: client.describe_volumes()['Volumes'])
 
     @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
     def id(self):
         return self.instance['VolumeId']
 
@@ -340,7 +344,7 @@ class ElasticLoadBalancingv2(Terminator):
     def terminate(self):
         self.client.delete_load_balancer(LoadBalancerArn=self.name)
         for listener in self._find_listeners():
-            self.client.delete_listender(ListenerArn=listener)
+            self.client.delete_listener(ListenerArn=listener)
 
 
 class Elbv2TargetGroups(DbTerminator):
@@ -350,6 +354,10 @@ class Elbv2TargetGroups(DbTerminator):
             return client.get_paginator(
                 'describe_target_groups').paginate().build_full_result()['TargetGroups']
         return Terminator._create(credentials, Elbv2TargetGroups, 'elbv2', _paginate_target_groups)
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
 
     @property
     def id(self):
