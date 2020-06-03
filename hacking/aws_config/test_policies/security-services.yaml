@@ -1,0 +1,124 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - cloudtrail:DescribeTrails
+      - cloudtrail:ListTags
+      - cloudtrail:ListPublicKeys
+      - iam:GetPolicy
+      - iam:GetPolicyVersion
+      - iam:ListAttachedGroupPolicies
+      - iam:ListAttachedUserPolicies
+      - iam:ListGroups
+      - iam:ListUsers
+      - iam:GetAccountPasswordPolicy
+      - iam:UpdateAccountPasswordPolicy
+      - iam:DeleteAccountPasswordPolicy
+    Resource: "*"
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      # Legacied because the current (minimal) tests don't use
+      # { resource_prefix } yet
+      - iam:DeleteServerCertificate
+      - iam:GetServerCertificate
+      - iam:ListServerCertificates
+      - iam:UpdateServerCertificate
+      - iam:UploadServerCertificate
+      # Because KMS CMKs are assigned a random UUID we can't apply Resource
+      # restrictions at the IAM policy level
+      - kms:CancelKeyDeletion
+      - kms:CreateAlias
+      - kms:CreateGrant
+      - kms:CreateKey
+      - kms:DeleteAlias
+      - kms:DescribeKey
+      - kms:DisableKey
+      - kms:EnableKey
+      - kms:GenerateRandom
+      - kms:GetKeyPolicy
+      - kms:GetKeyRotationStatus
+      - kms:GetPublicKey
+      - kms:ListAliases
+      - kms:ListGrants
+      - kms:ListKeyPolicies
+      - kms:ListKeys
+      - kms:ListResourceTags
+      - kms:ListRetirableGrants
+      - kms:PutKeyPolicy
+      - kms:RetireGrant
+      - kms:ScheduleKeyDeletion
+      - kms:TagResource
+      - kms:UntagResource
+      - kms:UpdateGrant
+      - kms:UpdateKeyDescription
+      - waf:DeleteLoggingConfiguration
+      - waf:DeletePermissionPolicy
+      - waf:GetLoggingConfiguration
+      - waf:GetPermissionPolicy
+      - waf:GetSampledRequests
+      - waf:ListLoggingConfigurations
+      - waf:PutLoggingConfiguration
+      - waf:PutPermissionPolicy
+    Resource: "*"
+
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - iam:AddUserToGroup
+      - iam:CreateGroup
+      - iam:CreatePolicy
+      - iam:CreateUser
+      - iam:DeleteGroup
+      - iam:DeletePolicy
+      - iam:DeleteRolePermissionsBoundary
+      - iam:DeleteRolePolicy
+      - iam:DeleteUser
+      - iam:GetGroup
+      - iam:ListAttachedGroupPolicies
+      - iam:ListEntitiesForPolicy
+      - iam:ListGroupsForUser
+      - iam:ListPolicyVersions
+      - iam:PassRole
+      - iam:PutRolePermissionsBoundary
+      - iam:PutRolePolicy
+      - iam:RemoveUserFromGroup
+      - iam:TagUser
+      - iam:UntagUser
+      - iam:UpdateAssumeRolePolicy
+      - iam:UpdateGroup
+      - iam:UpdateRole
+      - iam:UpdateRoleDescription
+      - iam:UpdateUser
+      - logs:DescribeLogGroups
+    Resource:
+      - arn:aws:iam::{{ aws_account_id }}:policy/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - arn:aws:iam::{{ aws_account_id }}:user/ansible-test*
+      - arn:aws:iam::{{ aws_account_id }}:group/ansible-test*
+      - arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*
+
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - logs:CreateLogGroup
+      - logs:PutRetentionPolicy
+      - logs:DeleteLogGroup
+      # Legacied
+      - cloudtrail:*
+      - secretsmanager:*
+    Resource:
+      - arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:trail/ansible-test-*
+      - arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*
+      - arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*
+
+  - Sid: AllowReplacementOfSpecificInstanceProfiles
+    Effect: Allow
+    Action:
+    - ec2:ReplaceIamInstanceProfileAssociation
+    Resource: '*'
+    Condition:
+      ArnEquals:
+        ec2:InstanceProfile: arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*

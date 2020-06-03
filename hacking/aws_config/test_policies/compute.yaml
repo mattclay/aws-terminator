@@ -1,0 +1,78 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DescribeLaunchConfigurations
+      - autoscaling:DescribePolicies
+      - ec2:Describe*
+      - lambda:CreateEventSourceMapping
+      - lambda:GetAccountSettings
+      - lambda:GetEventSourceMapping
+      - lambda:List*
+      - lambda:TagResource
+      - lambda:UntagResource
+    Resource: "*"
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichFees
+    Effect: Allow
+    Action:
+      - ec2:*LaunchTemplate
+      - ec2:*LaunchTemplateVersion
+      - ec2:*LaunchTemplateVersions
+      - ec2:ReportInstanceStatus
+      - SNS:ListSubscriptions
+      - SNS:SetTopicAttributes
+      - SNS:Subscribe
+      - SNS:Unsubscribe
+    Resource: "*"
+
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - lambda:CreateAlias
+      - lambda:DeleteAlias
+      - lambda:GetAlias
+      - lambda:PublishVersion
+      - lambda:UpdateAlias
+      - lambda:UpdateEventSourceMapping
+      - lambda:UpdateFunctionCode
+    Resource:
+      - arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*
+
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - autoscaling:*LaunchConfiguration
+      - autoscaling:*LoadBalancers
+      - autoscaling:*AutoScalingGroup
+      - autoscaling:*MetricsCollection
+      - autoscaling:PutScalingPolicy
+      - autoscaling:DeletePolicy
+      - autoscaling:*Tags
+      - elasticloadbalancing:*LoadBalancer
+      - elasticloadbalancing:*LoadBalancers
+      - elasticloadbalancing:*LoadBalancerListeners
+      - elasticloadbalancing:*TargetGroup
+      - elasticloadbalancing:Create*
+      - elasticloadbalancing:Delete*
+      - elasticloadbalancing:DeregisterInstancesFromLoadBalancer
+      - elasticloadbalancing:Describe*
+      - elasticloadbalancing:Modify*
+      - elasticloadbalancing:Register*
+      - elasticloadbalancing:Deregister*
+      - elasticloadbalancing:Remove*
+    Resource:
+      - arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:*
+
+  - Sid: AllowRoleManagement
+    Effect: Allow
+    Action:
+      - iam:PassRole
+    Resource:
+      - arn:aws:iam::{{ aws_account_id }}:role/ecsInstanceRole
+      - arn:aws:iam::{{ aws_account_id }}:role/ec2InstanceRole
+      - arn:aws:iam::{{ aws_account_id }}:role/ecsServiceRole
+      - arn:aws:iam::{{ aws_account_id }}:role/aws_eks_cluster_role
+      - arn:aws:iam::{{ aws_account_id }}:role/ecsTaskExecutionRole
