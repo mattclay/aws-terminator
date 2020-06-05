@@ -6,7 +6,7 @@
 # Groups:
 # - ansible-integration-ci
 #   - Mirrors the permissions used by the the AWS collections CI
-# - ansible-integrayion-unsupported
+# - ansible-integration-unsupported
 #   - Additional Permissions on top of the 'CI' permissions
 #     required to run the 'unsupported' tests
 #
@@ -17,7 +17,8 @@
 #   - Managed Policies used by the {{ iam_group_prefix }}-unsupported group
 #
 # Supported variables:
-# - region: The AWS region that many of the policies will be restricted to
+# - region: (default: us-east-1) The AWS region that any region-restricted
+#       policies will be limited to
 # - iam_group_prefix: (default: ansible-integration) the prefix used when
 #       creating IAM groups
 # - iam_policy_prefix: (default: AnsibleIntegration) the prefix used when
@@ -51,7 +52,7 @@
       aws_caller_info:
       register: aws_caller_info
 
-    - name: Set aws_account fact
+    - name: Set aws_account_id fact
       set_fact:
         aws_account_id: "{{ aws_caller_info.account }}"
 
