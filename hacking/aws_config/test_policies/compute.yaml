@@ -15,7 +15,7 @@ Statement:
       - lambda:UntagResource
     Resource: "*"
 
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichFees
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - ec2:*LaunchTemplate
