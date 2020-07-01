@@ -41,6 +41,7 @@ Statement:
       - redshift:ModifyCluster
       - redshift:RebootCluster
       - redshift:DeleteTags
+      - redshift:DescribeTags
       - redshift:CreateTags
       - rds:AddTagsToResource
       - rds:CreateDBParameterGroup
