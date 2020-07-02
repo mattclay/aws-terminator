@@ -48,6 +48,7 @@ Statement:
       - ec2:DeleteRoute
       - ec2:AssociateRouteTable
       - ec2:DisassociateRouteTable
+      #- ec2:ReplaceRouteTableAssociation
       - ec2:CreateRouteTable
       - ec2:DeleteRouteTable
       - ec2:DescribeRouteTables
@@ -99,13 +100,14 @@ Statement:
     Condition:
       StringEquals:
         ec2:Region:
-          - us-east-1
+          - '{{ aws_region }}'
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - apigateway:DELETE
       - apigateway:GET
+      - apigateway:PATCH
       - apigateway:POST
       - apigateway:PUT
     Resource:
-      - arn:aws:apigateway:us-east-1::/restapis*
+      - 'arn:aws:apigateway:{{ aws_region }}::/restapis*'

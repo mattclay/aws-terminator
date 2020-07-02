@@ -1,0 +1,24 @@
+Version: '2012-10-17'
+Statement:
+  #- Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+  #  Effect: Allow
+  #  Action:
+  #    - 
+  #  Resource: "*"
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - codecommit:*Repository
+    Resource: "*"
+  #- Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+  #  Effect: Allow
+  #  Action:
+  #    - 
+  #  Resource:
+  #    - 
+  #- Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+  #  Effect: Allow
+  #  Action:
+  #    - 
+  #  Resource:
+  #    - 

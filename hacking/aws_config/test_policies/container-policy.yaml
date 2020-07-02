@@ -1,0 +1,39 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - application-autoscaling:Describe*
+      - application-autoscaling:PutScalingPolicy
+      - application-autoscaling:RegisterScalableTarget
+      - ecs:DeregisterTaskDefinition
+      - ecs:CreateService
+      - ecs:DeleteService
+      - ecs:Describe*
+      - ecs:List*
+      - ecs:PutAccountSetting
+      - ecs:RegisterTaskDefinition
+      - ecs:UpdateService
+      - elasticloadbalancing:Describe*
+    Resource: "*"
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ecs:CreateCluster
+      - ecs:DeleteCluster
+      - ecs:RunTask
+      - ecs:StartTask
+      - ecs:StopTask
+    Resource: "*"
+  #- Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+  #  Effect: Allow
+  #  Action:
+  #    - 
+  #  Resource:
+  #    - 
+  #- Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+  #  Effect: Allow
+  #  Action:
+  #    - 
+  #  Resource:
+  #    - 

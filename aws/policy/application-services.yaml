@@ -33,6 +33,7 @@ Statement:
       - s3:GetBucketLogging
       - s3:PutBucketLogging
       - ses:DescribeActiveReceiptRuleSet
+      - ses:DescribeReceiptRuleSet
       - ses:CreateReceiptRuleSet
       - ses:DeleteReceiptRuleSet
       - ses:ListReceiptRuleSets
@@ -132,15 +133,15 @@ Statement:
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
     Resource:
-      - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
-      - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:codecommit:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:codepipeline:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:sns:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+      - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
+      - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codecommit:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codepipeline:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sqs:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -154,9 +155,8 @@ Statement:
       - kinesis:IncreaseStreamRetentionPeriod
       - kinesis:UpdateShardCount
     Resource:
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
-
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
@@ -166,18 +166,21 @@ Statement:
       - logs:DescribeMetricFilters
       - logs:DeleteMetricFilter
       - logs:PutMetricFilter
-    Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
+    Resource:
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
   - Sid: ModifyCloudwatchAlarms
     Effect: Allow
     Action:
       - cloudwatch:PutMetricAlarm
       - cloudwatch:DeleteAlarms
-    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:ansible-test*
+    Resource:
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:ansible-test*'
   - Sid: DescribeCloudwatchAlarms
     Effect: Allow
     Action:
       - cloudwatch:DescribeAlarms
-    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
+    Resource:
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
   - Sid: Cloudformation
     Effect: Allow
     Action:
@@ -194,4 +197,5 @@ Statement:
       - cloudformation:ListStackResources
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
-    Resource: arn:aws:cloudformation:us-east-1:{{ aws_account_id }}:stack/*
+    Resource:
+      - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'

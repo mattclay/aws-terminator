@@ -1,0 +1,34 @@
+Version: '2012-10-17'
+Statement:
+#  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+#    Effect: Allow
+#    Action:
+#      - 
+#    Resource: "*"
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - elasticfilesystem:*
+    Resource: "*"
+
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - s3:ListJobs
+      - s3:DeleteAccessPoint
+      - s3:DeleteAccessPointPolicy
+      - s3:DeleteBucketWebsite
+      - s3:ListAccessPoints
+      - s3:ListMultipartUploadParts
+    Resource:
+      - 'arn:aws:s3:::ansible-test-*'
+      - 'arn:aws:s3:::ansible-test-*/*'
+
+#  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+#    Effect: Allow
+#    Action:
+#      - 
+#    Resource:
+#      - 'arn:aws:s3:::ansible-test-*'
+#      - 'arn:aws:s3:::ansible-test-*/*'

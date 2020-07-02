@@ -41,7 +41,7 @@ Statement:
     Condition:
       StringEquals:
         ec2:Region:
-          - us-east-1
+          - '{{ aws_region }}'
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -72,7 +72,7 @@ Statement:
       - ec2:RunInstances
       - ec2:StartInstances
     Resource:
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:instance/*
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
     Condition:
       StringEquals:
         ec2:InstanceType:
@@ -86,12 +86,12 @@ Statement:
     Action:
       - ec2:RunInstances
     Resource:
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:key-pair/*
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:network-interface/*
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:security-group/*
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:subnet/*
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
-      - arn:aws:ec2:us-east-1::image/*
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:key-pair/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:network-interface/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:security-group/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
+      - 'arn:aws:ec2:{{ aws_region }}::image/*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -99,9 +99,9 @@ Statement:
       - elasticloadbalancing:CreateLoadBalancer
       - lambda:InvokeFunction
     Resource:
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
-      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -150,20 +150,20 @@ Statement:
       - lambda:RemovePermission
       - lambda:UpdateFunctionConfiguration
     Resource:
-      - arn:aws:ec2:us-east-1:{{ aws_account_id }}:volume/*
-      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:ecr:us-east-1:{{ aws_account_id }}:repository/*
-      - arn:aws:elasticbeanstalk:us-east-1:{{ aws_account_id }}:application/*
-      - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
-      - arn:aws:lambda:us-east-1:{{ aws_account_id }}:function:*
-      - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
-      - arn:aws:elasticloadbalancing:us-east-1:{{ aws_account_id }}:targetgroup/*
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
+      - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
+      - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
   - Sid: AllowEksCreateCluster
     Effect: Allow
     Action:
       - eks:CreateCluster
     Resource:
-      - arn:aws:eks:us-east-1:{{ aws_account_id }}:cluster/*
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
   - Sid: AllowLightsail
     Effect: Allow
     Action:
@@ -178,4 +178,4 @@ Statement:
       - lightsail:StartInstance
       - lightsail:StopInstance
     Resource:
-      - arn:aws:lightsail:us-east-1:{{ aws_account_id }}:*
+      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
