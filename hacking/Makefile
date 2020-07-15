@@ -17,7 +17,7 @@ test_policy:
 	$(RUN_TEST_POLICY_PLAYBOOK)
 
 .PHONY: test
-test: yamllint
+test: yamllint policy
 
 .PHONY: test-requirements
 test-requirements:
@@ -26,6 +26,10 @@ test-requirements:
 .PHONY: yamllint
 yamllint:
 	"$(PYTHON3)" -m yamllint --config-file ../.yamllint .
+
+.PHONY: policy
+policy:
+	ansible-playbook -i localhost aws_config/test-policies.yml
 
 .PHONY: pycodestyle
 pycodestyle:
