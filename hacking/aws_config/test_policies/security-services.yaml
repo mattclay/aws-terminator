@@ -118,7 +118,7 @@ Statement:
   - Sid: AllowReplacementOfSpecificInstanceProfiles
     Effect: Allow
     Action:
-    - ec2:ReplaceIamInstanceProfileAssociation
+      - ec2:ReplaceIamInstanceProfileAssociation
     Resource: '*'
     Condition:
       ArnEquals:

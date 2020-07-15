@@ -1,10 +1,10 @@
 Version: '2012-10-17'
 Statement:
-#  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
-#    Effect: Allow
-#    Action:
-#      - 
-#    Resource: "*"
+  # - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -25,10 +25,10 @@ Statement:
       - 'arn:aws:s3:::ansible-test-*'
       - 'arn:aws:s3:::ansible-test-*/*'
 
-#  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-#    Effect: Allow
-#    Action:
-#      - 
-#    Resource:
-#      - 'arn:aws:s3:::ansible-test-*'
-#      - 'arn:aws:s3:::ansible-test-*/*'
+  # - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     - 'arn:aws:s3:::ansible-test-*'
+  #     - 'arn:aws:s3:::ansible-test-*/*'
