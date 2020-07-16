@@ -23,6 +23,7 @@ Statement:
       - ec2:DescribeInstances
       - ec2:DescribeInstanceStatus
       - ec2:DescribeKeyPairs
+      - ec2:DescribeRegions
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
       - ec2:DescribeVolumes
