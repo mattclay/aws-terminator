@@ -103,6 +103,9 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DescribeLaunchConfigurations
+      - autoscaling:DescribePolicies
       - ec2:DescribeAvailabilityZones
       - ec2:DescribeSpotPriceHistory
       - ec2:DescribeTransitGateways
@@ -138,9 +141,6 @@ Statement:
       - autoscaling:DeleteTags
       - autoscaling:DescribeTags
       - autoscaling:DescribeAdjustmentTypes
-      - autoscaling:DescribeAutoScalingGroups
-      - autoscaling:DescribeLaunchConfigurations
-      - autoscaling:DescribePolicies
       - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
