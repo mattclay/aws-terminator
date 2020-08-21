@@ -93,12 +93,12 @@ Statement:
         ec2:Region:
           - '{{ aws_region }}'
 
-  #- Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
-  #  Effect: Allow
-  #  Action:
-  #    -
-  #  Resource:
-  #    - "*"
+  # - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     - "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -106,9 +106,6 @@ Statement:
       - ec2:DescribeAvailabilityZones
       - ec2:DescribeSpotPriceHistory
       - ec2:DescribeTransitGateways
-      - ecr:CreateRepository
-      - ecr:DescribeRepositories
-      - ecr:PutImageTagMutability
       - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
@@ -119,10 +116,6 @@ Statement:
       - elasticloadbalancing:DescribeTargetHealth
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyTargetGroupAttributes
-      - lambda:ListFunctions
-      - lambda:ListVersionsByFunction
-      - lambda:ListAliases
-      - lambda:ListEventSourceMappings
     Resource:
       - "*"
 
@@ -130,17 +123,10 @@ Statement:
     Effect: Allow
     Action:
       - ec2:CreateVolume
-      - eks:CreateCluster
       - elasticloadbalancing:CreateLoadBalancer
-      - lambda:InvokeFunction
-      - lightsail:CreateInstances
-      - lightsail:StartInstance
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
-      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
-      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -157,20 +143,6 @@ Statement:
       - autoscaling:DescribePolicies
       - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
-      - ecr:DeleteLifecyclePolicy
-      - ecr:DeleteRepository
-      - ecr:DeleteRepositoryPolicy
-      - ecr:GetLifecyclePolicy
-      - ecr:GetRepositoryPolicy
-      - ecr:PutLifecyclePolicy
-      - ecr:SetRepositoryPolicy
-      - eks:ListClusters
-      - eks:DescribeCluster
-      - eks:DeleteCluster
-      - elasticbeanstalk:CreateApplication
-      - elasticbeanstalk:DeleteApplication
-      - elasticbeanstalk:DescribeApplications
-      - elasticbeanstalk:UpdateApplication
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:ConfigureHealthCheck
       - elasticloadbalancing:CreateListener
@@ -192,31 +164,10 @@ Statement:
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
-      - lambda:AddPermission
-      - lambda:CreateFunction
-      - lambda:DeleteFunction
-      - lambda:GetFunction
-      - lambda:GetFunctionConfiguration
-      - lambda:GetPolicy
-      - lambda:RemovePermission
-      - lambda:UpdateFunctionConfiguration
-      - lightsail:CreateKeyPair
-      - lightsail:DeleteInstance
-      - lightsail:DeleteKeyPair
-      - lightsail:GetInstance
-      - lightsail:GetInstances
-      - lightsail:GetKeyPairs
-      - lightsail:RebootInstance
-      - lightsail:StopInstance
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
-      - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
-      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
-      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
-      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
