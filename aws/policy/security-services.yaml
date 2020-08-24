@@ -135,7 +135,9 @@ Statement:
       - kms:DeleteAlias
       - kms:DescribeKey
       - kms:DisableKey
+      - kms:DisableKeyRotation
       - kms:EnableKey
+      - kms:EnableKeyRotation
       - kms:GetKeyPolicy
       - kms:GetKeyRotationStatus
       - kms:GetPublicKey
