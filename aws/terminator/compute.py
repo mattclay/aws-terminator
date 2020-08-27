@@ -407,3 +407,54 @@ class LightsailKeyPair(Terminator):
 
     def terminate(self):
         self.client.delete_key_pair(keyPairName=self.name)
+
+
+class AutoScalingGroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, AutoScalingGroup, 'autoscaling', lambda client: client.describe_auto_scaling_groups()['AutoScalingGroups'])
+
+    @property
+    def id(self):
+        return self.instance['AutoScalingGroupName']
+
+    @property
+    def name(self):
+        return self.instance['AutoScalingGroupName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        self.client.delete_auto_scaling_group(AutoScalingGroupName=self.name, ForceDelete=True)
+
+
+class LaunchConfiguration(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials,
+            LaunchConfiguration,
+            'autoscaling',
+            lambda client: client.describe_launch_configurations()['LaunchConfigurations']
+        )
+
+    @property
+    def id(self):
+        return self.instance['LaunchConfigurationName']
+
+    @property
+    def name(self):
+        return self.instance['LaunchConfigurationName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        try:
+            self.client.delete_launch_configuration(LaunchConfigurationName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseFault':
+                raise

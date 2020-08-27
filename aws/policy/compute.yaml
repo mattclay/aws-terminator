@@ -1,5 +1,54 @@
 Version: '2012-10-17'
 Statement:
+
+  # Restrict the types of instances that can be started
+  - Sid: AllowEc2RunInstancesInstanceType
+    Effect: Allow
+    Action:
+      - autoscaling:CreateLaunchConfiguration
+      - ec2:RunInstances
+      - ec2:StartInstances
+    Resource:
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
+    Condition:
+      StringEqualsIfExists:
+        ec2:InstanceType:
+          - t2.nano
+          - t2.micro
+          - t3.nano
+          - t3.micro
+          - m1.large  # lowest cost instance type with EBS optimization supported
+
+  # Restrict the Types of instance that can be spun up using ASGs
+  - Sid: AllowAsgInstancesInstanceType
+    Effect: Allow
+    Action:
+      - autoscaling:CreateAutoScalingGroup
+      - autoscaling:UpdateAutoScalingGroup
+    Resource:
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
+    Condition:
+      StringEqualsIfExists:
+        autoscaling:InstanceTypes:
+          - t3.nano
+          - t3.micro
+
+  # Permit RunInstance to access any of the usual objects attached to an
+  # instance
+  - Sid: AllowEc2RunInstances
+    Effect: Allow
+    Action:
+      - ec2:RunInstances
+    Resource:
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:key-pair/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:network-interface/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:security-group/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
+      - 'arn:aws:ec2:{{ aws_region }}::image/*'
+
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -43,15 +92,23 @@ Statement:
       StringEquals:
         ec2:Region:
           - '{{ aws_region }}'
+
+  # - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     - "*"
+
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DescribeLaunchConfigurations
+      - autoscaling:DescribePolicies
       - ec2:DescribeAvailabilityZones
       - ec2:DescribeSpotPriceHistory
       - ec2:DescribeTransitGateways
-      - ecr:CreateRepository
-      - ecr:DescribeRepositories
-      - ecr:PutImageTagMutability
       - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
@@ -62,65 +119,30 @@ Statement:
       - elasticloadbalancing:DescribeTargetHealth
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyTargetGroupAttributes
-      - lambda:ListFunctions
-      - lambda:ListVersionsByFunction
-      - lambda:ListAliases
-      - lambda:ListEventSourceMappings
-    Resource: "*"
-  - Sid: AllowEc2RunInstancesInstanceType
-    Effect: Allow
-    Action:
-      - ec2:RunInstances
-      - ec2:StartInstances
     Resource:
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
-    Condition:
-      StringEquals:
-        ec2:InstanceType:
-          - t2.nano
-          - t2.micro
-          - t3.nano
-          - t3.micro
-          - m1.large  # lowest cost instance type with EBS optimization supported
-  - Sid: AllowEc2RunInstances
-    Effect: Allow
-    Action:
-      - ec2:RunInstances
-    Resource:
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:key-pair/*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:network-interface/*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:security-group/*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
-      - 'arn:aws:ec2:{{ aws_region }}::image/*'
+      - "*"
+
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - ec2:CreateVolume
       - elasticloadbalancing:CreateLoadBalancer
-      - lambda:InvokeFunction
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
+
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - autoscaling:CreateOrUpdateTags
+      - autoscaling:DeleteAutoScalingGroup
+      - autoscaling:DeleteLaunchConfiguration
+      - autoscaling:DeletePolicy
+      - autoscaling:DeleteTags
+      - autoscaling:DescribeTags
+      - autoscaling:DescribeAdjustmentTypes
+      - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
-      - ecr:DeleteLifecyclePolicy
-      - ecr:DeleteRepository
-      - ecr:DeleteRepositoryPolicy
-      - ecr:GetLifecyclePolicy
-      - ecr:GetRepositoryPolicy
-      - ecr:PutLifecyclePolicy
-      - ecr:SetRepositoryPolicy
-      - eks:ListClusters
-      - eks:DescribeCluster
-      - eks:DeleteCluster
-      - elasticbeanstalk:CreateApplication
-      - elasticbeanstalk:DeleteApplication
-      - elasticbeanstalk:DescribeApplications
-      - elasticbeanstalk:UpdateApplication
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:ConfigureHealthCheck
       - elasticloadbalancing:CreateListener
@@ -142,41 +164,10 @@ Statement:
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
-      - lambda:AddPermission
-      - lambda:CreateFunction
-      - lambda:DeleteFunction
-      - lambda:GetFunction
-      - lambda:GetFunctionConfiguration
-      - lambda:GetPolicy
-      - lambda:RemovePermission
-      - lambda:UpdateFunctionConfiguration
     Resource:
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
-      - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
-      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
-      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
-  - Sid: AllowEksCreateCluster
-    Effect: Allow
-    Action:
-      - eks:CreateCluster
-    Resource:
-      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
-  - Sid: AllowLightsail
-    Effect: Allow
-    Action:
-      - lightsail:CreateInstances
-      - lightsail:CreateKeyPair
-      - lightsail:DeleteInstance
-      - lightsail:DeleteKeyPair
-      - lightsail:GetInstance
-      - lightsail:GetInstances
-      - lightsail:GetKeyPairs
-      - lightsail:RebootInstance
-      - lightsail:StartInstance
-      - lightsail:StopInstance
-    Resource:
-      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
