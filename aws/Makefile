@@ -37,7 +37,7 @@ test: yamllint pycodestyle pylint
 
 .PHONY: test-requirements
 test-requirements:
-	"$(PYTHON3)" -m pip install -c ../constraints.txt -r requirements.txt -r test-requirements.txt --disable-pip-version-check
+	"$(PYTHON3)" -m pip install -c ../constraints.txt -r requirements.txt -r test-requirements.txt --disable-pip-version-check $(FLAGS)
 
 .PHONY: yamllint
 yamllint:

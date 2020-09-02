@@ -12,14 +12,14 @@ test-all: test
 
 .PHONY: test-all-requirements
 test-all-requirements: test-requirements
-	make test-requirements -C aws
+	make test-requirements -C aws FLAGS="$(FLAGS)"
 
 .PHONY: test
 test: yamllint
 
 .PHONY: test-requirements
 test-requirements:
-	"$(PYTHON3)" -m pip install -c constraints.txt -r test-requirements.txt --disable-pip-version-check
+	"$(PYTHON3)" -m pip install -c constraints.txt -r test-requirements.txt --disable-pip-version-check $(FLAGS)
 
 .PHONY: yamllint
 yamllint:
