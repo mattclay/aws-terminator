@@ -27,7 +27,7 @@ Statement:
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
 
-  - Sid: AllowRegionUnrestrictedResourceActionsWhichIncurNoFees
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - iam:ListAccountAliases
@@ -112,13 +112,17 @@ Statement:
         aws:RequestedRegion:
           - '{{ aws_region }}'
 
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - kms:CancelKeyDeletion
       - kms:CreateKey
       - kms:GenerateRandom
     Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - '{{ aws_region }}'
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
