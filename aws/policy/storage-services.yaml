@@ -33,5 +33,10 @@ Statement:
       - s3:GetBucketLogging
       - s3:PutBucketLogging
       - s3:GetMetricsConfiguration
+    Resource: "*"
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
       - s3:PutMetricsConfiguration
     Resource: "*"
