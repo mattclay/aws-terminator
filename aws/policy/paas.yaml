@@ -23,6 +23,7 @@ Statement:
       - ecr:GetRepositoryPolicy
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
+      - ecr:PutImageScanningConfiguration
       - eks:ListClusters
       - eks:DescribeCluster
       - eks:DeleteCluster
