@@ -33,6 +33,8 @@ Statement:
       - s3:GetBucketLogging
       - s3:PutBucketLogging
       - s3:GetMetricsConfiguration
+      - s3:GetBucketPublicAccessBlock
+      - s3:PutBucketPublicAccessBlock
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
