@@ -337,6 +337,10 @@ class ElasticLoadBalancingv2(Terminator):
     def created_time(self):
         return self.instance['CreatedTime']
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
     def _find_listeners(self):
         # Listeners can't be listed or described without providing an ELB or Listener ARN, so we have to handle them here
         return [listener['ListenerArn'] for listener in self.client.describe_listeners(LoadBalancerArn=self.name)['Listeners']]
