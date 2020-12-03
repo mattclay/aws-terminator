@@ -59,7 +59,7 @@ class Ec2CustomerGateway(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=15)
+        return datetime.timedelta(minutes=25)
 
     @property
     def id(self):
@@ -101,7 +101,7 @@ class Ec2Subnet(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=15)
+        return datetime.timedelta(minutes=25)
 
     @property
     def id(self):
@@ -130,7 +130,7 @@ class Ec2InternetGateway(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=15)
+        return datetime.timedelta(minutes=25)
 
     @property
     def id(self):
@@ -220,7 +220,7 @@ class Ec2Eni(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=15)
+        return datetime.timedelta(minutes=25)
 
     @property
     def id(self):
@@ -354,7 +354,7 @@ class Ec2SecurityGroup(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=15)
+        return datetime.timedelta(minutes=30)
 
     @property
     def id(self):

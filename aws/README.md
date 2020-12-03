@@ -82,7 +82,7 @@ To start using `cleanup.py` you will need to:
       cleanup     : DEBUG    ignored Ec2Instance: name=, id=i-0c18f88091e78898e age=0 days, 0:05:32, stale=False
       cleanup     : DEBUG    checked Ec2Instance: name=, id=i-0630e2ba640d7dbf1 age=1 days, 20:49:03, stale=True
 
-* The class property `age_limit` determines when a resource becomes stale. This is 10 minutes by default. Once a resource is stale, the terminator can delete it. Use check mode (-c or --check) to see what your class would delete without actually removing it.
+* The class property `age_limit` determines when a resource becomes stale. This is 20 minutes by default. Once a resource is stale, the terminator can delete it. Use check mode (-c or --check) to see what your class would delete without actually removing it.
 * Once a resource is stale you can test that it can be cleaned up by removing the check mode flag.
   For example, `python cleanup.py --stage dev --target Ec2Instance -v`.
 * You can forcibly delete resources that are not stale by using --force (or -f). Be aware that this can also remove resources that do not use the Terminator or DbTerminator base classes. Such unsupported resources will not be cleaned up by the CI account.

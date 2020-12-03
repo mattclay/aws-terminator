@@ -73,7 +73,7 @@ class IamInstanceProfile(Terminator):
 class Waf(DbTerminator):
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=20)
+        return datetime.timedelta(minutes=30)
 
     @property
     def change_token(self):
@@ -96,7 +96,7 @@ class WafWebAcl(Waf):
     @property
     def age_limit(self):
         # Try to delete WafWebAcl first, because WafRule objects cannot be deleted if used in any WebACL
-        return datetime.timedelta(minutes=10)
+        return datetime.timedelta(minutes=20)
 
     @property
     def id(self):
