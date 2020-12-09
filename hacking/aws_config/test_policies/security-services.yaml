@@ -28,33 +28,6 @@ Statement:
       - iam:ListServerCertificates
       - iam:UpdateServerCertificate
       - iam:UploadServerCertificate
-      # Because KMS CMKs are assigned a random UUID we can't apply Resource
-      # restrictions at the IAM policy level
-      - kms:CancelKeyDeletion
-      - kms:CreateAlias
-      - kms:CreateGrant
-      - kms:CreateKey
-      - kms:DeleteAlias
-      - kms:DescribeKey
-      - kms:DisableKey
-      - kms:EnableKey
-      - kms:GenerateRandom
-      - kms:GetKeyPolicy
-      - kms:GetKeyRotationStatus
-      - kms:GetPublicKey
-      - kms:ListAliases
-      - kms:ListGrants
-      - kms:ListKeyPolicies
-      - kms:ListKeys
-      - kms:ListResourceTags
-      - kms:ListRetirableGrants
-      - kms:PutKeyPolicy
-      - kms:RetireGrant
-      - kms:ScheduleKeyDeletion
-      - kms:TagResource
-      - kms:UntagResource
-      - kms:UpdateGrant
-      - kms:UpdateKeyDescription
       - waf:DeleteLoggingConfiguration
       - waf:DeletePermissionPolicy
       - waf:GetLoggingConfiguration
@@ -118,7 +91,7 @@ Statement:
   - Sid: AllowReplacementOfSpecificInstanceProfiles
     Effect: Allow
     Action:
-    - ec2:ReplaceIamInstanceProfileAssociation
+      - ec2:ReplaceIamInstanceProfileAssociation
     Resource: '*'
     Condition:
       ArnEquals:

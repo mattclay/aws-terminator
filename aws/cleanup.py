@@ -5,6 +5,7 @@
 import argparse
 import logging
 import os
+import sys
 import yaml
 
 import boto3
@@ -54,7 +55,7 @@ def main():
     account_id = boto3.client('sts').get_caller_identity().get('Account')
 
     if account_id != config['lambda_account_id']:
-        exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
+        sys.exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
 
     cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target)
 

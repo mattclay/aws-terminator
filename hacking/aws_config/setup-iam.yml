@@ -41,10 +41,10 @@
     group/aws:
       profile: '{{ profile | default(omit) }}'
 
-  # Needed if you're running Ansible 2.10+
-  #collections:
-  #  - amazon.aws
-  #  - community.aws
+  # # Needed if you're running Ansible 2.10+
+  # collections:
+  #   - amazon.aws
+  #   - community.aws
 
   tasks:
 
