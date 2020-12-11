@@ -462,3 +462,29 @@ class LaunchConfiguration(Terminator):
         except botocore.exceptions.ClientError as ex:
             if not ex.response['Error']['Code'] == 'ResourceInUseFault':
                 raise
+
+
+class LaunchTemplate(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials,
+            LaunchTemplate,
+            'ec2',
+            lambda client: client.describe_launch_templates()['LaunchTemplates']
+        )
+
+    @property
+    def id(self):
+        return self.instance['LaunchTemplateId']
+
+    @property
+    def name(self):
+        return self.instance['LaunchTemplateName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreateTime']
+
+    def terminate(self):
+        self.client.delete_launch_template(LaunchTemplateId=self.id)
