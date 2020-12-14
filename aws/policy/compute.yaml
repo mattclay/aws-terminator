@@ -81,6 +81,7 @@ Statement:
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
+      - ec2:ModifyVolume
       - ec2:RegisterImage
       - ec2:ReplaceIamInstanceProfileAssociation
       - ec2:StopInstances
