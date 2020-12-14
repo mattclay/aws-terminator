@@ -56,10 +56,14 @@ Statement:
       - ec2:AttachVolume
       - ec2:CreateImage
       - ec2:CreateKeyPair
+      - ec2:CreateLaunchTemplate
+      - ec2:CreateLaunchTemplateVersion
       - ec2:CreateSnapshot
       - ec2:CreateTags
       - ec2:CreateTransitGateway
       - ec2:DeleteKeyPair
+      - ec2:DeleteLaunchTemplate
+      - ec2:DeleteLaunchTemplateVersions
       - ec2:DeleteSnapshot
       - ec2:DeleteTags
       - ec2:DeleteTransitGateway
@@ -72,15 +76,19 @@ Statement:
       - ec2:DescribeInstances
       - ec2:DescribeInstanceStatus
       - ec2:DescribeKeyPairs
+      - ec2:DescribeLaunchTemplates
+      - ec2:DescribeLaunchTemplateVersions
       - ec2:DescribeRegions
       - ec2:DescribeSnapshots
       - ec2:DescribeTags
       - ec2:DescribeVolumes
       - ec2:DetachVolume
       - ec2:DisassociateIamInstanceProfile
+      - ec2:GetLaunchTemplateData
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
+      - ec2:ModifyLaunchTemplate
       - ec2:ModifyVolume
       - ec2:RegisterImage
       - ec2:ReplaceIamInstanceProfileAssociation
