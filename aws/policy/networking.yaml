@@ -69,6 +69,7 @@ Statement:
       - ec2:DescribeVpcClassicLink
       - ec2:DescribeVpcClassicLinkDnsSupport
       - ec2:DescribeVpcEndpoints
+      - ec2:DescribeVpcEndpointServices
       - ec2:CreateVpcEndpoint
       - ec2:DeleteVpcEndpoints
       - ec2:ModifyVpcEndpoint
