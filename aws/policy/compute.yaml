@@ -118,7 +118,9 @@ Statement:
       - ec2:DescribeAvailabilityZones
       - ec2:DescribeSpotPriceHistory
       - ec2:DescribeTransitGateways
+      - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DescribeListeners
+      - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:DescribeLoadBalancerAttributes
       - elasticloadbalancing:DescribeLoadBalancers
       - elasticloadbalancing:DescribeRules
@@ -127,7 +129,9 @@ Statement:
       - elasticloadbalancing:DescribeTargetGroups
       - elasticloadbalancing:DescribeTargetHealth
       - elasticloadbalancing:DeregisterTargets
+      - elasticloadbalancing:ModifyListener
       - elasticloadbalancing:ModifyTargetGroupAttributes
+      - elasticloadbalancing:ModifyRule
     Resource:
       - "*"
 
@@ -136,6 +140,7 @@ Statement:
     Action:
       - ec2:CreateVolume
       - elasticloadbalancing:CreateLoadBalancer
+      - elasticloadbalancing:CreateRule
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
@@ -153,6 +158,7 @@ Statement:
       - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
+      - elasticloadbalancing:RemoveTags
       - elasticloadbalancing:ConfigureHealthCheck
       - elasticloadbalancing:CreateListener
       - elasticloadbalancing:CreateLoadBalancerListeners
