@@ -19,9 +19,6 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      - ec2:*LaunchTemplate
-      - ec2:*LaunchTemplateVersion
-      - ec2:*LaunchTemplateVersions
       - ec2:ReportInstanceStatus
       - SNS:ListSubscriptions
       - SNS:SetTopicAttributes
