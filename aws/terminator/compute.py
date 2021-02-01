@@ -413,6 +413,25 @@ class LightsailKeyPair(Terminator):
         self.client.delete_key_pair(keyPairName=self.name)
 
 
+class LightsailStaticIp(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_static_ips(client):
+            return client.get_paginator('get_static_ips').paginate().build_full_result()['staticIps']
+        return Terminator._create(credentials, LightsailStaticIp, 'lightsail', _paginate_lightsail_static_ips)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_instance(instanceName=self.name)
+
+
 class AutoScalingGroup(Terminator):
     @staticmethod
     def create(credentials):
