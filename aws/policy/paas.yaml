@@ -34,6 +34,10 @@ Statement:
       - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
+      - lambda:CreateAlias
+      - lambda:DeleteAlias
+      - lambda:GetAlias
+      - lambda:UpdateAlias
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
