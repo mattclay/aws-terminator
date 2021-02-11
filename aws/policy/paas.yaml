@@ -43,14 +43,18 @@ Statement:
       - lambda:RemovePermission
       - lambda:UpdateAlias
       - lambda:UpdateFunctionConfiguration
+      - lightsail:AllocateStaticIp
       - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
       - lightsail:DeleteKeyPair
       - lightsail:GetInstance
       - lightsail:GetInstances
       - lightsail:GetKeyPairs
+      - lightsail:GetStaticIp
+      - lightsail:GetStaticIps
       - lightsail:RebootInstance
       - lightsail:StopInstance
+      - lightsail:ReleaseStaticIp
     Resource:
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
