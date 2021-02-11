@@ -21,23 +21,27 @@ Statement:
       - ecr:DeleteRepositoryPolicy
       - ecr:GetLifecyclePolicy
       - ecr:GetRepositoryPolicy
+      - ecr:PutImageScanningConfiguration
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
-      - ecr:PutImageScanningConfiguration
-      - eks:ListClusters
-      - eks:DescribeCluster
       - eks:DeleteCluster
+      - eks:DescribeCluster
+      - eks:ListClusters
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:DescribeApplications
       - elasticbeanstalk:UpdateApplication
       - lambda:AddPermission
+      - lambda:CreateAlias
       - lambda:CreateFunction
+      - lambda:DeleteAlias
       - lambda:DeleteFunction
+      - lambda:GetAlias
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
       - lambda:RemovePermission
+      - lambda:UpdateAlias
       - lambda:UpdateFunctionConfiguration
       - lightsail:AllocateStaticIp
       - lightsail:CreateKeyPair
