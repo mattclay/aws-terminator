@@ -170,6 +170,7 @@ Statement:
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
       - elasticloadbalancing:RegisterTargets
+      - elasticloadbalancing:SetSecurityGroups
       - elasticfilesystem:DescribeFileSystems
       - elasticfilesystem:DescribeMountTargets
       - elasticfilesystem:DescribeMountTargetSecurityGroups
