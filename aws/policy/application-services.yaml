@@ -3,48 +3,23 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - s3:GetLifecycleConfiguration
-      - s3:PutLifecycleConfiguration
-      - s3:PutEncryptionConfiguration
-      - s3:GetEncryptionConfiguration
-      - s3:CreateBucket
-      - s3:DeleteBucket
-      - s3:PutBucketAcl
-      - s3:PutObjectAcl
-      - s3:GetObject
-      - s3:GetObjectVersion
-      - s3:GetBucketVersioning
-      - s3:PutBucketVersioning
-      - s3:GetBucketRequestPayment
-      - s3:PutBucketRequestPayment
-      - s3:GetBucketAcl
-      - s3:GetBucketPolicy
-      - s3:PutBucketPolicy
-      - s3:HeadObject
-      - s3:ListBucketVersions
-      - s3:DeleteObject
-      - s3:PutObject
-      - s3:ListBucket
-      - s3:GetBucketTagging
-      - s3:PutBucketTagging
-      - s3:ListAllMyBuckets
-      - s3:GetBucketNotification
-      - s3:PutBucketNotification
-      - s3:GetBucketLogging
-      - s3:PutBucketLogging
       - ses:DescribeActiveReceiptRuleSet
+      - ses:DescribeReceiptRuleSet
       - ses:CreateReceiptRuleSet
       - ses:DeleteReceiptRuleSet
       - ses:ListReceiptRuleSets
       - ses:SetActiveReceiptRuleSet
       - ses:GetIdentityNotificationAttributes
       - ses:GetIdentityVerificationAttributes
+      - ses:GetIdentityDkimAttributes
       - ses:DeleteIdentity
       - ses:ListIdentities
       - ses:SetIdentityFeedbackForwardingEnabled
       - ses:SetIdentityHeadersInNotificationsEnabled
       - ses:SetIdentityNotificationTopic
       - ses:VerifyDomainIdentity
+      - ses:VerifyDomainDkim
+      - ses:SetIdentityDkimEnabled
       - ses:VerifyEmailIdentity
       - ses:GetIdentityPolicies
       - ses:PutIdentityPolicy
@@ -76,7 +51,6 @@ Statement:
       - ec2messages:GetEndpoint
       - ec2messages:GetMessages
       - ec2messages:SendReply
-      - dms:DescribeReplicationSubnetGroups
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
       - codecommit:ListRepositories
@@ -88,9 +62,6 @@ Statement:
       - sqs:GetQueueAttributes
       - sqs:ListQueues
       - sqs:SetQueueAttributes
-      - dynamodb:Scan
-      - dynamodb:ListTables
-      - dynamodb:DescribeTable
       - kinesis:ListStreams
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
@@ -103,16 +74,6 @@ Statement:
       - ssm:DeleteParameter
       - ssm:GetParametersByPath
       - ssm:GetParameters
-      - dms:CreateReplicationSubnetGroup
-      - dms:DeleteReplicationSubnetGroup
-      - dms:ModifyReplicationSubnetGroup
-      - dynamodb:DeleteItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:CreateTable
-      - dynamodb:DeleteTable
-      - dynamodb:UpdateTable
-      - dynamodb:TagResource
       - codebuild:CreateProject
       - codebuild:UpdateProject
       - codebuild:DeleteProject
@@ -137,30 +98,36 @@ Statement:
       - states:TagResource
       - states:UntagResource
       - logs:DescribeLogGroups
-      - elasticfilesystem:DescribeFileSystems
-      - elasticfilesystem:DescribeMountTargets
-      - elasticfilesystem:DescribeMountTargetSecurityGroups
-      - elasticfilesystem:DescribeTags
-      - elasticfilesystem:CreateFileSystem
-      - elasticfilesystem:CreateMountTarget
-      - elasticfilesystem:CreateTags
-      - elasticfilesystem:DeleteFileSystem
-      - elasticfilesystem:DeleteMountTarget
-      - kinesis:CreateStream
-      - kinesis:DeleteStream
+      - kinesis:AddTagsToStream
+      - kinesis:ListTagsForStream
+      - kinesis:RemoveTagsFromStream
+      - kinesis:StartStreamEncryption
+      - kinesis:StopStreamEncryption
     Resource:
-      - arn:aws:ssm:us-east-1:{{ aws_account_id }}:parameter/*
-      - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
-      - arn:aws:codebuild:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:codecommit:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:codepipeline:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:sns:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:sqs:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:*
-      - arn:aws:elasticfilesystem:us-east-1:{{ aws_account_id }}:file-system/*
-      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
-      - arn:aws:kinesis:us-east-1:{{ aws_account_id }}:stream/*
+      - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
+      - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codecommit:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codepipeline:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sqs:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - states:CreateStateMachine
+      - states:StartExecution
+      - states:StopExecution
+      - states:UpdateStateMachine
+      - kinesis:CreateStream
+      - kinesis:DecreaseStreamRetentionPeriod
+      - kinesis:DeleteStream
+      - kinesis:IncreaseStreamRetentionPeriod
+      - kinesis:UpdateShardCount
+    Resource:
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
@@ -170,27 +137,21 @@ Statement:
       - logs:DescribeMetricFilters
       - logs:DeleteMetricFilter
       - logs:PutMetricFilter
-    Resource: arn:aws:logs:us-east-1:{{ aws_account_id }}:log-group:ansible-test*
+    Resource:
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
   - Sid: ModifyCloudwatchAlarms
     Effect: Allow
     Action:
       - cloudwatch:PutMetricAlarm
       - cloudwatch:DeleteAlarms
-    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:ansible-test*
+    Resource:
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:ansible-test*'
   - Sid: DescribeCloudwatchAlarms
     Effect: Allow
     Action:
       - cloudwatch:DescribeAlarms
-    Resource: arn:aws:cloudwatch:us-east-1:{{ aws_account_id }}:alarm:*
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - states:CreateStateMachine
-      - states:StartExecution
-      - states:StopExecution
-      - states:UpdateStateMachine
     Resource:
-      - arn:aws:states:us-east-1:{{ aws_account_id }}:*
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
   - Sid: Cloudformation
     Effect: Allow
     Action:
@@ -207,4 +168,5 @@ Statement:
       - cloudformation:ListStackResources
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
-    Resource: arn:aws:cloudformation:us-east-1:{{ aws_account_id }}:stack/*
+    Resource:
+      - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'

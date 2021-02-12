@@ -1,0 +1,43 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ec2:Describe*
+    Resource: "*"
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - cloudfront:CreateDistribution
+      - cloudfront:CreateDistributionWithTags
+      - cloudfront:CreateCloudFrontOriginAccessIdentity
+      - cloudfront:DeleteDistribution
+      - cloudfront:GetDistribution
+      - cloudfront:GetStreamingDistribution
+      - cloudfront:GetDistributionConfig
+      - cloudfront:GetStreamingDistributionConfig
+      - cloudfront:GetInvalidation
+      - cloudfront:ListDistributions
+      - cloudfront:ListDistributionsByWebACLId
+      - cloudfront:ListInvalidations
+      - cloudfront:ListStreamingDistributions
+      - cloudfront:ListTagsForResource
+      - cloudfront:TagResource
+      - cloudfront:UntagResource
+      - cloudfront:UpdateDistribution
+    Resource: '*'
+
+  # - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     -
+
+  # - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     -

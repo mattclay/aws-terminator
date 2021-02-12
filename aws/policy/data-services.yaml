@@ -1,0 +1,73 @@
+Version: '2012-10-17'
+Statement:
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - dms:DescribeReplicationSubnetGroups
+      - dynamodb:Scan
+      - dynamodb:ListTables
+      - dynamodb:DescribeTable
+      - glue:GetConnection
+      - glue:CreateConnection
+      - glue:DeleteConnection
+      - glue:UpdateConnection
+      - glue:GetConnections
+      - rds:DescribeDBClusters
+      - rds:DescribeDBParameterGroups
+      - rds:DescribeDBSubnetGroups
+    Resource: "*"
+  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - dms:CreateReplicationSubnetGroup
+      - dms:DeleteReplicationSubnetGroup
+      - dms:ModifyReplicationSubnetGroup
+      - dynamodb:GetItem
+      - dynamodb:DeleteItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:CreateTable
+      - dynamodb:DeleteTable
+      - dynamodb:UpdateTable
+      - dynamodb:TagResource
+      - glacier:ListVaults
+      - glacier:CreateVault
+      - glacier:DeleteVault
+      - glacier:ListTagsForVault
+      - glacier:AddTagsToVault
+      - glacier:RemoveTagsFromVault
+      - redshift:DescribeClusters
+      - redshift:DeleteCluster
+      - redshift:ModifyCluster
+      - redshift:RebootCluster
+      - redshift:DeleteTags
+      - redshift:DescribeTags
+      - redshift:CreateTags
+      - rds:AddTagsToResource
+      - rds:CreateDBParameterGroup
+      - rds:CreateDBSubnetGroup
+      - rds:DeleteDBCluster
+      - rds:DeleteDBParameterGroup
+      - rds:DeleteDBSubnetGroup
+      - rds:DescribeDBParameters
+      - rds:ListTagsForResource
+      - rds:ModifyDBCluster
+      - rds:ModifyDBParameterGroup
+      - rds:ModifyDBSubnetGroup
+      - rds:RemoveTagsFromResource
+    Resource:
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
+      - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - rds:CreateDBCluster
+      - redshift:CreateCluster
+    Resource:
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'

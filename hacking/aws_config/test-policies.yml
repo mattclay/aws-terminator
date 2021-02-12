@@ -1,0 +1,67 @@
+# Usage: ansible-playbook test-policies.yml -vv
+#
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: 'env python'
+
+    aws_region: "{{ region | default('us-east-1') }}"
+    iam_group_prefix: "{{ group_prefix | default('ansible-integration') }}"
+    iam_policy_prefix: "{{ policy_prefix | default('AnsibleIntegratation') }}"
+    aws_account_id: "{{ test_account_id | default('123456789012') }}"
+    ci_policies: '../../aws/policy/*.yaml'
+    test_policies: 'test_policies/*.yaml'
+
+  tasks:
+    - name: 'Check size of policies'
+      vars:
+        raw_policy: "{{ lookup('template', item) | from_yaml | to_json }}"
+      with_fileglob:
+        - '{{ test_policies }}'
+        - '{{ ci_policies }}'
+      set_fact:
+        policy: "{{ raw_policy }}"
+        policy_size: "{{ raw_policy | length }}"
+        # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html#reference_iam-quotas-entity-length
+        # Actual limit is 6144 this gives us a little buffer
+        oversized: "{{ raw_policy | length > 6124 }}"
+      register: policies
+
+    - name: 'Fail if policy is too large'
+      vars:
+        _query: 'results[?ansible_facts.oversized].item'
+        oversized_policies: "{{ policies | json_query(_query) | list }}"
+      debug:
+        var: oversized_policies
+      failed_when:
+        - oversized_policies | length > 0
+
+    - name: 'Dump generated policies as files for additional testing/debugging'
+      when: 'dump_policies | default(False) | bool'
+      block:
+        - name: Create location for policies
+          tempfile:
+            state: directory
+            suffix: test-policies
+          register: tmp_dir
+
+        - name: Generate CI policies
+          vars:
+            _policy: "{{ (item | basename | regex_replace('\\.yaml', '') | regex_replace('\\W+', ' ')).split(' ') | map('capitalize') | join('') }}"
+          copy:
+            dest: '{{ tmp_dir.path }}/{{ iam_policy_prefix }}-CI-{{ _policy }}.json'
+            content: "{{ lookup('template', item) | from_yaml | to_json }}"
+          with_fileglob:
+            - '{{ ci_policies }}'
+          register: iam_managed_policies_ci
+
+        - name: Generate unsupported policies
+          vars:
+            _policy: "{{ (item | basename | regex_replace('\\.yaml', '') | regex_replace('\\W+', ' ')).split(' ') | map('capitalize') | join('') }}"
+          copy:
+            dest: '{{ tmp_dir.path }}/{{ iam_policy_prefix }}-Unsupported-{{ _policy }}.json'
+            content: "{{ lookup('template', item) | from_yaml | to_json }}"
+          with_fileglob:
+            - '{{ test_policies }}'
+          register: iam_managed_policies_unsupported

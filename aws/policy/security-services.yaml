@@ -1,86 +1,92 @@
 Version: '2012-10-17'
 Statement:
-  - Sid: AllowAssumeRoleTests
-    Effect: Allow
-    Action:
-      - iam:CreateRole
-      - sts:AssumeRole
-      - iam:DeleteRole
-      - iam:ListInstanceProfilesForRole
-      - iam:GetInstanceProfile
-      - iam:CreateInstanceProfile
-      - iam:DeleteInstanceProfile
-      - iam:AddRoleToInstanceProfile
-      - iam:RemoveRoleFromInstanceProfile
-    Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
-  - Sid: AllowAssumeRoleTestsAttachAndDetachRole
+
+  - Sid: AllowAssumeRoleTestsAttachAndDetachPolicy
     Effect: Allow
     Action:
       - iam:AttachRolePolicy
       - iam:DetachRolePolicy
     Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
     Condition:
       ArnLike:
         iam:PolicyArn:
-          - arn:aws:iam::aws:policy/IAMReadOnlyAccess
-          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
-          - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+          - 'arn:aws:iam::aws:policy/AWSDenyAll'
+          - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
+          - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
+          - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
+          - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+
+  # Legacy - We need to backport ansible-collections/community.aws/63 or
+  # wait until community.aws drops CI support for Ansible 2.9
+  - Sid: AllowPassRole
+    Effect: Allow
+    Action:
+      - iam:PassRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
+
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - iam:ListAccountAliases
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - waf:CreateXssMatchSet
-      - waf:UpdateXssMatchSet
-      - waf:GetXssMatchSet
-      - waf:DeleteXssMatchSet
-      - waf:CreateGeoMatchSet
-      - waf:UpdateGeoMatchSet
-      - waf:GetGeoMatchSet
-      - waf:DeleteGeoMatchSet
-      - waf:CreateSqlInjectionMatchSet
-      - waf:UpdateSqlInjectionMatchSet
-      - waf:DeleteSqlInjectionMatchSet
-      - waf:GetSqlInjectionMatchSet
-      - waf:CreateIPSet
-      - waf:UpdateIPSet
-      - waf:GetIPSet
-      - waf:DeleteIPSet
-      - waf:CreateSizeConstraintSet
-      - waf:GetSizeConstraintSet
-      - waf:UpdateSizeConstraintSet
-      - waf:DeleteSizeConstraintSet
       - waf:CreateByteMatchSet
-      - waf:GetByteMatchSet
-      - waf:UpdateByteMatchSet
-      - waf:DeleteByteMatchSet
+      - waf:CreateGeoMatchSet
+      - waf:CreateIPSet
+      - waf:CreateRateBasedRule
       - waf:CreateRegexMatchSet
-      - waf:GetRegexMatchSet
-      - waf:UpdateRegexMatchSet
-      - waf:DeleteRegexMatchSet
       - waf:CreateRegexPatternSet
-      - waf:UpdateRegexPatternSet
-      - waf:GetRegexPatternSet
-      - waf:DeleteRegexPatternSet
-      - waf:CreateWebACL
-      - waf:GetWebACL
-      - waf:UpdateWebACL
-      - waf:DeleteWebACL
-      - waf:List*
-      - waf:GetRule
       - waf:CreateRule
-      - waf:UpdateRule
+      - waf:CreateRuleGroup
+      - waf:CreateSizeConstraintSet
+      - waf:CreateSqlInjectionMatchSet
+      - waf:CreateWebACL
+      - waf:CreateXssMatchSet
+      - waf:DeleteByteMatchSet
+      - waf:DeleteGeoMatchSet
+      - waf:DeleteIPSet
+      - waf:DeleteRateBasedRule
+      - waf:DeleteRegexMatchSet
+      - waf:DeleteRegexPatternSet
       - waf:DeleteRule
+      - waf:DeleteRuleGroup
+      - waf:DeleteSizeConstraintSet
+      - waf:DeleteSqlInjectionMatchSet
+      - waf:DeleteWebACL
+      - waf:DeleteXssMatchSet
+      - waf:GetByteMatchSet
       - waf:GetChangeToken
+      - waf:GetChangeTokenStatus
+      - waf:GetGeoMatchSet
+      - waf:GetIPSet
+      - waf:GetRateBasedRule
+      - waf:GetRateBasedRuleManagedKeys
+      - waf:GetRegexMatchSet
+      - waf:GetRegexPatternSet
+      - waf:GetRule
+      - waf:GetRuleGroup
+      - waf:GetSizeConstraintSet
+      - waf:GetSqlInjectionMatchSet
+      - waf:GetWebACL
+      - waf:GetXssMatchSet
+      - waf:List*
+      - waf:TagResource
+      - waf:UntagResource
+      - waf:UpdateByteMatchSet
+      - waf:UpdateGeoMatchSet
+      - waf:UpdateIPSet
+      - waf:UpdateRateBasedRule
+      - waf:UpdateRegexMatchSet
+      - waf:UpdateRegexPatternSet
+      - waf:UpdateRule
+      - waf:UpdateSizeConstraintSet
+      - waf:UpdateSqlInjectionMatchSet
+      - waf:UpdateWebACL
+      - waf:UpdateXssMatchSet
       - inspector:ListAssessmentTargets
       - inspector:CreateResourceGroup
       - inspector:CreateAssessmentTarget
@@ -104,8 +110,21 @@ Statement:
     Condition:
       StringEquals:
         aws:RequestedRegion:
-          - us-east-1
-  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+          - '{{ aws_region }}'
+
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - kms:CancelKeyDeletion
+      - kms:CreateKey
+      - kms:GenerateRandom
+    Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - '{{ aws_region }}'
+
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - iam:GetRole
@@ -115,22 +134,63 @@ Statement:
       - iam:ListRoleTags
       - iam:TagRole
       - iam:UntagRole
-    Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/*
-  - Sid: AllowPassRole
-    Effect: Allow
-    Action:
-      - iam:PassRole
-    Resource:
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-sts-*
-      - arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*
-  - Sid: AllowACMRestrictable
+      - kms:CreateAlias
+      - kms:CreateGrant
+      - kms:DeleteAlias
+      - kms:DescribeKey
+      - kms:DisableKey
+      - kms:DisableKeyRotation
+      - kms:EnableKey
+      - kms:EnableKeyRotation
+      - kms:GetKeyPolicy
+      - kms:GetKeyRotationStatus
+      - kms:GetPublicKey
+      - kms:ListAliases
+      - kms:ListGrants
+      - kms:ListKeyPolicies
+      - kms:ListKeys
+      - kms:ListResourceTags
+      - kms:ListRetirableGrants
+      - kms:PutKeyPolicy
+      - kms:RetireGrant
+      - kms:ScheduleKeyDeletion
+      - kms:TagResource
+      - kms:UntagResource
+      - kms:UpdateGrant
+      - kms:UpdateKeyDescription
+    Resource: "*"
+
+  - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - acm:DescribeCertificate
       - acm:GetCertificate
       - acm:AddTagsToCertificate
       - acm:DeleteCertificate
+      - iam:AddRoleToInstanceProfile
+      - iam:CreateInstanceProfile
+      - iam:CreateRole
+      - iam:DeleteInstanceProfile
+      - iam:DeleteRole
+      - iam:GetInstanceProfile
+      - iam:ListInstanceProfilesForRole
+      - iam:PassRole
+      - iam:RemoveRoleFromInstanceProfile
+      - sts:AssumeRole
     Resource:
-      - arn:aws:acm:us-east-1:{{ aws_account_id }}:certificate/*
+      - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+
+  # This allows AWS Services to autmatically create their Default Service Linked Roles
+  # These have fixed policies and can only be assumed by the service itself.
+  - Sid: AllowServiceLinkedRoleCreation
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
+    Condition:
+      ForAnyValue:StringEquals:
+        iam:AWSServiceName:
+          - 'autoscaling.amazonaws.com'

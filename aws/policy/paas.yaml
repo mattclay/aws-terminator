@@ -1,0 +1,83 @@
+Version: '2012-10-17'
+Statement:
+
+  - Sid: AllowResourceRestrictedActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - eks:CreateCluster
+      - lambda:InvokeFunction
+      - lightsail:CreateInstances
+      - lightsail:StartInstance
+    Resource:
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
+      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+
+  - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ecr:DeleteLifecyclePolicy
+      - ecr:DeleteRepository
+      - ecr:DeleteRepositoryPolicy
+      - ecr:GetLifecyclePolicy
+      - ecr:GetRepositoryPolicy
+      - ecr:PutImageScanningConfiguration
+      - ecr:PutLifecyclePolicy
+      - ecr:SetRepositoryPolicy
+      - eks:DeleteCluster
+      - eks:DescribeCluster
+      - eks:ListClusters
+      - elasticbeanstalk:CreateApplication
+      - elasticbeanstalk:DeleteApplication
+      - elasticbeanstalk:DescribeApplications
+      - elasticbeanstalk:UpdateApplication
+      - lambda:AddPermission
+      - lambda:CreateAlias
+      - lambda:CreateFunction
+      - lambda:DeleteAlias
+      - lambda:DeleteFunction
+      - lambda:GetAlias
+      - lambda:GetFunction
+      - lambda:GetFunctionConfiguration
+      - lambda:GetPolicy
+      - lambda:RemovePermission
+      - lambda:UpdateAlias
+      - lambda:UpdateFunctionConfiguration
+      - lightsail:AllocateStaticIp
+      - lightsail:CreateKeyPair
+      - lightsail:DeleteInstance
+      - lightsail:DeleteKeyPair
+      - lightsail:GetInstance
+      - lightsail:GetInstances
+      - lightsail:GetKeyPairs
+      - lightsail:GetStaticIp
+      - lightsail:GetStaticIps
+      - lightsail:RebootInstance
+      - lightsail:StopInstance
+      - lightsail:ReleaseStaticIp
+    Resource:
+      - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
+      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+
+  # - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
+  #   Effect: Allow
+  #   Action:
+  #     -
+  #   Resource:
+  #     - "*"
+
+  - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ecr:CreateRepository
+      - ecr:DescribeRepositories
+      - ecr:PutImageTagMutability
+      - lambda:ListFunctions
+      - lambda:ListVersionsByFunction
+      - lambda:ListAliases
+      - lambda:ListEventSourceMappings
+    Resource:
+      - "*"
