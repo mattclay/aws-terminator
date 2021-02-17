@@ -30,6 +30,21 @@ Statement:
       - dynamodb:DeleteTable
       - dynamodb:UpdateTable
       - dynamodb:TagResource
+      - elasticache:AddTagsToResource
+      - elasticache:CreateCacheSecurityGroup
+      - elasticache:CreateCacheSubnetGroup
+      - elasticache:DeleteCacheCluster
+      - elasticache:DeleteCacheSecurityGroup
+      - elasticache:DeleteCacheSubnetGroup
+      - elasticache:DescribeCacheClusters
+      - elasticache:DescribeCacheEngineVersions
+      - elasticache:DescribeCacheParameterGroups
+      - elasticache:DescribeCacheParameters
+      - elasticache:DescribeCacheSecurityGroups
+      - elasticache:DescribeCacheSubnetGroups
+      - elasticache:DescribeEngineDefaultParameters
+      - elasticache:DescribeUpdateActions
+      - elasticache:RemoveTagsFromResource
       - glacier:ListVaults
       - glacier:CreateVault
       - glacier:DeleteVault
@@ -58,6 +73,10 @@ Statement:
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
@@ -67,7 +86,9 @@ Statement:
     Effect: Allow
     Action:
       - rds:CreateDBCluster
+      - elasticache:CreateCacheCluster
       - redshift:CreateCluster
     Resource:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
