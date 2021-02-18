@@ -326,6 +326,34 @@ class ACMCertificate(DbTerminator):
         self.client.delete_certificate(CertificateArn=self.id)
 
 
+class IAMSamlProvider(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, IAMSamlProvider, 'iam',
+            lambda client: client.list_saml_providers()['SAMLProviderList']
+        )
+
+    @property
+    def id(self):
+        return self.instance['Arn']
+
+    @property
+    def name(self):
+        return self.instance['Arn'].split('/')[-1]
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test-')
+
+    @property
+    def created_time(self):
+        return self.instance['CreateDate']
+
+    def terminate(self):
+        self.client.delete_saml_provider(SAMLProviderArn=self.id)
+
+
 class KMSKey(Terminator):
     @staticmethod
     def create(credentials):
