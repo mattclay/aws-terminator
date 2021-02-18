@@ -4,6 +4,7 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DescribeInstanceRefreshes
       - autoscaling:DescribeLaunchConfigurations
       - autoscaling:DescribePolicies
       - ec2:Describe*
