@@ -130,6 +130,7 @@ Statement:
       - elasticloadbalancing:DescribeTags
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
+      - elasticloadbalancing:DescribeInstanceHealth
       - elasticloadbalancing:DescribeTargetHealth
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyListener
