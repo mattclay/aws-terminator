@@ -132,6 +132,7 @@ Statement:
       - iam:ListRoles
       - iam:ListRolePolicies
       - iam:ListRoleTags
+      - iam:ListSAMLProviders
       - iam:TagRole
       - iam:UntagRole
       - kms:CreateAlias
@@ -170,16 +171,21 @@ Statement:
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
+      - iam:CreateSAMLProvider
       - iam:DeleteInstanceProfile
       - iam:DeleteRole
+      - iam:DeleteSAMLProvider
       - iam:GetInstanceProfile
+      - iam:GetSAMLProvider
       - iam:ListInstanceProfilesForRole
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
+      - iam:UpdateSAMLProvider
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
 
   # This allows AWS Services to autmatically create their Default Service Linked Roles

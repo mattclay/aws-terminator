@@ -26,6 +26,8 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:CreateAutoScalingGroup
+      - autoscaling:CancelInstanceRefresh
+      - autoscaling:StartInstanceRefresh
       - autoscaling:UpdateAutoScalingGroup
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
@@ -113,6 +115,7 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DescribeInstanceRefreshes
       - autoscaling:DescribeLaunchConfigurations
       - autoscaling:DescribePolicies
       - ec2:DescribeAvailabilityZones
@@ -127,6 +130,7 @@ Statement:
       - elasticloadbalancing:DescribeTags
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
+      - elasticloadbalancing:DescribeInstanceHealth
       - elasticloadbalancing:DescribeTargetHealth
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyListener
