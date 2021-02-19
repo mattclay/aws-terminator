@@ -20,6 +20,7 @@ class DmsSubnetGroup(DbTerminator):
     def terminate(self):
         self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
 
+
 class Elasticache(Terminator):
     @staticmethod
     def create(credentials):
@@ -40,6 +41,7 @@ class Elasticache(Terminator):
 
     def terminate(self):
         self.client.delete_cache_cluster(CacheClusterId=self.id)
+
 
 class GlueConnection(Terminator):
     @staticmethod
