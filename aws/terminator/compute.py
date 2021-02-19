@@ -429,7 +429,7 @@ class LightsailStaticIp(Terminator):
         return self.instance['createdAt']
 
     def terminate(self):
-        self.client.delete_instance(instanceName=self.name)
+        self.client.release_static_ip(staticIpName=self.name)
 
 
 class AutoScalingGroup(Terminator):
