@@ -20,6 +20,26 @@ class DmsSubnetGroup(DbTerminator):
     def terminate(self):
         self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
 
+class Elasticache(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Elasticache, 'elasticache', lambda client: client.describe_cache_clusters()['CacheClusters'])
+
+    @property
+    def name(self):
+        # Name is used like an ID
+        return self.instance['CacheClusterId']
+
+    @property
+    def id(self):
+        return self.instance['CacheClusterId']
+
+    @property
+    def created_time(self):
+        return self.instance['CacheClusterCreateTime']
+
+    def terminate(self):
+        self.client.delete_cache_cluster(CacheClusterId=self.id)
 
 class GlueConnection(Terminator):
     @staticmethod
