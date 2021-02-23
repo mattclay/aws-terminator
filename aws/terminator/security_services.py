@@ -38,6 +38,8 @@ class IamRole(Terminator):
 
         for policy in self.client.list_attached_role_policies(RoleName=self.name)['AttachedPolicies']:
             self.client.detach_role_policy(RoleName=self.name, PolicyArn=policy['PolicyArn'])
+        for policy in self.client.list_role_policies(RoleName=self.name)['PolicyNames']:
+            self.client.delete_role_policy(RoleName=self.name, PolicyName=policy)
 
         self.client.delete_role(RoleName=self.name)
 
