@@ -1,11 +1,30 @@
 Version: '2012-10-17'
 Statement:
+
+  - Sid: AllowManagedPolicyAttachments
+    Effect: Allow
+    Action:
+      - iam:AttachRolePolicy
+      - iam:DetachRolePolicy
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+    Condition:
+      ArnLike:
+        iam:PolicyArn:
+          - 'arn:aws:iam::aws:policy/service-role/AWSConfigRole'
+
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - cloudtrail:DescribeTrails
       - cloudtrail:ListTags
       - cloudtrail:ListPublicKeys
+      - config:DeleteConfigRule
+      - config:DeleteConfigurationRecorder
+      - config:DeleteDeliveryChannel
+      - config:DescribeConfigRules
+      - config:DescribeConfigurationRecorders
+      - config:DescribeDeliveryChannels
       - iam:GetPolicy
       - iam:GetPolicyVersion
       - iam:GetRolePolicy
@@ -21,6 +40,9 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      # Config has limited support for resource level restrictions
+      - config:PutConfigurationRecorder
+      - config:PutDeliveryChannel
       # Legacied because the current (minimal) tests don't use
       # { resource_prefix } yet
       - iam:DeleteServerCertificate
@@ -77,6 +99,7 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      - config:PutConfigRule
       - logs:CreateLogGroup
       - logs:PutRetentionPolicy
       - logs:DeleteLogGroup
@@ -84,6 +107,7 @@ Statement:
       - cloudtrail:*
       - secretsmanager:*
     Resource:
+      - 'arn:aws:config:{{ aws_region }}:{{ aws_account_id }}:config-rule/*'
       - 'arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:trail/ansible-test-*'
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
