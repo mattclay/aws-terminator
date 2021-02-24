@@ -356,6 +356,114 @@ class IAMSamlProvider(Terminator):
         self.client.delete_saml_provider(SAMLProviderArn=self.id)
 
 
+class ConfigRecorder(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ConfigRecorder, 'config',
+            lambda client: client.describe_configuration_recorders()['ConfigurationRecorders']
+        )
+
+    @property
+    def id(self):
+        return self.instance['name']
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    def terminate(self):
+        self.client.delete_configuration_recorder(ConfigurationRecorderName=self.name)
+
+
+class ConfigAggregator(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ConfigAggregator, 'config',
+            lambda client: client.describe_configuration_aggregators()['ConfigurationAggregators']
+        )
+
+    @property
+    def id(self):
+        return self.instance['ConfigurationAggregatorArn']
+
+    @property
+    def name(self):
+        return self.instance['ConfigurationAggregatorName']
+
+    def terminate(self):
+        self.client.delete_configuration_aggregator(ConfigurationAggregatorName=self.name)
+
+
+class ConfigAggregationAuthorization(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ConfigAggregationAuthorization, 'config',
+            lambda client: client.describe_aggregation_authorizations()['AggregationAuthorizations']
+        )
+
+    @property
+    def region(self):
+        return self.instance['AuthorizedAwsRegion']
+
+    @property
+    def account(self):
+        return self.instance['AuthorizedAccountId']
+
+    @property
+    def id(self):
+        return self.instance['AggregationAuthorizationArn']
+
+    @property
+    def name(self):
+        return self.instance['AuthorizedAccountId'] + ":" + self.instance['AuthorizedAwsRegion']
+
+    def terminate(self):
+        self.client.delete_aggregation_authorization(AuthorizedAccountId=self.account, AuthorizedAwsRegion=self.region)
+
+
+class ConfigDeliveryChannel(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ConfigDeliveryChannel, 'config',
+            lambda client: client.describe_delivery_channels()['DeliveryChannels']
+        )
+
+    @property
+    def id(self):
+        return self.instance['name']
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    def terminate(self):
+        self.client.delete_delivery_channel(DeliveryChannelName=self.name)
+
+
+class ConfigRule(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, ConfigRule, 'config',
+            lambda client: client.describe_config_rules()['ConfigRules']
+        )
+
+    @property
+    def id(self):
+        return self.instance['ConfigRuleId']
+
+    @property
+    def name(self):
+        return self.instance['ConfigRuleName']
+
+    def terminate(self):
+        self.client.delete_config_rule(ConfigRuleName=self.name)
+
+
 class KMSKey(Terminator):
     @staticmethod
     def create(credentials):
