@@ -24,7 +24,15 @@ class DmsSubnetGroup(DbTerminator):
 class Elasticache(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, Elasticache, 'elasticache', lambda client: client.describe_cache_clusters()['CacheClusters'])
+
+        def get_available_clusters(client):
+            # describe_cache_clusters does not have a parameter to filter results
+            # The key "CacheClusterCreateTime" does not exist while the cluster is being created.
+            ignore_states = ('creating', 'deleting',)
+            clusters = client.describe_cache_clusters()['CacheClusters']
+            return [cluster for cluster in clusters if cluster['CacheClusterStatus'] not in ignore_states]
+
+        return Terminator._create(credentials, Elasticache, 'elasticache', get_available_clusters)
 
     @property
     def name(self):

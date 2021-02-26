@@ -44,6 +44,9 @@ Statement:
       - elasticache:DescribeCacheSubnetGroups
       - elasticache:DescribeEngineDefaultParameters
       - elasticache:DescribeUpdateActions
+      - elasticache:ModifyCacheCluster
+      - elasticache:ModifyCacheParameterGroup
+      - elasticache:ModifyCacheSubnetGroup
       - elasticache:RemoveTagsFromResource
       - glacier:ListVaults
       - glacier:CreateVault
@@ -91,4 +94,19 @@ Statement:
     Resource:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+  # This allows AWS Services to autmatically create their Default Service Linked Roles
+  # These have fixed policies and can only be assumed by the service itself.
+  - Sid: AllowServiceLinkedRoleCreation
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache'
+    Condition:
+      ForAnyValue:StringEquals:
+        iam:AWSServiceName:
+          - 'elasticache.amazonaws.com'
