@@ -144,7 +144,13 @@ class Ec2Volume(Terminator):
 class Ec2TransitGateway(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, Ec2TransitGateway, 'ec2', lambda client: client.describe_transit_gateways()['TransitGateways'])
+        account = get_account_id(credentials)
+        filters = [{
+            'Name': 'owner-id',
+            'Values': [account]
+        }]
+        return Terminator._create(credentials, Ec2TransitGateway, 'ec2',
+                                  lambda client: client.describe_transit_gateways(Filters=filters)['TransitGateways'])
 
     @property
     def id(self):
@@ -429,7 +435,7 @@ class LightsailStaticIp(Terminator):
         return self.instance['createdAt']
 
     def terminate(self):
-        self.client.delete_instance(instanceName=self.name)
+        self.client.release_static_ip(staticIpName=self.name)
 
 
 class AutoScalingGroup(Terminator):

@@ -163,6 +163,7 @@ Statement:
       - cloudformation:DescribeStackEvents
       - cloudformation:DescribeStacks
       - cloudformation:GetStackPolicy
+      - cloudformation:SetStackPolicy
       - cloudformation:GetTemplate
       - cloudformation:ListChangeSets
       - cloudformation:ListStackResources
