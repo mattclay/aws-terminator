@@ -87,6 +87,48 @@ Statement:
       - waf:UpdateSqlInjectionMatchSet
       - waf:UpdateWebACL
       - waf:UpdateXssMatchSet
+      - wafv2:ListRuleGroups
+      - wafv2:ListWebACLs
+      - wafv2:AssociateWebACL
+      - wafv2:DeleteRuleGroup
+      - wafv2:CreateRuleGroup
+      - wafv2:PutFirewallManagerRuleGroups
+      - wafv2:GetWebACLForResource
+      - wafv2:GetLoggingConfiguration
+      - wafv2:DeleteWebACL
+      - wafv2:GetRateBasedStatementManagedKeys
+      - wafv2:ListLoggingConfigurations
+      - wafv2:GetIPSet
+      - wafv2:CreateWebACL
+      - wafv2:CreateRegexPatternSet
+      - wafv2:ListIPSets
+      - wafv2:GetWebACL
+      - wafv2:UpdateRegexPatternSet
+      - wafv2:GetRuleGroup
+      - wafv2:CreateIPSet
+      - wafv2:ListAvailableManagedRuleGroups
+      - wafv2:ListRegexPatternSets
+      - wafv2:PutPermissionPolicy
+      - wafv2:DeleteIPSet
+      - wafv2:DescribeManagedRuleGroup
+      - wafv2:UntagResource
+      - wafv2:GetRegexPatternSet
+      - wafv2:GetPermissionPolicy
+      - wafv2:CheckCapacity
+      - wafv2:TagResource
+      - wafv2:ListResourcesForWebACL
+      - wafv2:DeleteLoggingConfiguration
+      - wafv2:ListTagsForResource
+      - wafv2:PutLoggingConfiguration
+      - wafv2:DisassociateWebACL
+      - wafv2:UpdateWebACL
+      - wafv2:UpdateRuleGroup
+      - wafv2:DeletePermissionPolicy
+      - wafv2:DeleteRegexPatternSet
+      - wafv2:GetSampledRequests
+      - wafv2:DeleteFirewallManagerRuleGroups
+      - wafv2:DisassociateFirewallManager
+      - wafv2:UpdateIPSet"
       - inspector:ListAssessmentTargets
       - inspector:CreateResourceGroup
       - inspector:CreateAssessmentTarget
