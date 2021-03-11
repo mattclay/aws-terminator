@@ -320,6 +320,22 @@ class WafV2RuleGroup(WafV2):
         self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
 
 
+class WafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        regional = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
+        for item in regional:
+            item.update({"Scope": "REGIONAL"})
+
+        cloudfront = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
+        for item in cloudfront:
+            item.update({"Scope": "CLOUDFRONT"})
+        return regional + cloudfront
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
+
+
 class InspectorAssessmentTemplate(DbTerminator):
     @staticmethod
     def create(credentials):
