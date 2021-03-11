@@ -269,7 +269,13 @@ class WafV2IpSet(DbTerminator):
     @staticmethod
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
+        for item in regionl:
+            item.update({"Scope":"REGIONAL"})
+
         cloudfront = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
+        for item in cloudfront:
+            item.update({"Scope":"CLOUDFRONT"})
+
         return regional + cloudfront
 
     @property
@@ -284,9 +290,44 @@ class WafV2IpSet(DbTerminator):
     def lock_token(self):
         return self.instance['LockToken']
 
-    def terminate(self):
-        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+    @property
+    def scope(self):
+        return self.instance['Scope']
 
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
+
+
+class WafV2RuleGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        regional = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
+        for item in regionl:
+            item.update({"Scope":"REGIONAL"})
+
+        cloudfront = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
+        for item in cloudfront:
+            item.update({"Scope":"CLOUDFRONT"})
+        return regional + cloudfront
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def lock_token(self):
+        return self.instance['LockToken']
+
+    @property
+    def scope(self):
+        return self.instance['Scope']
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
 
 class InspectorAssessmentTemplate(DbTerminator):
     @staticmethod
