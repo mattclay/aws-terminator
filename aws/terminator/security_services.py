@@ -282,12 +282,20 @@ class WafV2(DbTerminator):
     def scope(self):
         return self.instance['Scope']
 
+    @abc.abstractmethod
+    def terminate(self):
+        """Terminate or delete the AWS resource."""
+
+    @abc.abstractmethod
+    def create(self):
+        """List the existing AWS resource."""
+
 
 class WafV2IpSet(WafV2):
     @staticmethod
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
-        for item in regionl:
+        for item in regional:
             item.update({"Scope": "REGIONAL"})
 
         cloudfront = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
@@ -304,7 +312,7 @@ class WafV2RuleGroup(WafV2):
     @staticmethod
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
-        for item in regionl:
+        for item in regional:
             item.update({"Scope": "REGIONAL"})
 
         cloudfront = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
