@@ -265,6 +265,27 @@ class WafRegexPatternSet(Waf):
         self.client.delete_regex_pattern_set(RegexPatternSetId=self.id, ChangeToken=self.change_token)
 
 
+class WafV2IpSetRegionl(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def lock_token(self):
+        return self.instance['LockToken']
+
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
 class InspectorAssessmentTemplate(DbTerminator):
     @staticmethod
     def create(credentials):
