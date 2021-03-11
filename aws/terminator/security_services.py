@@ -288,11 +288,11 @@ class WafV2IpSet(WafV2):
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
         for item in regionl:
-            item.update({"Scope":"REGIONAL"})
+            item.update({"Scope": "REGIONAL"})
 
         cloudfront = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
         for item in cloudfront:
-            item.update({"Scope":"CLOUDFRONT"})
+            item.update({"Scope": "CLOUDFRONT"})
 
         return regional + cloudfront
 
@@ -305,11 +305,11 @@ class WafV2RuleGroup(WafV2):
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
         for item in regionl:
-            item.update({"Scope":"REGIONAL"})
+            item.update({"Scope": "REGIONAL"})
 
         cloudfront = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
         for item in cloudfront:
-            item.update({"Scope":"CLOUDFRONT"})
+            item.update({"Scope": "CLOUDFRONT"})
         return regional + cloudfront
 
     def terminate(self):
