@@ -268,7 +268,7 @@ class WafRegexPatternSet(Waf):
 class WafV2IpSetRegionl(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
+        return Terminator._create(credentials, WafV2IpSetRegionl, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
 
     @property
     def id(self):
