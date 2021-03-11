@@ -21,6 +21,36 @@ class DmsSubnetGroup(DbTerminator):
         self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
 
 
+class Elasticache(Terminator):
+    @staticmethod
+    def create(credentials):
+
+        def get_available_clusters(client):
+            # describe_cache_clusters does not have a parameter to filter results
+            # The key "CacheClusterCreateTime" does not exist while the cluster is being created.
+            ignore_states = ('creating', 'deleting',)
+            clusters = client.describe_cache_clusters()['CacheClusters']
+            return [cluster for cluster in clusters if cluster['CacheClusterStatus'] not in ignore_states]
+
+        return Terminator._create(credentials, Elasticache, 'elasticache', get_available_clusters)
+
+    @property
+    def name(self):
+        # Name is used like an ID
+        return self.instance['CacheClusterId']
+
+    @property
+    def id(self):
+        return self.instance['CacheClusterId']
+
+    @property
+    def created_time(self):
+        return self.instance['CacheClusterCreateTime']
+
+    def terminate(self):
+        self.client.delete_cache_cluster(CacheClusterId=self.id)
+
+
 class GlueConnection(Terminator):
     @staticmethod
     def create(credentials):

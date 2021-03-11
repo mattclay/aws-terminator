@@ -214,7 +214,9 @@ class S3Bucket(Terminator):
 
         try:
             self.client.delete_bucket(Bucket=self.name)
-        except botocore.exceptions.ClientError:
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] == 'NoSuchBucket':
+                return
             for keys in _paginated_list(self.name):
                 self.client.delete_objects(
                     Bucket=self.name,
