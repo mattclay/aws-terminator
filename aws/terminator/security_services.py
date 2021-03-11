@@ -286,10 +286,6 @@ class WafV2(DbTerminator):
     def terminate(self):
         """Terminate or delete the AWS resource."""
 
-    @abc.abstractmethod
-    def create(self):
-        """List the existing AWS resource."""
-
 
 class WafV2IpSet(WafV2):
     @staticmethod
