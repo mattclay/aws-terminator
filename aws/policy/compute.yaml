@@ -175,6 +175,7 @@ Statement:
       - elasticloadbalancing:ModifyLoadBalancerAttributes
       - elasticloadbalancing:RegisterTargets
       - elasticloadbalancing:SetSecurityGroups
+      - elasticloadbalancing:SetWebACL
       - elasticfilesystem:DescribeFileSystems
       - elasticfilesystem:DescribeMountTargets
       - elasticfilesystem:DescribeMountTargetSecurityGroups
@@ -183,7 +184,7 @@ Statement:
       - elasticfilesystem:CreateMountTarget
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
-      - elasticfilesystem:DeleteMountTarget
+      - elasticfilesystem:DeleteMountTarget      
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
