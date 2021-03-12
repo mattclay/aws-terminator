@@ -127,6 +127,12 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - config:DeleteConfigRule
+      - config:DeleteConfigurationRecorder
+      - config:DeleteDeliveryChannel
+      - config:DescribeConfigRules
+      - config:DescribeConfigurationRecorders
+      - config:DescribeDeliveryChannels
       - iam:GetRole
       - iam:ListAttachedRolePolicies
       - iam:ListRoles
