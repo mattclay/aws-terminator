@@ -38,8 +38,12 @@ def main():
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
-    base_path = os.path.dirname(__file__)
-    config_path = os.path.join(base_path, 'config.yml')
+    if args.config_file:
+        config_path = args.config_file
+    else:
+        base_path = os.path.dirname(__file__)
+        config_path = os.path.join(base_path, 'config.yml')
+    logger.debug('Config path: %s', config_path)
 
     def default_ctor(_dummy, tag_suffix, node):
         return tag_suffix + ' ' + node.value
@@ -79,6 +83,10 @@ def parse_args():
                         choices=['prod', 'dev'],
                         required=True,
                         help='stage to use for database and policy access')
+
+    parser.add_argument('--config-file',
+                        metavar='config_file',
+                        help='Where to read the configuration file from')
 
     parser.add_argument('--target',
                         choices=sorted([value.__name__ for value in get_concrete_subclasses(Terminator)] + ['Database']),
