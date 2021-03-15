@@ -292,11 +292,11 @@ class WafV2IpSet(WafV2):
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
         for item in regional:
-            item.update({"Scope": "REGIONAL"})
+            item["Scope"] = "REGIONAL"
 
         cloudfront = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
         for item in cloudfront:
-            item.update({"Scope": "CLOUDFRONT"})
+            item["Scope"] = "CLOUDFRONT"
 
         return regional + cloudfront
 
@@ -309,11 +309,12 @@ class WafV2RuleGroup(WafV2):
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
         for item in regional:
-            item.update({"Scope": "REGIONAL"})
+            item["Scope"] = "REGIONAL"
 
         cloudfront = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
         for item in cloudfront:
-            item.update({"Scope": "CLOUDFRONT"})
+            item["Scope"] = "CLOUDFRONT"
+
         return regional + cloudfront
 
     def terminate(self):
@@ -325,11 +326,12 @@ class WafV2WebAcl(WafV2):
     def create(credentials):
         regional = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
         for item in regional:
-            item.update({"Scope": "REGIONAL"})
+            item["Scope"] = "REGIONAL"
 
         cloudfront = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
         for item in cloudfront:
-            item.update({"Scope": "CLOUDFRONT"})
+            item["Scope"] = "CLOUDFRONT"
+
         return regional + cloudfront
 
     def terminate(self):
