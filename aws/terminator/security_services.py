@@ -287,55 +287,58 @@ class WafV2(DbTerminator):
         """Terminate or delete the AWS resource."""
 
 
-class WafV2IpSet(WafV2):
+class RegionalWafV2IpSet(WafV2):
     @staticmethod
     def create(credentials):
-        regional = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
-        for item in regional:
-            item["Scope"] = "REGIONAL"
-
-        cloudfront = DbTerminator._create(credentials, WafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
-        for item in cloudfront:
-            item["Scope"] = "CLOUDFRONT"
-
-        return regional + cloudfront
+        return DbTerminator._create(credentials, RegionalWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
 
     def terminate(self):
-        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
 
 
-class WafV2RuleGroup(WafV2):
+class CloudfrontWafV2IpSet(WafV2):
     @staticmethod
     def create(credentials):
-        regional = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
-        for item in regional:
-            item["Scope"] = "REGIONAL"
-
-        cloudfront = DbTerminator._create(credentials, WafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
-        for item in cloudfront:
-            item["Scope"] = "CLOUDFRONT"
-
-        return regional + cloudfront
+        return DbTerminator._create(credentials, CloudfrontWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
 
     def terminate(self):
-        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
 
 
-class WafV2WebAcl(WafV2):
+class RegionalWafV2RuleGroup(WafV2):
     @staticmethod
     def create(credentials):
-        regional = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
-        for item in regional:
-            item["Scope"] = "REGIONAL"
-
-        cloudfront = DbTerminator._create(credentials, WafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
-        for item in cloudfront:
-            item["Scope"] = "CLOUDFRONT"
-
-        return regional + cloudfront
+        return DbTerminator._create(credentials, RegionalWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
 
     def terminate(self):
-        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope=self.scope)
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2RuleGroup(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
+class RegionalWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
 
 
 class InspectorAssessmentTemplate(DbTerminator):
