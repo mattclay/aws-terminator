@@ -5,6 +5,7 @@
 import argparse
 import logging
 import os
+import sys
 import yaml
 
 import boto3
@@ -37,8 +38,12 @@ def main():
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
-    base_path = os.path.dirname(__file__)
-    config_path = os.path.join(base_path, 'config.yml')
+    if args.config_file:
+        config_path = args.config_file
+    else:
+        base_path = os.path.dirname(__file__)
+        config_path = os.path.join(base_path, 'config.yml')
+    logger.debug('Config path: %s', config_path)
 
     def default_ctor(_dummy, tag_suffix, node):
         return tag_suffix + ' ' + node.value
@@ -54,7 +59,7 @@ def main():
     account_id = boto3.client('sts').get_caller_identity().get('Account')
 
     if account_id != config['lambda_account_id']:
-        exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
+        sys.exit(f'The terminator must be run from the lambda account: {config["lambda_account_id"]}')
 
     cleanup(args.stage, check=args.check, force=args.force, api_name=api_name, test_account_id=test_account_id, targets=args.target)
 
@@ -78,6 +83,10 @@ def parse_args():
                         choices=['prod', 'dev'],
                         required=True,
                         help='stage to use for database and policy access')
+
+    parser.add_argument('--config-file',
+                        metavar='config_file',
+                        help='Where to read the configuration file from')
 
     parser.add_argument('--target',
                         choices=sorted([value.__name__ for value in get_concrete_subclasses(Terminator)] + ['Database']),

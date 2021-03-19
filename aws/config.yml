@@ -8,3 +8,6 @@ test_account_id: '966509639900'
 
 # The API name is used to tag and prefix aws resources.
 api_name: 'ansible-core-ci'
+
+# The AWS Region that tests will be run in
+aws_region: 'us-east-1'

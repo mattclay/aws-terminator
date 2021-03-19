@@ -122,6 +122,10 @@ class Ec2Volume(Terminator):
         return Terminator._create(credentials, Ec2Volume, 'ec2', lambda client: client.describe_volumes()['Volumes'])
 
     @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
     def id(self):
         return self.instance['VolumeId']
 
@@ -140,7 +144,13 @@ class Ec2Volume(Terminator):
 class Ec2TransitGateway(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, Ec2TransitGateway, 'ec2', lambda client: client.describe_transit_gateways()['TransitGateways'])
+        account = get_account_id(credentials)
+        filters = [{
+            'Name': 'owner-id',
+            'Values': [account]
+        }]
+        return Terminator._create(credentials, Ec2TransitGateway, 'ec2',
+                                  lambda client: client.describe_transit_gateways(Filters=filters)['TransitGateways'])
 
     @property
     def id(self):
@@ -333,6 +343,10 @@ class ElasticLoadBalancingv2(Terminator):
     def created_time(self):
         return self.instance['CreatedTime']
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
     def _find_listeners(self):
         # Listeners can't be listed or described without providing an ELB or Listener ARN, so we have to handle them here
         return [listener['ListenerArn'] for listener in self.client.describe_listeners(LoadBalancerArn=self.name)['Listeners']]
@@ -340,7 +354,7 @@ class ElasticLoadBalancingv2(Terminator):
     def terminate(self):
         self.client.delete_load_balancer(LoadBalancerArn=self.name)
         for listener in self._find_listeners():
-            self.client.delete_listender(ListenerArn=listener)
+            self.client.delete_listener(ListenerArn=listener)
 
 
 class Elbv2TargetGroups(DbTerminator):
@@ -350,6 +364,10 @@ class Elbv2TargetGroups(DbTerminator):
             return client.get_paginator(
                 'describe_target_groups').paginate().build_full_result()['TargetGroups']
         return Terminator._create(credentials, Elbv2TargetGroups, 'elbv2', _paginate_target_groups)
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
 
     @property
     def id(self):
@@ -399,3 +417,99 @@ class LightsailKeyPair(Terminator):
 
     def terminate(self):
         self.client.delete_key_pair(keyPairName=self.name)
+
+
+class LightsailStaticIp(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_static_ips(client):
+            return client.get_paginator('get_static_ips').paginate().build_full_result()['staticIps']
+        return Terminator._create(credentials, LightsailStaticIp, 'lightsail', _paginate_lightsail_static_ips)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.release_static_ip(staticIpName=self.name)
+
+
+class AutoScalingGroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, AutoScalingGroup, 'autoscaling', lambda client: client.describe_auto_scaling_groups()['AutoScalingGroups'])
+
+    @property
+    def id(self):
+        return self.instance['AutoScalingGroupName']
+
+    @property
+    def name(self):
+        return self.instance['AutoScalingGroupName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        self.client.delete_auto_scaling_group(AutoScalingGroupName=self.name, ForceDelete=True)
+
+
+class LaunchConfiguration(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials,
+            LaunchConfiguration,
+            'autoscaling',
+            lambda client: client.describe_launch_configurations()['LaunchConfigurations']
+        )
+
+    @property
+    def id(self):
+        return self.instance['LaunchConfigurationName']
+
+    @property
+    def name(self):
+        return self.instance['LaunchConfigurationName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedTime']
+
+    def terminate(self):
+        try:
+            self.client.delete_launch_configuration(LaunchConfigurationName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseFault':
+                raise
+
+
+class LaunchTemplate(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials,
+            LaunchTemplate,
+            'ec2',
+            lambda client: client.describe_launch_templates()['LaunchTemplates']
+        )
+
+    @property
+    def id(self):
+        return self.instance['LaunchTemplateId']
+
+    @property
+    def name(self):
+        return self.instance['LaunchTemplateName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreateTime']
+
+    def terminate(self):
+        self.client.delete_launch_template(LaunchTemplateId=self.id)

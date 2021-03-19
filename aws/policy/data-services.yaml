@@ -30,6 +30,24 @@ Statement:
       - dynamodb:DeleteTable
       - dynamodb:UpdateTable
       - dynamodb:TagResource
+      - elasticache:AddTagsToResource
+      - elasticache:CreateCacheSecurityGroup
+      - elasticache:CreateCacheSubnetGroup
+      - elasticache:DeleteCacheCluster
+      - elasticache:DeleteCacheSecurityGroup
+      - elasticache:DeleteCacheSubnetGroup
+      - elasticache:DescribeCacheClusters
+      - elasticache:DescribeCacheEngineVersions
+      - elasticache:DescribeCacheParameterGroups
+      - elasticache:DescribeCacheParameters
+      - elasticache:DescribeCacheSecurityGroups
+      - elasticache:DescribeCacheSubnetGroups
+      - elasticache:DescribeEngineDefaultParameters
+      - elasticache:DescribeUpdateActions
+      - elasticache:ModifyCacheCluster
+      - elasticache:ModifyCacheParameterGroup
+      - elasticache:ModifyCacheSubnetGroup
+      - elasticache:RemoveTagsFromResource
       - glacier:ListVaults
       - glacier:CreateVault
       - glacier:DeleteVault
@@ -41,6 +59,7 @@ Statement:
       - redshift:ModifyCluster
       - redshift:RebootCluster
       - redshift:DeleteTags
+      - redshift:DescribeTags
       - redshift:CreateTags
       - rds:AddTagsToResource
       - rds:CreateDBParameterGroup
@@ -55,18 +74,39 @@ Statement:
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
     Resource:
-      - arn:aws:dms:us-east-1:{{ aws_account_id }}:subgrp:*
-      - arn:aws:dynamodb:us-east-1:{{ aws_account_id }}:table/*
-      - arn:aws:glacier:us-east-1:{{ aws_account_id }}:vaults/*
-      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:subgrp:*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:pg:*
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
+      - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - rds:CreateDBCluster
+      - elasticache:CreateCacheCluster
       - redshift:CreateCluster
     Resource:
-      - arn:aws:rds:us-east-1:{{ aws_account_id }}:cluster:*
-      - arn:aws:redshift:us-east-1:{{ aws_account_id }}:cluster:*
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
+      - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+  # This allows AWS Services to autmatically create their Default Service Linked Roles
+  # These have fixed policies and can only be assumed by the service itself.
+  - Sid: AllowServiceLinkedRoleCreation
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache'
+    Condition:
+      ForAnyValue:StringEquals:
+        iam:AWSServiceName:
+          - 'elasticache.amazonaws.com'

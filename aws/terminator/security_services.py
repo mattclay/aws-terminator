@@ -38,6 +38,8 @@ class IamRole(Terminator):
 
         for policy in self.client.list_attached_role_policies(RoleName=self.name)['AttachedPolicies']:
             self.client.detach_role_policy(RoleName=self.name, PolicyArn=policy['PolicyArn'])
+        for policy in self.client.list_role_policies(RoleName=self.name)['PolicyNames']:
+            self.client.delete_role_policy(RoleName=self.name, PolicyName=policy)
 
         self.client.delete_role(RoleName=self.name)
 
@@ -73,7 +75,7 @@ class IamInstanceProfile(Terminator):
 class Waf(DbTerminator):
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=20)
+        return datetime.timedelta(minutes=30)
 
     @property
     def change_token(self):
@@ -96,7 +98,7 @@ class WafWebAcl(Waf):
     @property
     def age_limit(self):
         # Try to delete WafWebAcl first, because WafRule objects cannot be deleted if used in any WebACL
-        return datetime.timedelta(minutes=10)
+        return datetime.timedelta(minutes=20)
 
     @property
     def id(self):
@@ -263,6 +265,82 @@ class WafRegexPatternSet(Waf):
         self.client.delete_regex_pattern_set(RegexPatternSetId=self.id, ChangeToken=self.change_token)
 
 
+class WafV2(DbTerminator):
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def lock_token(self):
+        return self.instance['LockToken']
+
+    @property
+    def scope(self):
+        return self.instance['Scope']
+
+    @abc.abstractmethod
+    def terminate(self):
+        """Terminate or delete the AWS resource."""
+
+
+class RegionalWafV2IpSet(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
+
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2IpSet(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
+
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
+class RegionalWafV2RuleGroup(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2RuleGroup(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
+class RegionalWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
 class InspectorAssessmentTemplate(DbTerminator):
     @staticmethod
     def create(credentials):
@@ -324,3 +402,84 @@ class ACMCertificate(DbTerminator):
 
     def terminate(self):
         self.client.delete_certificate(CertificateArn=self.id)
+
+
+class IAMSamlProvider(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(
+            credentials, IAMSamlProvider, 'iam',
+            lambda client: client.list_saml_providers()['SAMLProviderList']
+        )
+
+    @property
+    def id(self):
+        return self.instance['Arn']
+
+    @property
+    def name(self):
+        return self.instance['Arn'].split('/')[-1]
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test-')
+
+    @property
+    def created_time(self):
+        return self.instance['CreateDate']
+
+    def terminate(self):
+        self.client.delete_saml_provider(SAMLProviderArn=self.id)
+
+
+class KMSKey(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_paginated_keys(client):
+            return client.get_paginator('list_keys').paginate().build_full_result()['Keys']
+
+        def get_key_details(client, key):
+            metadata = client.describe_key(KeyId=key['KeyId'])['KeyMetadata']
+            _aliases = client.list_aliases(KeyId=key['KeyId'])['Aliases']
+            aliases = []
+            for alias in _aliases:
+                aliases.append(alias['AliasName'])
+            metadata['Aliases'] = aliases
+            return metadata
+
+        def get_detailed_keys(client):
+            detailed_keys = []
+            for key in get_paginated_keys(client):
+                metadata = get_key_details(client, key)
+                if metadata:
+                    detailed_keys.append(metadata)
+            return detailed_keys
+
+        return Terminator._create(credentials, KMSKey, 'kms', get_detailed_keys)
+
+    @property
+    def ignore(self):
+        # The key is already in a 'pending deletion' state, and doesn't need
+        # anything more done to it.
+        if self.instance['KeyState'] == 'PendingDeletion':
+            return True
+        # Don't try deleting the AWS managed keys (they're not charged for)
+        for alias in self.instance['Aliases']:
+            if alias.startswith('alias/aws/'):
+                return True
+        return False
+
+    @property
+    def created_time(self):
+        return self.instance['CreationDate']
+
+    @property
+    def id(self):
+        return self.instance['KeyId']
+
+    @property
+    def name(self):
+        return self.instance['Aliases']
+
+    def terminate(self):
+        self.client.schedule_key_deletion(KeyId=self.id, PendingWindowInDays=7)
