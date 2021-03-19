@@ -130,7 +130,7 @@ Statement:
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
-      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
+      - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -147,7 +147,7 @@ Statement:
     Resource:
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
-      - arn:aws:glue:us-east-1:{{ aws_account_id }}:job/*
+      - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
   - Sid: ModifyCloudwatchLogs
     Effect: Allow
     Action:
