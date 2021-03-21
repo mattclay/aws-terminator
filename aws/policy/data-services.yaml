@@ -3,6 +3,7 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:DescribeEndpoints
       - dms:DescribeReplicationSubnetGroups
       - dynamodb:Scan
       - dynamodb:ListTables
@@ -19,8 +20,11 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:CreateEndpoint
       - dms:CreateReplicationSubnetGroup
+      - dms:DeleteEndpoint
       - dms:DeleteReplicationSubnetGroup
+      - dms:ModifyEndpoint
       - dms:ModifyReplicationSubnetGroup
       - dynamodb:GetItem
       - dynamodb:DeleteItem
@@ -74,6 +78,7 @@ Statement:
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
     Resource:
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'

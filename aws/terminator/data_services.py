@@ -21,6 +21,23 @@ class DmsSubnetGroup(DbTerminator):
         self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
 
 
+class DmsEndpoint(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, DmsEndpoint, 'dms', lambda client: client.describe_endpoints()['Endpoints'])
+
+    @property
+    def name(self):
+        return self.instance['EndpointIdentifier']
+
+    @property
+    def id(self):
+        return self.instance['EndpointArn']
+
+    def terminate(self):
+        self.client.delete_endpoint(EndpointArn=self.id)
+
+
 class Elasticache(Terminator):
     @staticmethod
     def create(credentials):
