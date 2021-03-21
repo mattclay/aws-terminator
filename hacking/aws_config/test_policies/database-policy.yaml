@@ -23,15 +23,6 @@ Statement:
       - rds:DescribeDBSnapshots
     Resource: "*"
 
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - dms:CreateEndpoint
-      - dms:DeleteEndpoint
-      - dms:DescribeEndpoints
-      - dms:ModifyEndpoint
-    Resource: "*"
-
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
