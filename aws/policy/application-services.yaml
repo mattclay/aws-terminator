@@ -124,12 +124,14 @@ Statement:
       - states:StartExecution
       - states:StopExecution
       - states:UpdateStateMachine
+      - SNS:Publish
       - kinesis:CreateStream
       - kinesis:DecreaseStreamRetentionPeriod
       - kinesis:DeleteStream
       - kinesis:IncreaseStreamRetentionPeriod
       - kinesis:UpdateShardCount
     Resource:
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
   - Sid: ModifyCloudwatchLogs
