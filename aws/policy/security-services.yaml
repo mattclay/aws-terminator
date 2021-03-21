@@ -8,6 +8,8 @@ Statement:
       - iam:DetachRolePolicy
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      # This is hard coded into DMS...
+      - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
     Condition:
       ArnLike:
         iam:PolicyArn:
@@ -15,6 +17,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
           - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
           - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
 
@@ -224,6 +227,8 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      # This is hard coded into DMS...
+      - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
 
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
