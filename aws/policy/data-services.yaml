@@ -3,6 +3,7 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:CreateEndpoint
       - dms:DescribeEndpoints
       - dms:DescribeReplicationSubnetGroups
       - dynamodb:Scan
@@ -20,7 +21,6 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - dms:CreateEndpoint
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
       - dms:DeleteReplicationSubnetGroup
