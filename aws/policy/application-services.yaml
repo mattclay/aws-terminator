@@ -89,6 +89,10 @@ Statement:
       - SNS:GetTopicAttributes
       - SNS:ListTopics
       - SNS:ListSubscriptionsByTopic
+      - SNS:ListSubscriptions
+      - SNS:SetTopicAttributes
+      - SNS:Subscribe
+      - SNS:Unsubscribe
       - states:DescribeExecution
       - states:DescribeStateMachine
       - states:DeleteStateMachine
