@@ -347,6 +347,29 @@ class Ec2VpnGateway(DbTerminator):
         self.client.delete_vpn_gateway(VpnGatewayId=self.id)
 
 
+class Ec2VpcPeer(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Ec2VpcPeer, 'ec2', lambda client: client.describe_vpc_peering_connections()['VpcPeeringConnections'])
+
+    @property
+    def id(self):
+        return self.instance['VpcPeeringConnectionId']
+
+    @property
+    def name(self):
+        return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
+
+    @property
+    def ignore(self):
+        if self.instance.get('Status', {}).get('Code') in ['rejected', 'deleted']:
+            return True
+        return False
+
+    def terminate(self):
+        self.client.delete_vpc_peering_connection(VpcPeeringConnectionId=self.id)
+
+
 class Ec2SecurityGroup(DbTerminator):
     @staticmethod
     def create(credentials):
