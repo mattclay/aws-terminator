@@ -265,6 +265,82 @@ class WafRegexPatternSet(Waf):
         self.client.delete_regex_pattern_set(RegexPatternSetId=self.id, ChangeToken=self.change_token)
 
 
+class WafV2(DbTerminator):
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def lock_token(self):
+        return self.instance['LockToken']
+
+    @property
+    def scope(self):
+        return self.instance['Scope']
+
+    @abc.abstractmethod
+    def terminate(self):
+        """Terminate or delete the AWS resource."""
+
+
+class RegionalWafV2IpSet(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='REGIONAL')['IPSets'])
+
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2IpSet(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
+
+    def terminate(self):
+        self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
+class RegionalWafV2RuleGroup(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='REGIONAL')['RuleGroups'])
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2RuleGroup(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
+
+    def terminate(self):
+        self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
+class RegionalWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, RegionalWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='REGIONAL')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='REGIONAL')
+
+
+class CloudfrontWafV2WebAcl(WafV2):
+    @staticmethod
+    def create(credentials):
+        return DbTerminator._create(credentials, CloudfrontWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
+
+    def terminate(self):
+        self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
+
+
 class InspectorAssessmentTemplate(DbTerminator):
     @staticmethod
     def create(credentials):

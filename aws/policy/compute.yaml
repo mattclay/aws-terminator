@@ -175,6 +175,7 @@ Statement:
       - elasticloadbalancing:ModifyLoadBalancerAttributes
       - elasticloadbalancing:RegisterTargets
       - elasticloadbalancing:SetSecurityGroups
+      - elasticloadbalancing:SetWebACL
       - elasticfilesystem:DescribeFileSystems
       - elasticfilesystem:DescribeMountTargets
       - elasticfilesystem:DescribeMountTargetSecurityGroups
