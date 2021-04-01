@@ -89,6 +89,10 @@ Statement:
       - SNS:GetTopicAttributes
       - SNS:ListTopics
       - SNS:ListSubscriptionsByTopic
+      - SNS:ListSubscriptions
+      - SNS:SetTopicAttributes
+      - SNS:Subscribe
+      - SNS:Unsubscribe
       - states:DescribeExecution
       - states:DescribeStateMachine
       - states:DeleteStateMachine
@@ -120,12 +124,14 @@ Statement:
       - states:StartExecution
       - states:StopExecution
       - states:UpdateStateMachine
+      - SNS:Publish
       - kinesis:CreateStream
       - kinesis:DecreaseStreamRetentionPeriod
       - kinesis:DeleteStream
       - kinesis:IncreaseStreamRetentionPeriod
       - kinesis:UpdateShardCount
     Resource:
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
   - Sid: ModifyCloudwatchLogs
@@ -171,3 +177,13 @@ Statement:
       - cloudformation:UpdateTerminationProtection
     Resource:
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
+
+  # Used to test some of the cross-account features
+  - Sid: PermitReadOnlyThirdParty
+    Effect: Allow
+    Action:
+      - SNS:Subscribe
+      - SNS:Unsubscribe
+    Resource:
+      # https://aws.amazon.com/blogs/aws/subscribe-to-aws-public-ip-address-changes-via-amazon-sns/
+      - 'arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged'

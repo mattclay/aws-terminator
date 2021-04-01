@@ -21,10 +21,6 @@ Statement:
     Effect: Allow
     Action:
       - ec2:ReportInstanceStatus
-      - SNS:ListSubscriptions
-      - SNS:SetTopicAttributes
-      - SNS:Subscribe
-      - SNS:Unsubscribe
     Resource: "*"
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
