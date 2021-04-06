@@ -110,3 +110,14 @@ Statement:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'elasticache.amazonaws.com'
+  - Sid: KafkaConfiguration
+    Effect: Allow
+    Action:
+      - kafka:CreateConfiguration
+      - kafka:DescribeConfigurationRevision
+      - kafka:DeleteConfiguration
+      - kafka:ListConfigurationRevisions
+      - kafka:DescribeConfiguration
+      - kafka:ListConfigurations
+      - kafka:UpdateConfiguration
+    Resource: "*"
