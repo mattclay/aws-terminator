@@ -158,3 +158,24 @@ class KafkaConfiguration(Terminator):
 
     def terminate(self):
         self.client.delete_configuration(Arn=self.id)
+
+
+class KafkaCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, KafkaCluster, 'kafka', lambda client: client.list_clusters()['ClusterInfoList'])
+
+    @property
+    def id(self):
+        return self.instance['ClusterArn']
+
+    @property
+    def name(self):
+        return self.instance['ClusterName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    def terminate(self):
+        self.client.delete_configuration(Arn=self.id)
