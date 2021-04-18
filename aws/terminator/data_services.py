@@ -72,6 +72,27 @@ class GlueConnection(Terminator):
         self.client.delete_connection(ConnectionName=self.name)
 
 
+class GlueJob(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, GlueJob, 'glue', lambda client: client.get_jobs()['Jobs'])
+
+    @property
+    def id(self):
+        return self.instance['Name']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedOn']
+
+    def terminate(self):
+        self.client.delete_job(JobName=self.name)
+
+
 class Glacier(Terminator):
     @staticmethod
     def create(credentials):
