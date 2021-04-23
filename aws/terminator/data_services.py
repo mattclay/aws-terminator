@@ -199,4 +199,4 @@ class KafkaCluster(Terminator):
         return self.instance['CreationTime']
 
     def terminate(self):
-        self.client.delete_configuration(Arn=self.id)
+        self.client.delete_cluster(ClusterArn=self.id)
