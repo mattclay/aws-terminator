@@ -198,5 +198,9 @@ class KafkaCluster(Terminator):
     def created_time(self):
         return self.instance['CreationTime']
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
     def terminate(self):
         self.client.delete_cluster(ClusterArn=self.id)
