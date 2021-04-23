@@ -106,10 +106,12 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache'
+      - 'arn:aws:iam::{{ aws_account_id }}::role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'elasticache.amazonaws.com'
+          - 'kafka.amazonaws.com'
   - Sid: KafkaConfiguration
     Effect: Allow
     Action:
