@@ -107,12 +107,15 @@ Statement:
       - kinesis:RemoveTagsFromStream
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
+      - glue:DeleteCrawler
       - glue:DeleteJob
+      - glue:GetCrawler
       - glue:GetJob
       - glue:GetTags
       - glue:TagResource
       - glue:UntagResource
       - glue:UpdateJob
+      - glue:UpdateCrawler
     Resource:
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
       - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
@@ -123,6 +126,7 @@ Statement:
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+      - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -137,11 +141,13 @@ Statement:
       - kinesis:DeleteStream
       - kinesis:IncreaseStreamRetentionPeriod
       - kinesis:UpdateShardCount
+      - glue:CreateCrawler
       - glue:CreateJob
     Resource:
       - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+      - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
   - Sid: ModifyCloudwatchLogs
     Effect: Allow

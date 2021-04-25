@@ -72,6 +72,27 @@ class GlueConnection(Terminator):
         self.client.delete_connection(ConnectionName=self.name)
 
 
+class GlueCrawler(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, GlueCrawler, 'glue', lambda client: client.get_crawlers()['Crawlers'])
+
+    @property
+    def id(self):
+        return self.instance['Name']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    def terminate(self):
+        self.client.delete_crawler(Name=self.name)
+
+
 class GlueJob(Terminator):
     @staticmethod
     def create(credentials):
