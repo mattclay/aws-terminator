@@ -175,7 +175,7 @@ class RdsOptionGroup(DbTerminator):
 
     @property
     def ignore(self):
-        return not self.name.startswith('default')
+        return self.name.startswith('default')
 
     def terminate(self):
         self.client.delete_option_group(OptionGroupName=self.name)
