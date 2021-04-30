@@ -106,7 +106,7 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache'
-      - 'arn:aws:iam::{{ aws_account_id }}::role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
