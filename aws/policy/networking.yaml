@@ -10,6 +10,8 @@ Statement:
       - route53:GetHostedZone
       - route53:DeleteHostedZone
       - route53:UpdateHostedZoneComment
+      - route53:ChangeTagsForResource
+      - route53:ListTagsForResource
     Resource: "*"
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -38,6 +40,7 @@ Statement:
       - ec2:CreateRouteTable
       - ec2:CreateSecurityGroup
       - ec2:CreateSubnet
+      - ec2:CreateTags
       - ec2:CreateVpc
       - ec2:CreateVpcEndpoint
       - ec2:CreateVpcPeeringConnection
@@ -71,6 +74,7 @@ Statement:
       - ec2:DescribeRouteTables
       - ec2:DescribeSecurityGroups
       - ec2:DescribeSubnets
+      - ec2:DescribeTags
       - ec2:DescribeVpcAttribute
       - ec2:DescribeVpcClassicLink
       - ec2:DescribeVpcClassicLinkDnsSupport
