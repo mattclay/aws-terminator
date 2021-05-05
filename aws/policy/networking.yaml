@@ -40,7 +40,6 @@ Statement:
       - ec2:CreateRouteTable
       - ec2:CreateSecurityGroup
       - ec2:CreateSubnet
-      - ec2:CreateTags
       - ec2:CreateVpc
       - ec2:CreateVpcEndpoint
       - ec2:CreateVpcPeeringConnection
