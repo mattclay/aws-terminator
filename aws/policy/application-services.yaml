@@ -66,6 +66,9 @@ Statement:
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
       - cloudformation:ListExports
+      - glue:GetConnections
+      - glue:GetCrawlers
+      - glue:GetJobs
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
