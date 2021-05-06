@@ -73,6 +73,10 @@ Statement:
       - rds:ModifyDBParameterGroup
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
+      - rds:DescribeOptionGroups
+      - rds:CreateOptionGroup
+      - rds:ModifyOptionGroup
+      - rds:DeleteOptionGroup
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
@@ -85,6 +89,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:

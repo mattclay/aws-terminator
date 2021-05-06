@@ -183,6 +183,27 @@ class RedshiftCluster(Terminator):
         self.client.delete_cluster(ClusterIdentifier=self.id, SkipFinalClusterSnapshot=True)
 
 
+class RdsOptionGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsOptionGroup, 'rds', lambda client: client.describe_option_groups()['OptionGroupsList'])
+
+    @property
+    def id(self):
+        return self.instance['OptionGroupArn']
+
+    @property
+    def name(self):
+        return self.instance['OptionGroupName']
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    def terminate(self):
+        self.client.delete_option_group(OptionGroupName=self.name)
+
+
 class KafkaConfiguration(Terminator):
     @staticmethod
     def create(credentials):
