@@ -1,3 +1,5 @@
+import datetime
+
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
@@ -70,6 +72,27 @@ class GlueConnection(Terminator):
 
     def terminate(self):
         self.client.delete_connection(ConnectionName=self.name)
+
+
+class GlueCrawler(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, GlueCrawler, 'glue', lambda client: client.get_crawlers()['Crawlers'])
+
+    @property
+    def id(self):
+        return self.instance['Name']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    def terminate(self):
+        self.client.delete_crawler(Name=self.name)
 
 
 class GlueJob(Terminator):
@@ -179,3 +202,53 @@ class RdsOptionGroup(DbTerminator):
 
     def terminate(self):
         self.client.delete_option_group(OptionGroupName=self.name)
+
+
+class KafkaConfiguration(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, KafkaConfiguration, 'kafka', lambda client: client.list_configurations()['Configurations'])
+
+    @property
+    def id(self):
+        return self.instance['Arn']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
+    def terminate(self):
+        self.client.delete_configuration(Arn=self.id)
+
+
+class KafkaCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, KafkaCluster, 'kafka', lambda client: client.list_clusters()['ClusterInfoList'])
+
+    @property
+    def id(self):
+        return self.instance['ClusterArn']
+
+    @property
+    def name(self):
+        return self.instance['ClusterName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
+    def terminate(self):
+        self.client.delete_cluster(ClusterArn=self.id)

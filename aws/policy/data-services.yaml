@@ -111,7 +111,47 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'elasticache.amazonaws.com'
+          - 'kafka.amazonaws.com'
+  - Sid: KafkaConfiguration
+    Effect: Allow
+    Action:
+      - kafka:CreateConfiguration
+      - kafka:DescribeConfigurationRevision
+      - kafka:DeleteConfiguration
+      - kafka:ListConfigurationRevisions
+      - kafka:DescribeConfiguration
+      - kafka:ListConfigurations
+      - kafka:UpdateConfiguration
+    Resource: "*"
+  - Sid: KafkaCluster
+    Effect: Allow
+    Action:
+      - kafka:UpdateClusterKafkaVersion
+      - kafka:TagResource
+      - kafka:UpdateBrokerCount
+      - kafka:CreateCluster
+      - kafka:ListTagsForResource
+      - kafka:GetCompatibleKafkaVersions
+      - kafka:UpdateClusterConfiguration
+      - kafka:ListClusters
+      - kafka:ListScramSecrets
+      - kafka:DescribeCluster
+      - kafka:ListKafkaVersions
+      - kafka:GetBootstrapBrokers
+      - kafka:ListConfigurations
+      - kafka:UpdateBrokerStorage
+      - kafka:RebootBroker
+      - kafka:DescribeClusterOperation
+      - kafka:UpdateMonitoring
+      - kafka:ListConfigurationRevisions
+      - kafka:ListNodes
+      - kafka:DeleteCluster
+      - kafka:UpdateBrokerType
+      - kafka:UntagResource
+      - kafka:ListClusterOperations
+    Resource: "*"
