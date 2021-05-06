@@ -10,6 +10,8 @@ Statement:
       - route53:GetHostedZone
       - route53:DeleteHostedZone
       - route53:UpdateHostedZoneComment
+      - route53:ChangeTagsForResource
+      - route53:ListTagsForResource
     Resource: "*"
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
