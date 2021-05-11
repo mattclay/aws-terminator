@@ -197,7 +197,7 @@ Statement:
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
     Resource: "*"
- 
+
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
