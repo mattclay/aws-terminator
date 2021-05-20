@@ -89,6 +89,26 @@ To start using `cleanup.py` you will need to:
 
 After you have tested that your terminator class can be used by `cleanup.py`, submit your pull request. A core developer will review and deploy your changes as outlined below.
 
+## IAM Policy Organization
+
+### Structure
+
+Policy docs are in `aws/policy/{group}.yaml`, arranged by the test group.
+
+### Policy Groups
+- Application Services: CloudFormation, SQS, SNS, SES
+- Application Security: Inspector, WAF, etc
+- Data Services: Glacier, Glue, Redshift, RDS, etc
+- Compute: Autoscaling, EC2, ELBs, etc
+- Networking: VPC, ACLs, route tables, NAT Gateways, IGW/VGW, security groups, etc
+- PAAS: ECR, EKR, Lambda, etc
+- Security Services: IAM, KMS, STS, etc
+- Storage Services: S3, etc
+
+### IAM Elements
+
+Policies should generally use the least permissive Actions, Resouces, and Conditions possible. However, there is also a need to prevent policies from exceeding the AWS maximum 6144 characters per policy and 10 policies per account. To help with this wildcards are generally permitted for `Describe*` and `List*` actions for non-security related services.  For example, `ec2:Describe*` is permitted.
+
 # Deploying to AWS
 Deploying to AWS is done using an Ansible playbook, which can be easily run with make using the provided Makefile.
 
@@ -145,17 +165,3 @@ If tests pass and CI PR is ready to merge:
 
 If there are modifications to the terminator:
   - after deploying to dev and prod run `make terminator_lambda` using aworks user credentials
-
-## IAM Policy Organization
-
-### Structure
-
-Policy docs are in `aws/policy/{group}.yaml`, arranged by the test group.
-
-### Policy Groups
-- Application Services: CloudFormation, S3, SQS, SNS, SES
-- Big Data: Glacier, Glue, Redshift, etc
-- Compute: EC2, EKS, RDS, Lambda, etc
-- Machine Learning: Lex, Polly, Macie, etc
-- Networking: VPC, ACLs, route tables, NAT Gateways, IGW/VGW, security groups, etc
-- Security Services: IAM, Shield, WAF, Config, Inspector, etc

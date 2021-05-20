@@ -4,6 +4,8 @@ Statement:
     Effect: Allow
     Action:
       - dms:DescribeReplicationSubnetGroups
+      - dms:CreateEndpoint
+      - dms:DescribeEndpoints
       - dynamodb:Scan
       - dynamodb:ListTables
       - dynamodb:DescribeTable
@@ -20,6 +22,8 @@ Statement:
     Effect: Allow
     Action:
       - dms:CreateReplicationSubnetGroup
+      - dms:DeleteEndpoint
+      - dms:ModifyEndpoint
       - dms:DeleteReplicationSubnetGroup
       - dms:ModifyReplicationSubnetGroup
       - dynamodb:GetItem
@@ -90,6 +94,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
