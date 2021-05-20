@@ -320,6 +320,12 @@ class Ec2VpnConnection(DbTerminator):
     def name(self):
         return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
 
+    @property
+    def ignore(self):
+        # describe_vpn_connections will return results in deleting and deleted states.
+        # Ignore connections in these current states.
+        return self.instance.get('State') in ['deleting', 'deleted']
+
     def terminate(self):
         self.client.delete_vpn_connection(VpnConnectionId=self.id)
 
