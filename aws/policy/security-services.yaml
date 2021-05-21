@@ -95,6 +95,20 @@ Statement:
       - kms:UpdateKeyDescription
     Resource: "*"
 
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - secretsmanager:DescribeSecret
+      - secretsmanager:ListSecrets
+      - secretsmanager:CreateSecret
+      - secretsmanager:UpdateSecret
+      - secretsmanager:DeleteSecret
+      - secretsmanager:GetSecretValue
+      - secretsmanager:RotateSecret
+      - secretsmanager:UntagResource
+    Resource:
+      - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
+
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
