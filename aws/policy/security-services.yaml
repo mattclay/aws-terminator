@@ -8,6 +8,8 @@ Statement:
       - iam:DetachRolePolicy
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      # This is hard coded into DMS...
+      - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
     Condition:
       ArnLike:
         iam:PolicyArn:
@@ -17,6 +19,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
           - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
 
   # Legacy - We need to backport ansible-collections/community.aws/63 or
   # wait until community.aws drops CI support for Ansible 2.9
@@ -27,43 +30,6 @@ Statement:
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
 
-  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Resource:
-      - 'arn:aws:wafv2:{{ aws_region }}:{{ aws_account_id }}:*'
-    Action:
-      - wafv2:ListRuleGroups
-      - wafv2:ListWebACLs
-      - wafv2:AssociateWebACL
-      - wafv2:DeleteRuleGroup
-      - wafv2:CreateRuleGroup
-      - wafv2:PutFirewallManagerRuleGroups
-      - wafv2:GetWebACLForResource
-      - wafv2:GetLoggingConfiguration
-      - wafv2:DeleteWebACL
-      - wafv2:GetRateBasedStatementManagedKeys
-      - wafv2:ListLoggingConfigurations
-      - wafv2:GetIPSet
-      - wafv2:CreateWebACL
-      - wafv2:ListIPSets
-      - wafv2:GetWebACL
-      - wafv2:GetRuleGroup
-      - wafv2:CreateIPSet
-      - wafv2:ListAvailableManagedRuleGroups
-      - wafv2:DeleteIPSet
-      - wafv2:DescribeManagedRuleGroup
-      - wafv2:CheckCapacity
-      - wafv2:ListResourcesForWebACL
-      - wafv2:DeleteLoggingConfiguration
-      - wafv2:PutLoggingConfiguration
-      - wafv2:DisassociateWebACL
-      - wafv2:UpdateWebACL
-      - wafv2:UpdateRuleGroup
-      - wafv2:DeleteFirewallManagerRuleGroups
-      - wafv2:DisassociateFirewallManager
-      - wafv2:UpdateIPSet
-      - wafv2:TagResource
-
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -71,75 +37,6 @@ Statement:
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - waf:CreateByteMatchSet
-      - waf:CreateGeoMatchSet
-      - waf:CreateIPSet
-      - waf:CreateRateBasedRule
-      - waf:CreateRegexMatchSet
-      - waf:CreateRegexPatternSet
-      - waf:CreateRule
-      - waf:CreateRuleGroup
-      - waf:CreateSizeConstraintSet
-      - waf:CreateSqlInjectionMatchSet
-      - waf:CreateWebACL
-      - waf:CreateXssMatchSet
-      - waf:DeleteByteMatchSet
-      - waf:DeleteGeoMatchSet
-      - waf:DeleteIPSet
-      - waf:DeleteRateBasedRule
-      - waf:DeleteRegexMatchSet
-      - waf:DeleteRegexPatternSet
-      - waf:DeleteRule
-      - waf:DeleteRuleGroup
-      - waf:DeleteSizeConstraintSet
-      - waf:DeleteSqlInjectionMatchSet
-      - waf:DeleteWebACL
-      - waf:DeleteXssMatchSet
-      - waf:GetByteMatchSet
-      - waf:GetChangeToken
-      - waf:GetChangeTokenStatus
-      - waf:GetGeoMatchSet
-      - waf:GetIPSet
-      - waf:GetRateBasedRule
-      - waf:GetRateBasedRuleManagedKeys
-      - waf:GetRegexMatchSet
-      - waf:GetRegexPatternSet
-      - waf:GetRule
-      - waf:GetRuleGroup
-      - waf:GetSizeConstraintSet
-      - waf:GetSqlInjectionMatchSet
-      - waf:GetWebACL
-      - waf:GetXssMatchSet
-      - waf:List*
-      - waf:TagResource
-      - waf:UntagResource
-      - waf:UpdateByteMatchSet
-      - waf:UpdateGeoMatchSet
-      - waf:UpdateIPSet
-      - waf:UpdateRateBasedRule
-      - waf:UpdateRegexMatchSet
-      - waf:UpdateRegexPatternSet
-      - waf:UpdateRule
-      - waf:UpdateSizeConstraintSet
-      - waf:UpdateSqlInjectionMatchSet
-      - waf:UpdateWebACL
-      - waf:UpdateXssMatchSet
-      - inspector:ListAssessmentTargets
-      - inspector:CreateResourceGroup
-      - inspector:CreateAssessmentTarget
-      - inspector:DescribeAssessmentTargets
-      - inspector:DescribeResourceGroups
-      - inspector:UpdateAssessmentTarget
-      - inspector:DeleteAssessmentTarget
-      - inspector:ListAssessmentTemplates
-      - inspector:ListRulesPackages
-      - inspector:DescribeRulesPackages
-      - inspector:CreateAssessmentTemplate
-      - inspector:DeleteAssessmentTemplate
-      - inspector:SetTagsForResource
-      - inspector:DescribeAssessmentTemplates
-      - inspector:ListTagsForResource
-      - inspector:ListEventSubscriptions
       - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
@@ -224,7 +121,8 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
-
+      # This is hard coded into DMS...
+      - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
