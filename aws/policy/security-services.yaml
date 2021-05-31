@@ -93,13 +93,13 @@ Statement:
       - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
+      - secretsmanager:DescribeSecret
+      - secretsmanager:ListSecrets
     Resource: "*"
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      - secretsmanager:DescribeSecret
-      - secretsmanager:ListSecrets
       - secretsmanager:CreateSecret
       - secretsmanager:UpdateSecret
       - secretsmanager:DeleteSecret
