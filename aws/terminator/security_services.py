@@ -171,3 +171,28 @@ class KMSKey(Terminator):
 
     def terminate(self):
         self.client.schedule_key_deletion(KeyId=self.id, PendingWindowInDays=7)
+
+
+class Secret(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Secret, 'secretsmanager', lambda client: client.list_secrets()['SecretList'])
+
+    @property
+    def id(self):
+        return self.instance['ARN']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test')
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedDate']
+
+    def terminate(self):
+        self.client.delete_secret(SecretId=self.name, RecoveryWindowInDays=7)
