@@ -105,6 +105,7 @@ Statement:
       - autoscaling:DescribeInstanceRefreshes
       - autoscaling:DescribeLaunchConfigurations
       - autoscaling:DescribePolicies
+      - ec2:DescribeAvailabilityZones
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DeleteListener
