@@ -46,6 +46,7 @@ Statement:
       - autoscaling:PutScalingPolicy
       - autoscaling:DeletePolicy
       - autoscaling:*Tags
+      - autoscaling:DisableMetricsCollection
       - elasticloadbalancing:*LoadBalancer
       - elasticloadbalancing:*LoadBalancers
       - elasticloadbalancing:*LoadBalancerListeners

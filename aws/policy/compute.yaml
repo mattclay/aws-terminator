@@ -145,6 +145,7 @@ Statement:
       - autoscaling:DescribeTags
       - autoscaling:DescribeAdjustmentTypes
       - autoscaling:PutScalingPolicy
+      - autoscaling:DisableMetricsCollection
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:RemoveTags
