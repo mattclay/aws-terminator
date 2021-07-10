@@ -167,6 +167,8 @@ Statement:
     Effect: Allow
     Action:
       - events:DescribeRule
+      - events:CreateRule
+      - events:DeleteRule
     Resource:
       - 'arn:aws:events:{{ aws_region }}:{{ aws_account_id }}:rule:cloudwatch_event_rule*'
   - Sid: ModifyCloudwatchAlarms
