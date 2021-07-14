@@ -94,6 +94,8 @@ Statement:
       - SNS:ListSubscriptionsByTopic
       - SNS:ListSubscriptions
       - SNS:SetTopicAttributes
+      - SNS:GetSubscriptionAttributes
+      - SNS:SetSubscriptionAttributes
       - SNS:Subscribe
       - SNS:Unsubscribe
       - states:DescribeExecution
