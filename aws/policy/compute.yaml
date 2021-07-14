@@ -162,15 +162,19 @@ Statement:
       - elasticloadbalancing:RegisterTargets
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
-      - elasticfilesystem:DescribeFileSystems
-      - elasticfilesystem:DescribeMountTargets
-      - elasticfilesystem:DescribeMountTargetSecurityGroups
-      - elasticfilesystem:DescribeTags
       - elasticfilesystem:CreateFileSystem
       - elasticfilesystem:CreateMountTarget
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
+      - elasticfilesystem:DescribeFileSystems
+      - elasticfilesystem:DescribeMountTargets
+      - elasticfilesystem:DescribeMountTargetSecurityGroups
+      - elasticfilesystem:DescribeTags
+      - elasticfilesystem:ListTagsForResource
+      - elasticfilesystem:TagResource
+      - elasticfilesystem:UntagResource
+      - elasticfilesystem:UpdateFileSystem
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
