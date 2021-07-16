@@ -51,6 +51,11 @@ Statement:
       - ec2messages:GetEndpoint
       - ec2messages:GetMessages
       - ec2messages:SendReply
+      - events:CreateRule
+      - events:DescribeRule
+      - events:DeleteRule
+      - events:ListTargetsByRule
+      - events:PutRule
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
       - codecommit:ListRepositories
@@ -163,14 +168,6 @@ Statement:
       - logs:PutMetricFilter
     Resource:
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
-  - Sid: DescribeEventRules
-    Effect: Allow
-    Action:
-      - events:DescribeRule
-      - events:CreateRule
-      - events:DeleteRule
-    Resource:
-      - 'arn:aws:events:{{ aws_region }}:{{ aws_account_id }}:rule:cloudwatch_event_rule*'
   - Sid: ModifyCloudwatchAlarms
     Effect: Allow
     Action:
