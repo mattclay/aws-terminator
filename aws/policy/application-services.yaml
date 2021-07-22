@@ -84,6 +84,23 @@ Statement:
       - ssm:DeleteParameter
       - ssm:GetParametersByPath
       - ssm:GetParameters
+      - cloudformation:CreateChangeSet
+      - cloudformation:CreateStack
+      - cloudformation:DeleteChangeSet
+      - cloudformation:DeleteStack
+      - cloudformation:DescribeChangeSet
+      - cloudformation:DescribeStackEvents
+      - cloudformation:DescribeStacks
+      - cloudformation:GetStackPolicy
+      - cloudformation:SetStackPolicy
+      - cloudformation:GetTemplate
+      - cloudformation:ListChangeSets
+      - cloudformation:ListStackResources
+      - cloudformation:UpdateStack
+      - cloudformation:UpdateTerminationProtection
+      - cloudwatch:DeleteAlarms
+      - cloudwatch:DescribeAlarms
+      - cloudwatch:PutMetricAlarm
       - codebuild:CreateProject
       - codebuild:UpdateProject
       - codebuild:DeleteProject
@@ -94,6 +111,12 @@ Statement:
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:UpdatePipeline
+      - logs:CreateLogGroup
+      - logs:DeleteLogGroup
+      - logs:PutRetentionPolicy
+      - logs:DescribeMetricFilters
+      - logs:DeleteMetricFilter
+      - logs:PutMetricFilter
       - SNS:CreateTopic
       - SNS:DeleteTopic
       - SNS:GetTopicAttributes
@@ -130,6 +153,7 @@ Statement:
       - glue:UpdateCrawler
     Resource:
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
+      - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
       - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:codecommit:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:codepipeline:{{ aws_region }}:{{ aws_account_id }}:*'
@@ -140,6 +164,8 @@ Statement:
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -161,50 +187,6 @@ Statement:
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
-  - Sid: ModifyCloudwatchLogs
-    Effect: Allow
-    Action:
-      - logs:CreateLogGroup
-      - logs:DeleteLogGroup
-      - logs:PutRetentionPolicy
-      - logs:DescribeMetricFilters
-      - logs:DeleteMetricFilter
-      - logs:PutMetricFilter
-    Resource:
-      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
-  - Sid: ModifyCloudwatchAlarms
-    Effect: Allow
-    Action:
-      - cloudwatch:PutMetricAlarm
-      - cloudwatch:DeleteAlarms
-    Resource:
-      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:ansible-test*'
-  - Sid: DescribeCloudwatchAlarms
-    Effect: Allow
-    Action:
-      - cloudwatch:DescribeAlarms
-    Resource:
-      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
-  - Sid: Cloudformation
-    Effect: Allow
-    Action:
-      - cloudformation:CreateChangeSet
-      - cloudformation:CreateStack
-      - cloudformation:DeleteChangeSet
-      - cloudformation:DeleteStack
-      - cloudformation:DescribeChangeSet
-      - cloudformation:DescribeStackEvents
-      - cloudformation:DescribeStacks
-      - cloudformation:GetStackPolicy
-      - cloudformation:SetStackPolicy
-      - cloudformation:GetTemplate
-      - cloudformation:ListChangeSets
-      - cloudformation:ListStackResources
-      - cloudformation:UpdateStack
-      - cloudformation:UpdateTerminationProtection
-    Resource:
-      - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
-
   # Used to test some of the cross-account features
   - Sid: PermitReadOnlyThirdParty
     Effect: Allow
