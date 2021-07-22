@@ -56,6 +56,8 @@ Statement:
       - events:DeleteRule
       - events:ListTargetsByRule
       - events:PutRule
+      - events:PutTargets
+      - events:RemoveTargets
       - codebuild:BatchGetProjects
       - codebuild:ListProjects
       - codecommit:ListRepositories
