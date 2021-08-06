@@ -100,6 +100,14 @@ Statement:
       - ec2:RequestSpotInstances
     Resource:
       - "*"
+    Condition:
+      StringEqualsIfExists:
+        ec2:InstanceType:
+          - t2.nano
+          - t2.micro
+          - t3.nano
+          - t3.micro
+          - m1.large  # lowest cost instance type with EBS optimization supported
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
