@@ -513,3 +513,24 @@ class LaunchTemplate(Terminator):
 
     def terminate(self):
         self.client.delete_launch_template(LaunchTemplateId=self.id)
+
+
+class Ec2SpotInstanceRequest(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Ec2SpotInstanceRequest, 'ec2', lambda client: client.describe_spot_instance_requests()['SpotInstanceRequests'])
+
+    @property
+    def name(self):
+        return self.instance['SpotInstanceRequestId']
+
+    @property
+    def id(self):
+        return self.instance['SpotInstanceRequestId']
+
+    @property
+    def created_time(self):
+        return self.instance['CreateTime']
+
+    def terminate(self):
+        self.client.cancel_spot_instance_requests(SpotInstanceRequestIds=[self.id])
