@@ -56,6 +56,7 @@ Statement:
     Action:
       - ec2:AssignPrivateIpAddresses
       - ec2:AttachVolume
+      - ec2:CancelSpotInstanceRequests
       - ec2:CreateImage
       - ec2:CreateKeyPair
       - ec2:CreateLaunchTemplate
@@ -91,12 +92,14 @@ Statement:
         ec2:Region:
           - '{{ aws_region }}'
 
-  # - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
-  #   Effect: Allow
-  #   Action:
-  #     -
-  #   Resource:
-  #     - "*"
+  # Spot Request permissions need to be pretty open
+  # https://stackoverflow.com/questions/36570812/aws-ec2-iam-policy-for-ec2requestspotinstances
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ec2:RequestSpotInstances
+    Resource:
+      - "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -107,16 +110,8 @@ Statement:
       - autoscaling:DescribePolicies
       - ec2:DescribeAvailabilityZones
       - elasticloadbalancing:DeleteRule
-      - elasticloadbalancing:DescribeListeners
       - elasticloadbalancing:DeleteListener
-      - elasticloadbalancing:DescribeLoadBalancerAttributes
-      - elasticloadbalancing:DescribeLoadBalancers
-      - elasticloadbalancing:DescribeRules
-      - elasticloadbalancing:DescribeTags
-      - elasticloadbalancing:DescribeTargetGroupAttributes
-      - elasticloadbalancing:DescribeTargetGroups
-      - elasticloadbalancing:DescribeInstanceHealth
-      - elasticloadbalancing:DescribeTargetHealth
+      - elasticloadbalancing:Describe*
       - elasticloadbalancing:DeregisterTargets
       - elasticloadbalancing:ModifyListener
       - elasticloadbalancing:ModifyTargetGroupAttributes
