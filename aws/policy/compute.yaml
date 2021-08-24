@@ -151,18 +151,29 @@ Statement:
       - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
+      - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
+      - elasticloadbalancing:AttachLoadBalancerToSubnets
       - elasticloadbalancing:RemoveTags
       - elasticloadbalancing:ConfigureHealthCheck
+      - elasticloadbalancing:CreateAppCookieStickinessPolicy
+      - elasticloadbalancing:CreateLBCookieStickinessPolicy
       - elasticloadbalancing:CreateListener
       - elasticloadbalancing:CreateLoadBalancerListeners
+      - elasticloadbalancing:CreateLoadBalancerPolicy
       - elasticloadbalancing:CreateTargetGroup
       - elasticloadbalancing:DeleteLoadBalancer
       - elasticloadbalancing:DeleteLoadBalancerListeners
+      - elasticloadbalancing:DeleteLoadBalancerPolicy
       - elasticloadbalancing:DeleteTargetGroup
+      - elasticloadbalancing:DeregisterInstancesFromLoadBalancer
+      - elasticloadbalancing:DetachLoadBalancerFromSubnets
       - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
+      - elasticloadbalancing:RegisterInstancesWithLoadBalancer
       - elasticloadbalancing:RegisterTargets
+      - elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer
+      - elasticloadbalancing:SetLoadBalancerPoliciesOfListener
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
       - elasticfilesystem:CreateFileSystem
