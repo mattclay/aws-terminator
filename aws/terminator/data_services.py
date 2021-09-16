@@ -23,6 +23,26 @@ class DmsSubnetGroup(DbTerminator):
         self.client.delete_replication_subnet_group(ReplicationSubnetGroupIdentifier=self.id)
 
 
+class RedshiftSubnetGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_redshift_subnet_groups(client):
+            return client.get_paginator('describe_cluster_subnet_groups').paginate().build_full_result()['ClusterSubnetGroups']
+
+        return Terminator._create(credentials, RedshiftSubnetGroup, 'redshift', paginate_redshift_subnet_groups)
+
+    @property
+    def id(self):
+        return self.instance['ClusterSubnetGroupName']
+
+    @property
+    def name(self):
+        return self.instance['ClusterSubnetGroupName']
+
+    def terminate(self):
+        self.client.delete_cluster_subnet_group(ClusterSubnetGroupName=self.id)
+
+
 class Elasticache(Terminator):
     @staticmethod
     def create(credentials):
