@@ -71,6 +71,7 @@ Statement:
       - rds:DeleteDBCluster
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
+      - rds:DescribeDBInstances
       - rds:DescribeDBParameters
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
