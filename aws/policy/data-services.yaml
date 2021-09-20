@@ -26,14 +26,19 @@ Statement:
       - dms:ModifyEndpoint
       - dms:DeleteReplicationSubnetGroup
       - dms:ModifyReplicationSubnetGroup
-      - dynamodb:GetItem
-      - dynamodb:DeleteItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
       - dynamodb:CreateTable
+      - dynamodb:DeleteItem
       - dynamodb:DeleteTable
-      - dynamodb:UpdateTable
+      - dynamodb:DescribeContinuousBackups
+      - dynamodb:GetItem
+      - dynamodb:ListTables
+      - dynamodb:ListTagsOfResource
+      - dynamodb:PutItem
       - dynamodb:TagResource
+      - dynamodb:UntagResource
+      - dynamodb:UpdateContinuousBackups
+      - dynamodb:UpdateItem
+      - dynamodb:UpdateTable
       - elasticache:AddTagsToResource
       - elasticache:CreateCacheSecurityGroup
       - elasticache:CreateCacheSubnetGroup
