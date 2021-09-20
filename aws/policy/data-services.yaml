@@ -72,6 +72,9 @@ Statement:
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
       - rds:DescribeDBInstances
+      - rds:CreateDBInstance
+      - rds:ModifyDBInstance
+      - rds:DeleteDBInstance
       - rds:DescribeDBParameters
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
@@ -93,6 +96,7 @@ Statement:
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
