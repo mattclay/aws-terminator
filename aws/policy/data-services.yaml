@@ -58,13 +58,17 @@ Statement:
       - glacier:ListTagsForVault
       - glacier:AddTagsToVault
       - glacier:RemoveTagsFromVault
-      - redshift:DescribeClusters
-      - redshift:DeleteCluster
-      - redshift:ModifyCluster
-      - redshift:RebootCluster
-      - redshift:DeleteTags
-      - redshift:DescribeTags
+      - redshift:CreateClusterSubnetGroup
       - redshift:CreateTags
+      - redshift:DeleteCluster
+      - redshift:DeleteClusterSubnetGroup
+      - redshift:DeleteTags
+      - redshift:DescribeClusters
+      - redshift:DescribeClusterSubnetGroups
+      - redshift:DescribeTags
+      - redshift:ModifyCluster
+      - redshift:ModifyClusterSubnetGroup
+      - redshift:RebootCluster
       - rds:AddTagsToResource
       - rds:CreateDBParameterGroup
       - rds:CreateDBSubnetGroup
@@ -94,6 +98,7 @@ Statement:
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
