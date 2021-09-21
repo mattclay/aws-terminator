@@ -185,7 +185,7 @@ class RdsDBInstance(DbTerminator):
 
     @property
     def name(self):
-        return self.instance['DBInstanceArn']
+        return self.instance['DBInstanceIdentifier']
 
     def terminate(self):
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
