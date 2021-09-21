@@ -173,6 +173,7 @@ class RdsDbParameterGroup(DbTerminator):
     def terminate(self):
         self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
+
 class RdsDBInstance(DbTerminator):
     @staticmethod
     def create(credentials):
