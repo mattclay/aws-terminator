@@ -75,11 +75,11 @@ Statement:
       - rds:DeleteDBCluster
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
-      - rds:DescribeDBInstances
+      - rds:DescribeDB*
+      - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
       - rds:ModifyDBInstance
       - rds:DeleteDBInstance
-      - rds:DescribeDBParameters
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
@@ -89,6 +89,8 @@ Statement:
       - rds:CreateOptionGroup
       - rds:ModifyOptionGroup
       - rds:DeleteOptionGroup
+      - rds:StopDBInstance
+      - rds:StartDBInstance
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
