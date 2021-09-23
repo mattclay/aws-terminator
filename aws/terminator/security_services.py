@@ -69,6 +69,31 @@ class IamInstanceProfile(Terminator):
         self.client.delete_instance_profile(InstanceProfileName=self.name)
 
 
+class IamServerCertificate(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, IamServerCertificate, 'iam', lambda client: client.list_server_certificates()['ServerCertificateMetadataList'])
+
+    @property
+    def id(self):
+        return self.instance['ServerCertificateId']
+
+    @property
+    def name(self):
+        return self.instance['ServerCertificateName']
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test-')
+
+    @property
+    def created_time(self):
+        return self.instance['UploadDate']
+
+    def terminate(self):
+        self.client.delete_server_certificate(ServerCertificateName=self.name)
+
+
 class ACMCertificate(DbTerminator):
     # ACM provides a created time, but there are cases where describe_certificate can fail
     # We need to be able to delete anyway, so use DbTerminator
