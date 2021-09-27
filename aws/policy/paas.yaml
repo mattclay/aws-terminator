@@ -78,6 +78,20 @@ Statement:
       - lambda:ListFunctions
       - lambda:ListVersionsByFunction
       - lambda:ListAliases
+      - lambda:GetEventSourceMapping
       - lambda:ListEventSourceMappings
     Resource:
       - "*"
+
+  - Sid: AllowLambdaEventSourceMappings
+    Effect: Allow
+    Action:
+      - lambda:CreateEventSourceMapping
+      - lambda:UpdateEventSourceMapping
+      - lambda:DeleteEventSourceMapping
+    Resource:
+      - "*"
+    Condition:
+      StringLike:
+        lambda:FunctionArn:
+          - arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*
