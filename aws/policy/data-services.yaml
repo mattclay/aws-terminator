@@ -14,9 +14,7 @@ Statement:
       - glue:DeleteConnection
       - glue:UpdateConnection
       - glue:GetConnections
-      - rds:DescribeDBClusters
-      - rds:DescribeDBParameterGroups
-      - rds:DescribeDBSubnetGroups
+      - rds:DescribeDB*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -80,7 +78,6 @@ Statement:
       - rds:DeleteDBCluster
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
-      - rds:DescribeDB*
       - rds:RestoreDBInstanceToPointInTime
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
@@ -88,6 +85,7 @@ Statement:
       - rds:DeleteDBInstance
       - rds:StopDBInstance
       - rds:StartDBInstance
+      - rds:PromoteReadReplica
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
