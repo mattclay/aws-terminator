@@ -170,6 +170,10 @@ class RdsDbParameterGroup(DbTerminator):
     def name(self):
         return self.instance['DBParameterGroupName']
 
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
     def terminate(self):
         self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
