@@ -9,6 +9,7 @@ Statement:
       - dynamodb:Scan
       - dynamodb:ListTables
       - dynamodb:DescribeTable
+      - dynamodb:ListTagsOfResource
       - glue:GetConnection
       - glue:CreateConnection
       - glue:DeleteConnection
@@ -31,8 +32,6 @@ Statement:
       - dynamodb:DeleteTable
       - dynamodb:DescribeContinuousBackups
       - dynamodb:GetItem
-      - dynamodb:ListTables
-      - dynamodb:ListTagsOfResource
       - dynamodb:PutItem
       - dynamodb:TagResource
       - dynamodb:UntagResource
@@ -92,7 +91,7 @@ Statement:
       - rds:DeleteOptionGroup
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
-      - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
+      - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
