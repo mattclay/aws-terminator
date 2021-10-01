@@ -86,6 +86,7 @@ Statement:
       - rds:StopDBInstance
       - rds:StartDBInstance
       - rds:PromoteReadReplica
+      - rds:RebootDBInstance
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
