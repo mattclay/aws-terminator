@@ -190,7 +190,9 @@ class RdsDBInstance(DbTerminator):
     @property
     def name(self):
         return self.instance['DBInstanceIdentifier']
-
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
     def terminate(self):
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
 
