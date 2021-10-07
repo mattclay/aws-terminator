@@ -15,6 +15,7 @@ Statement:
       - glue:UpdateConnection
       - glue:GetConnections
       - rds:DescribeDB*
+      - rds:List*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -112,6 +113,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
