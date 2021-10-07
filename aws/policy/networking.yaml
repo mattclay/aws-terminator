@@ -12,7 +12,13 @@ Statement:
       - route53:UpdateHostedZoneComment
       - route53:ChangeTagsForResource
       - route53:ListTagsForResource
+      - route53:CreateHealthCheck
+      - route53:DeleteHealthCheck
+      - route53:GetHealthCheck
+      - route53:ListHealthChecks
+      - route53:UpdateHealthCheck
     Resource: "*"
+
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -89,6 +95,7 @@ Statement:
       StringEquals:
         ec2:Region:
           - '{{ aws_region }}'
+
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:

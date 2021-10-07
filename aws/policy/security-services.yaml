@@ -21,6 +21,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
 
   # Legacy - We need to backport ansible-collections/community.aws/63 or
   # wait until community.aws drops CI support for Ansible 2.9
@@ -101,23 +102,26 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      - iam:DeleteServerCertificate
+      - iam:UploadServerCertificate
       - secretsmanager:CreateSecret
-      - secretsmanager:UpdateSecret
       - secretsmanager:DeleteSecret
       - secretsmanager:GetSecretValue
       - secretsmanager:RotateSecret
-      - secretsmanager:UntagResource
       - secretsmanager:TagResource
+      - secretsmanager:UntagResource
+      - secretsmanager:UpdateSecret
     Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - acm:DescribeCertificate
-      - acm:GetCertificate
       - acm:AddTagsToCertificate
       - acm:DeleteCertificate
+      - acm:DescribeCertificate
+      - acm:GetCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
@@ -127,15 +131,19 @@ Statement:
       - iam:DeleteSAMLProvider
       - iam:GetInstanceProfile
       - iam:GetSAMLProvider
+      - iam:GetServerCertificate
       - iam:ListInstanceProfilesForRole
+      - iam:ListServerCertificates
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
+      - iam:UpdateServerCertificate
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # This is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'

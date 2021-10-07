@@ -15,9 +15,8 @@ Statement:
       - glue:DeleteConnection
       - glue:UpdateConnection
       - glue:GetConnections
-      - rds:DescribeDBClusters
-      - rds:DescribeDBParameterGroups
-      - rds:DescribeDBSubnetGroups
+      - rds:DescribeDB*
+      - rds:List*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -79,7 +78,15 @@ Statement:
       - rds:DeleteDBCluster
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
-      - rds:DescribeDBParameters
+      - rds:RestoreDBInstanceToPointInTime
+      - rds:CreateDBInstanceReadReplica
+      - rds:CreateDBInstance
+      - rds:ModifyDBInstance
+      - rds:DeleteDBInstance
+      - rds:StopDBInstance
+      - rds:StartDBInstance
+      - rds:PromoteReadReplica
+      - rds:RebootDBInstance
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
@@ -101,9 +108,11 @@ Statement:
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
