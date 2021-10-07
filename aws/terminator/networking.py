@@ -35,6 +35,23 @@ class Route53HostedZone(DbTerminator):
         self.client.delete_hosted_zone(Id=self.id)
 
 
+class Route53HealthCheck(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Route53HealthCheck, 'route53', lambda client: client.list_health_checks()['HealthChecks'])
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def name(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_health_check(HealthCheckId=self.id)
+
+
 class Ec2Eip(DbTerminator):
     @staticmethod
     def create(credentials):
