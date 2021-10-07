@@ -178,6 +178,27 @@ class RdsDbParameterGroup(DbTerminator):
         self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
 
+class RdsDBInstance(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsDBInstance, 'rds', lambda client: client.describe_db_instances()['DBInstances'])
+
+    @property
+    def id(self):
+        return self.instance['DBInstanceArn']
+
+    @property
+    def name(self):
+        return self.instance['DBInstanceIdentifier']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
+    def terminate(self):
+        self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
+
+
 class RedshiftCluster(Terminator):
     @staticmethod
     def create(credentials):

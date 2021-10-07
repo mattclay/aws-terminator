@@ -21,6 +21,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
 
   # Legacy - We need to backport ansible-collections/community.aws/63 or
   # wait until community.aws drops CI support for Ansible 2.9
