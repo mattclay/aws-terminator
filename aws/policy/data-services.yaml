@@ -9,6 +9,7 @@ Statement:
       - dynamodb:Scan
       - dynamodb:ListTables
       - dynamodb:DescribeTable
+      - dynamodb:ListTagsOfResource
       - glue:GetConnection
       - glue:CreateConnection
       - glue:DeleteConnection
@@ -30,8 +31,6 @@ Statement:
       - dynamodb:DeleteTable
       - dynamodb:DescribeContinuousBackups
       - dynamodb:GetItem
-      - dynamodb:ListTables
-      - dynamodb:ListTagsOfResource
       - dynamodb:PutItem
       - dynamodb:TagResource
       - dynamodb:UntagResource
