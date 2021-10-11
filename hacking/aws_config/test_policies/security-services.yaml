@@ -13,6 +13,7 @@ Statement:
       - iam:ListAttachedUserPolicies
       - iam:ListGroups
       - iam:ListUsers
+      - iam:ListPolicies
       - iam:GetAccountPasswordPolicy
       - iam:UpdateAccountPasswordPolicy
       - iam:DeleteAccountPasswordPolicy
@@ -42,25 +43,39 @@ Statement:
     Effect: Allow
     Action:
       - iam:AddUserToGroup
+      - iam:AttachUserPolicy
+      - iam:CreateAccessKey
       - iam:CreateGroup
       - iam:CreatePolicy
       - iam:CreateUser
+      - iam:DeleteAccessKey
       - iam:DeleteGroup
+      - iam:DeleteLoginProfile
       - iam:DeletePolicy
       - iam:DeleteRolePermissionsBoundary
       - iam:DeleteRolePolicy
       - iam:DeleteUser
+      - iam:DetachUserPolicy
       - iam:GetGroup
+      - iam:GetUser
+      - iam:ListAccessKeys
       - iam:ListAttachedGroupPolicies
+      - iam:ListAttachedUserPolicies
       - iam:ListEntitiesForPolicy
       - iam:ListGroupsForUser
+      - iam:ListMFADevices
       - iam:ListPolicyVersions
+      - iam:ListServiceSpecificCredentials
+      - iam:ListSigningCertificates
+      - iam:ListSSHPublicKeys
+      - iam:ListUserPolicies
       - iam:PassRole
       - iam:PutRolePermissionsBoundary
       - iam:PutRolePolicy
       - iam:RemoveUserFromGroup
       - iam:TagUser
       - iam:UntagUser
+      - iam:UpdateAccessKey
       - iam:UpdateAssumeRolePolicy
       - iam:UpdateGroup
       - iam:UpdateRole
