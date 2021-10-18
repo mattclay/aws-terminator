@@ -10,7 +10,9 @@ Statement:
       - iam:GetPolicyVersion
       - iam:GetRolePolicy
       - iam:ListAttachedGroupPolicies
+      - iam:ListAttachedRolePolicies
       - iam:ListAttachedUserPolicies
+      - iam:ListInstanceProfilesForRole
       - iam:ListGroups
       - iam:ListUsers
       - iam:ListPolicies
@@ -44,6 +46,7 @@ Statement:
     Action:
       - iam:AddUserToGroup
       - iam:AttachUserPolicy
+      - iam:AttachRolePolicy
       - iam:CreateAccessKey
       - iam:CreateGroup
       - iam:CreatePolicy
@@ -56,6 +59,7 @@ Statement:
       - iam:DeleteRolePolicy
       - iam:DeleteUser
       - iam:DetachUserPolicy
+      - iam:DetachRolePolicy
       - iam:GetGroup
       - iam:GetUser
       - iam:ListAccessKeys
