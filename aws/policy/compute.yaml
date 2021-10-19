@@ -109,13 +109,11 @@ Statement:
           - t3.micro
           - m1.large  # lowest cost instance type with EBS optimization supported
 
+  # ASG and ELB don't like being region restricted.
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - autoscaling:DescribeAutoScalingGroups
-      - autoscaling:DescribeInstanceRefreshes
-      - autoscaling:DescribeLaunchConfigurations
-      - autoscaling:DescribePolicies
+      - autoscaling:Describe*
       - ec2:DescribeAvailabilityZones
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
@@ -146,8 +144,6 @@ Statement:
       - autoscaling:DeleteLaunchConfiguration
       - autoscaling:DeletePolicy
       - autoscaling:DeleteTags
-      - autoscaling:DescribeTags
-      - autoscaling:DescribeAdjustmentTypes
       - autoscaling:PutScalingPolicy
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
@@ -181,10 +177,7 @@ Statement:
       - elasticfilesystem:CreateTags
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
-      - elasticfilesystem:DescribeFileSystems
-      - elasticfilesystem:DescribeMountTargets
-      - elasticfilesystem:DescribeMountTargetSecurityGroups
-      - elasticfilesystem:DescribeTags
+      - elasticfilesystem:Describe*
       - elasticfilesystem:ListTagsForResource
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
