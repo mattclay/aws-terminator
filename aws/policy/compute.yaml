@@ -179,6 +179,7 @@ Statement:
       - elasticfilesystem:DeleteMountTarget
       - elasticfilesystem:Describe*
       - elasticfilesystem:ListTagsForResource
+      - elasticfilesystem:PutLifecycleConfiguration
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
