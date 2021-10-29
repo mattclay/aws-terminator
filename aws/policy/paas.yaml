@@ -50,7 +50,10 @@ Statement:
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
+      - lambda:ListTags
       - lambda:RemovePermission
+      - lambda:TagResource
+      - lambda:UntagResource
       - lambda:UpdateAlias
       - lambda:UpdateFunctionConfiguration
       - lightsail:AllocateStaticIp
