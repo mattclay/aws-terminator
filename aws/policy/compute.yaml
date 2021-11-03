@@ -145,6 +145,8 @@ Statement:
       - autoscaling:DeletePolicy
       - autoscaling:DeleteTags
       - autoscaling:PutScalingPolicy
+      - autoscaling:PutScheduledUpdateGroupAction
+      - autoscaling:DeleteScheduledAction
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
