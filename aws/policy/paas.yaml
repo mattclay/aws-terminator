@@ -8,10 +8,15 @@ Statement:
       - lambda:InvokeFunction
       - lightsail:CreateInstances
       - lightsail:StartInstance
+      - ecr:CompleteLayerUpload
+      - ecr:InitiateLayerUpload
+      - ecr:PutImage
+      - ecr:UploadLayerPart
     Resource:
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
 
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -24,6 +29,11 @@ Statement:
       - ecr:PutImageScanningConfiguration
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
+      - ecr:DescribeImages
+      - ecr:ListImages
+      - ecr:BatchDeleteImages
+      - ecr:BatchCheckLayerAvailability
+      - ecr:GetAuthorizationToken
       - eks:DeleteCluster
       - eks:DescribeCluster
       - eks:ListClusters
