@@ -29,6 +29,14 @@ Statement:
       - autoscaling:CancelInstanceRefresh
       - autoscaling:StartInstanceRefresh
       - autoscaling:UpdateAutoScalingGroup
+      - autoscaling:DescribeAutoScalingGroups
+      - autoscaling:DisableMetricsCollection
+      - autoscaling:DescribeLaunchConfigurations
+      - autoscaling:DescribeLifecycleHooks
+      - autoscaling:DetachLoadBalancerTargetGroups
+      - autoscaling:DetachLoadBalancers
+      - autoscaling:EnableMetricsCollection
+      - autoscaling:TerminateInstanceInAutoScalingGroup
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
     Condition:
@@ -85,6 +93,35 @@ Statement:
       - ec2:StopInstances
       - ec2:TerminateInstances
       - ec2:UnassignPrivateIpAddresses
+      - ec2:AssociateRouteTable
+      - ec2:AttachInternetGateway
+      - ec2:AuthorizeSecurityGroupIngress
+      - ec2:CreateInternetGateway
+      - ec2:CreateRoute
+      - ec2:CreateRouteTable
+      - ec2:CreateSecurityGroup
+      - ec2:CreateSubnet
+      - ec2:CreateVpc
+      - ec2:DeleteInternetGateway
+      - ec2:DeleteRouteTable
+      - ec2:DeleteSecurityGroup
+      - ec2:DeleteSubnet
+      - ec2:DeleteVpc
+      - ec2:DescribeImages
+      - ec2:DescribeInternetGateways
+      - ec2:DescribeLaunchTemplateVersions
+      - ec2:DescribeLaunchTemplates
+      - ec2:DescribeNetworkInterfaces
+      - ec2:DescribeRouteTables
+      - ec2:DescribeSecurityGroups
+      - ec2:DescribeSubnets
+      - ec2:DescribeTags
+      - ec2:DescribeVpcAttribute
+      - ec2:DescribeVpcClassicLink
+      - ec2:DescribeVpcs
+      - ec2:DetachInternetGateway
+      - ec2:DisassociateRouteTable
+      - ec2:ModifyVpcAttribute
     Resource:
       - "*"
     Condition:
@@ -147,6 +184,7 @@ Statement:
       - autoscaling:PutScalingPolicy
       - autoscaling:PutScheduledUpdateGroupAction
       - autoscaling:DeleteScheduledAction
+      - autoscaling:AttachLoadBalancerTargetGroups
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
@@ -174,6 +212,12 @@ Statement:
       - elasticloadbalancing:SetLoadBalancerPoliciesOfListener
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
+      - elasticloadbalancing:DescribeInstanceHealth
+      - elasticloadbalancing:DescribeLoadBalancerAttributes
+      - elasticloadbalancing:DescribeLoadBalancerPolicies
+      - elasticloadbalancing:DescribeLoadBalancers
+      - elasticloadbalancing:DescribeTargetGroupAttributes
+      - elasticloadbalancing:DescribeTargetGroups
       - elasticfilesystem:CreateFileSystem
       - elasticfilesystem:CreateMountTarget
       - elasticfilesystem:CreateTags
@@ -185,6 +229,7 @@ Statement:
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
+      - sts:GetCallerIdentity
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
