@@ -25,6 +25,8 @@ Statement:
       - ec2:AcceptVpcPeeringConnection
       - ec2:AllocateAddress
       - ec2:AssociateAddress
+      - ec2:AssignPrivateIpAddresses
+      - ec2:UnassignPrivateIpAddresses
       - ec2:AssociateDhcpOptions
       - ec2:AssociateRouteTable
       - ec2:AssociateSubnetCidrBlock
@@ -39,6 +41,7 @@ Statement:
       - ec2:CreateEgressOnlyInternetGateway
       - ec2:CreateInternetGateway
       - ec2:CreateNatGateway
+      - ec2:CreateTransitGateway
       - ec2:CreateNetworkAcl
       - ec2:CreateNetworkAclEntry
       - ec2:CreateNetworkInterface
@@ -68,6 +71,7 @@ Statement:
       - ec2:DeleteVpcPeeringConnection
       - ec2:DeleteVpnConnection
       - ec2:DeleteVpnGateway
+      - ec2:DeleteTransitGateway
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
@@ -89,6 +93,14 @@ Statement:
       - ec2:RevokeSecurityGroupIngress
       - ec2:UpdateSecurityGroupRuleDescriptionsEgress
       - ec2:UpdateSecurityGroupRuleDescriptionsIngress
+      - ec2:DescribeVpcAttribute
+      - ec2:DescribeVpcClassicLink
+      - ec2:DescribeVpcs
+      - ec2:DescribeSubnets
+      - ec2:DescribeNetworkInterfaces
+      - ec2:DescribeRouteTables
+      - ec2:DescribeSecurityGroups
+      - ec2:DescribeInternetGateways
     Resource:
       - "*"
     Condition:

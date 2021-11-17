@@ -62,7 +62,6 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ec2:AssignPrivateIpAddresses
       - ec2:AttachVolume
       - ec2:CancelSpotInstanceRequests
       - ec2:CreateImage
@@ -71,13 +70,11 @@ Statement:
       - ec2:CreateLaunchTemplateVersion
       - ec2:CreateSnapshot
       - ec2:CreateTags
-      - ec2:CreateTransitGateway
       - ec2:DeleteKeyPair
       - ec2:DeleteLaunchTemplate
       - ec2:DeleteLaunchTemplateVersions
       - ec2:DeleteSnapshot
       - ec2:DeleteTags
-      - ec2:DeleteTransitGateway
       - ec2:DeregisterImage
       - ec2:Describe*
       - ec2:DetachVolume
@@ -92,18 +89,9 @@ Statement:
       - ec2:ReplaceIamInstanceProfileAssociation
       - ec2:StopInstances
       - ec2:TerminateInstances
-      - ec2:UnassignPrivateIpAddresses
-      - ec2:DescribeInternetGateways
       - ec2:DescribeLaunchTemplateVersions
       - ec2:DescribeLaunchTemplates
-      - ec2:DescribeNetworkInterfaces
-      - ec2:DescribeRouteTables
-      - ec2:DescribeSecurityGroups
-      - ec2:DescribeSubnets
       - ec2:DescribeTags
-      - ec2:DescribeVpcAttribute
-      - ec2:DescribeVpcClassicLink
-      - ec2:DescribeVpcs
     Resource:
       - "*"
     Condition:
@@ -200,17 +188,6 @@ Statement:
       - elasticloadbalancing:DescribeLoadBalancers
       - elasticloadbalancing:DescribeTargetGroupAttributes
       - elasticloadbalancing:DescribeTargetGroups
-      - elasticfilesystem:CreateFileSystem
-      - elasticfilesystem:CreateMountTarget
-      - elasticfilesystem:CreateTags
-      - elasticfilesystem:DeleteFileSystem
-      - elasticfilesystem:DeleteMountTarget
-      - elasticfilesystem:Describe*
-      - elasticfilesystem:ListTagsForResource
-      - elasticfilesystem:PutLifecycleConfiguration
-      - elasticfilesystem:TagResource
-      - elasticfilesystem:UntagResource
-      - elasticfilesystem:UpdateFileSystem
       - sts:GetCallerIdentity
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
