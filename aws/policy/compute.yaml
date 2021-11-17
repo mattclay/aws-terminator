@@ -89,9 +89,6 @@ Statement:
       - ec2:ReplaceIamInstanceProfileAssociation
       - ec2:StopInstances
       - ec2:TerminateInstances
-      - ec2:DescribeLaunchTemplateVersions
-      - ec2:DescribeLaunchTemplates
-      - ec2:DescribeTags
     Resource:
       - "*"
     Condition:
@@ -121,7 +118,6 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:Describe*
-      - ec2:DescribeAvailabilityZones
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:Describe*
@@ -182,12 +178,6 @@ Statement:
       - elasticloadbalancing:SetLoadBalancerPoliciesOfListener
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
-      - elasticloadbalancing:DescribeInstanceHealth
-      - elasticloadbalancing:DescribeLoadBalancerAttributes
-      - elasticloadbalancing:DescribeLoadBalancerPolicies
-      - elasticloadbalancing:DescribeLoadBalancers
-      - elasticloadbalancing:DescribeTargetGroupAttributes
-      - elasticloadbalancing:DescribeTargetGroups
       - sts:GetCallerIdentity
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'

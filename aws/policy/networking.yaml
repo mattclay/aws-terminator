@@ -93,14 +93,6 @@ Statement:
       - ec2:RevokeSecurityGroupIngress
       - ec2:UpdateSecurityGroupRuleDescriptionsEgress
       - ec2:UpdateSecurityGroupRuleDescriptionsIngress
-      - ec2:DescribeVpcAttribute
-      - ec2:DescribeVpcClassicLink
-      - ec2:DescribeVpcs
-      - ec2:DescribeSubnets
-      - ec2:DescribeNetworkInterfaces
-      - ec2:DescribeRouteTables
-      - ec2:DescribeSecurityGroups
-      - ec2:DescribeInternetGateways
     Resource:
       - "*"
     Condition:
