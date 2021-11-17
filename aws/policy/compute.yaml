@@ -178,7 +178,6 @@ Statement:
       - elasticloadbalancing:SetLoadBalancerPoliciesOfListener
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
-      - sts:GetCallerIdentity
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
