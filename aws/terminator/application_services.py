@@ -1,9 +1,6 @@
 from datetime import timezone, datetime
 import time
 
-import botocore
-import botocore.exceptions
-
 from . import DbTerminator, Terminator
 
 
@@ -191,41 +188,6 @@ class KinesisStream(Terminator):
             StreamName=self.instance['StreamName'],
             EnforceConsumerDeletion=True
         )
-
-
-class S3Bucket(Terminator):
-    @staticmethod
-    def create(credentials):
-        return Terminator._create(credentials, S3Bucket, 's3', lambda client: client.list_buckets()['Buckets'])
-
-    @property
-    def name(self):
-        return self.instance['Name']
-
-    @property
-    def created_time(self):
-        return self.instance['CreationDate']
-
-    def terminate(self):
-        def _paginated_list(bucket):
-            paginator = self.client.get_paginator('list_objects_v2')
-            for page in paginator.paginate(Bucket=bucket):
-                yield [d['Key'] for d in page.get('Contents', [])]
-
-        try:
-            self.client.delete_bucket(Bucket=self.name)
-        except botocore.exceptions.ClientError as ex:
-            if ex.response['Error']['Code'] == 'NoSuchBucket':
-                return
-            for keys in _paginated_list(self.name):
-                self.client.delete_objects(
-                    Bucket=self.name,
-                    Delete=dict(
-                        Objects=[{'Key': k} for k in keys],
-                        Quiet=True,
-                    )
-                )
-            self.client.delete_bucket(Bucket=self.name)
 
 
 class SesIdentity(DbTerminator):
