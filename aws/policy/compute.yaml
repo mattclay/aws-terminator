@@ -29,10 +29,7 @@ Statement:
       - autoscaling:CancelInstanceRefresh
       - autoscaling:StartInstanceRefresh
       - autoscaling:UpdateAutoScalingGroup
-      - autoscaling:DescribeAutoScalingGroups
       - autoscaling:DisableMetricsCollection
-      - autoscaling:DescribeLaunchConfigurations
-      - autoscaling:DescribeLifecycleHooks
       - autoscaling:DetachLoadBalancerTargetGroups
       - autoscaling:DetachLoadBalancers
       - autoscaling:EnableMetricsCollection
@@ -118,6 +115,7 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:Describe*
+      - ec2:DescribeAvailabilityZones
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:Describe*
