@@ -58,6 +58,17 @@ Statement:
       - s3:PutObjectAcl
       - s3:PutObjectTagging
       - s3:PutObjectVersionTagging
+      - elasticfilesystem:CreateFileSystem
+      - elasticfilesystem:CreateMountTarget
+      - elasticfilesystem:CreateTags
+      - elasticfilesystem:DeleteFileSystem
+      - elasticfilesystem:DeleteMountTarget
+      - elasticfilesystem:Describe*
+      - elasticfilesystem:ListTagsForResource
+      - elasticfilesystem:PutLifecycleConfiguration
+      - elasticfilesystem:TagResource
+      - elasticfilesystem:UntagResource
+      - elasticfilesystem:UpdateFileSystem
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
