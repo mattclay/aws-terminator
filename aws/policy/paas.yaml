@@ -33,7 +33,6 @@ Statement:
       - ecr:ListImages
       - ecr:BatchDeleteImages
       - ecr:BatchCheckLayerAvailability
-      - ecr:GetAuthorizationToken
       - eks:DeleteCluster
       - eks:DescribeCluster
       - eks:ListClusters
@@ -85,6 +84,7 @@ Statement:
   - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ecr:GetAuthorizationToken
       - ecr:CreateRepository
       - ecr:DescribeRepositories
       - ecr:PutImageTagMutability
