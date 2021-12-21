@@ -111,6 +111,9 @@ Statement:
       - secretsmanager:TagResource
       - secretsmanager:UntagResource
       - secretsmanager:UpdateSecret
+      - secretsmanager:GetResourcePolicy
+      - secretsmanager:PutResourcePolicy
+      - secretsmanager:DeleteResourcePolicy
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
