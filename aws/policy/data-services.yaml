@@ -96,6 +96,8 @@ Statement:
       - rds:CreateOptionGroup
       - rds:ModifyOptionGroup
       - rds:DeleteOptionGroup
+      - rds:CreateDBSnapshot
+      - rds:DeleteDBSnapshot
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
