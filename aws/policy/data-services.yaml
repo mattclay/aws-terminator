@@ -96,6 +96,8 @@ Statement:
       - rds:CreateOptionGroup
       - rds:ModifyOptionGroup
       - rds:DeleteOptionGroup
+      - rds:CreateDBClusterSnapshot
+      - rds:DeleteDBClusterSnapshot
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
       - rds:DescribeExportTasks
@@ -118,6 +120,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-snapshot:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
