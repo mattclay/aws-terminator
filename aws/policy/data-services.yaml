@@ -189,5 +189,22 @@ Statement:
   - Sid: OpenSearchCluster
     Effect: Allow
     Action:
+      - es:AddTags
+      - es:CreateDomain
       - es:DescribeElasticsearchDomain
+      - es:DescribeDomainAutoTunes
+      - es:DescribeDomain
+      - es:DescribeDomainConfig
+      - es:DescribeDomains
+      - es:GetCompatibleVersions
+      - es:GetUpgradeHistory
+      - es:GetUpgradeStatus
+      - es:ListDomainNames
+      - es:ListInstanceTypeDetails
+      - es:ListTags
+      - es:ListVersions
+      - es:DeleteDomain
+      - es:RemoveTags
+      - es:UpdateDomainConfig
+      - es:UpgradeDomain
     Resource: "*"
