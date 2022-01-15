@@ -134,7 +134,7 @@ Statement:
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
-  # This allows AWS Services to autmatically create their Default Service Linked Roles
+  # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow
@@ -185,4 +185,9 @@ Statement:
       - kafka:UpdateBrokerType
       - kafka:UntagResource
       - kafka:ListClusterOperations
+    Resource: "*"
+  - Sid: OpenSearchCluster
+    Effect: Allow
+    Action:
+      - es:DescribeElasticsearchDomain
     Resource: "*"
