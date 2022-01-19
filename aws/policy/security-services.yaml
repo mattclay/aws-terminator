@@ -125,6 +125,12 @@ Statement:
       - acm:DeleteCertificate
       - acm:DescribeCertificate
       - acm:GetCertificate
+      - acm:ImportCertificate
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
+      - acm:RemoveTagsFromCertificate
+      - acm:RenewCertificate
+      - acm:RequestCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
