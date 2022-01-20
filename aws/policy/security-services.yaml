@@ -39,7 +39,6 @@ Statement:
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
     Resource: "*"
