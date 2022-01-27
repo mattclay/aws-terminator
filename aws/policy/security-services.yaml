@@ -39,7 +39,6 @@ Statement:
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
     Resource: "*"
@@ -125,6 +124,12 @@ Statement:
       - acm:DeleteCertificate
       - acm:DescribeCertificate
       - acm:GetCertificate
+      - acm:ImportCertificate
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
+      - acm:RemoveTagsFromCertificate
+      - acm:RenewCertificate
+      - acm:RequestCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
