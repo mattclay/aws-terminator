@@ -5,6 +5,7 @@ import botocore.exceptions
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 from ansible_collections.amazon.aws.plugins.module_utils.core import is_boto3_error_code
 
+
 class DmsSubnetGroup(DbTerminator):
     @staticmethod
     def create(credentials):
