@@ -3,7 +3,7 @@ import datetime
 import botocore.exceptions
 
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
-
+from ansible_collections.amazon.aws.plugins.module_utils.core import is_boto3_error_code
 
 class DmsSubnetGroup(DbTerminator):
     @staticmethod
@@ -316,7 +316,11 @@ class OpenSearch(Terminator):
                         domain_config = client.describe_domain_config(DomainName=domain['DomainName'])
                         domain_status["CreationDate"] = domain_config['DomainConfig']['Status']['CreationDate']
                         domains.append(domain_status)
-                except botocore.exceptions.ClientError as ex:
+                except is_boto3_error_code('ResourceNotFoundException'):
+                    # Unlikely, but possible. The domain may have been deleted after invoking
+                    # list_domain_names().
+                    pass
+                except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError):  # pylint: disable=duplicate-except
                     pass
             return domains
 
