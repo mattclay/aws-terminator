@@ -100,6 +100,9 @@ Statement:
       - rds:DeleteDBClusterSnapshot
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
+      - rds:DescribeExportTasks
+      - rds:StartExportTask
+      - rds:CancelExportTask
     Resource:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'

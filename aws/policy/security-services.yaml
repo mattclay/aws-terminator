@@ -155,6 +155,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # This is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
