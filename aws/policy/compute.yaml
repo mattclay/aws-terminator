@@ -66,11 +66,13 @@ Statement:
       - ec2:CreateKeyPair
       - ec2:CreateLaunchTemplate
       - ec2:CreateLaunchTemplateVersion
+      - ec2:CreatePlacementGroup
       - ec2:CreateSnapshot
       - ec2:CreateTags
       - ec2:DeleteKeyPair
       - ec2:DeleteLaunchTemplate
       - ec2:DeleteLaunchTemplateVersions
+      - ec2:DeletePlacementGroup
       - ec2:DeleteSnapshot
       - ec2:DeleteTags
       - ec2:DeregisterImage

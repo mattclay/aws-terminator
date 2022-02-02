@@ -39,7 +39,6 @@ Statement:
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
     Resource: "*"
@@ -111,6 +110,9 @@ Statement:
       - secretsmanager:TagResource
       - secretsmanager:UntagResource
       - secretsmanager:UpdateSecret
+      - secretsmanager:GetResourcePolicy
+      - secretsmanager:PutResourcePolicy
+      - secretsmanager:DeleteResourcePolicy
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
@@ -122,6 +124,12 @@ Statement:
       - acm:DeleteCertificate
       - acm:DescribeCertificate
       - acm:GetCertificate
+      - acm:ImportCertificate
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
+      - acm:RemoveTagsFromCertificate
+      - acm:RenewCertificate
+      - acm:RequestCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
@@ -147,6 +155,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # This is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
