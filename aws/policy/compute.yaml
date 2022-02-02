@@ -41,6 +41,7 @@ Statement:
         autoscaling:InstanceTypes:
           - t3.nano
           - t3.micro
+          - t2.nano
 
   # Permit RunInstance to access any of the usual objects attached to an
   # instance
