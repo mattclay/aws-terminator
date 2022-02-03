@@ -35,7 +35,7 @@ Statement:
       - autoscaling:EnableMetricsCollection
       - autoscaling:TerminateInstanceInAutoScalingGroup
     Resource:
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
     Condition:
       StringEqualsIfExists:
         autoscaling:InstanceTypes:
