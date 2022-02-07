@@ -345,3 +345,25 @@ class CloudWatchAlarm(DbTerminator):
 
     def terminate(self):
         self.client.delete_alarms(AlarmNames=[self.name])
+
+
+class SsmDocument(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_ssm_documents(client):
+            ssm_documents = client.get_paginator(
+                'list_documents').paginate(Filters=[{'Key': 'Owner', 'Values': ['self']}]).build_full_result().get('DocumentIdentifiers', [])
+            return ssm_documents
+
+        return Terminator._create(credentials, SsmDocument, 'ssm', get_ssm_documents)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedDate']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    def terminate(self):
+        self.client.delete_document(Name=self.name)
