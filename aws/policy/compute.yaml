@@ -9,6 +9,7 @@ Statement:
       - autoscaling:CreateAutoScalingGroup
       - autoscaling:CreateLaunchConfiguration
       - autoscaling:UpdateAutoScalingGroup
+      - autoscaling:DetachInstances
       - ec2:RunInstances
       - ec2:StartInstances
     Resource:
