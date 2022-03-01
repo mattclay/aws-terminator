@@ -437,3 +437,65 @@ class ApiGatewayRestApi(Terminator):
 
     def terminate(self):
         self.client.delete_rest_api(restApiId=self.id)
+
+
+class NetworkFirewall(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, NetworkFirewall, 'network-firewall', lambda client: client.list_firewalls()['Firewalls'])
+
+    @property
+    def id(self):
+        return self.instance['FirewallArn']
+
+    @property
+    def name(self):
+        return self.instance['FirewallName']
+
+    def terminate(self):
+        self.client.update_firewall_delete_protection(FirewallArn=self.id, DeleteProtection=False)
+        self.client.delete_firewall(FirewallArn=self.id)
+
+
+class NetworkFirewallPolicy(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, NetworkFirewallPolicy, 'network-firewall', lambda client: client.list_firewall_policies()['FirewallPolicies'])
+
+    @property
+    def age_limit(self):
+        # If there's a parent Firewall with the Policy attached, it can take 10
+        # minutes for the Firewall to finish deleting
+        return datetime.timedelta(minutes=30)
+
+    @property
+    def id(self):
+        return self.instance['Arn']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    def terminate(self):
+        self.client.delete_firewall_policy(FirewallPolicyArn=self.id)
+
+
+class NetworkFirewallRuleGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, NetworkFirewallRuleGroup, 'network-firewall', lambda client: client.list_rule_groups()['RuleGroups'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=35)
+
+    @property
+    def id(self):
+        return self.instance['Arn']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    def terminate(self):
+        self.client.delete_rule_group(RuleGroupArn=self.id)

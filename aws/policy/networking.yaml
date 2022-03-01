@@ -17,6 +17,10 @@ Statement:
       - route53:GetHealthCheck
       - route53:ListHealthChecks
       - route53:UpdateHealthCheck
+      - network-firewall:ListFirewallPolicies
+      - network-firewall:ListFirewalls
+      - network-firewall:ListRuleGroups
+      - network-firewall:Describe*
     Resource: "*"
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
@@ -99,6 +103,42 @@ Statement:
       StringEquals:
         ec2:Region:
           - '{{ aws_region }}'
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - network-firewall:AssociateFirewallPolicy
+      - network-firewall:CreateFirewallPolicy
+      - network-firewall:CreateRuleGroup
+      - network-firewall:DeleteFirewallPolicy
+      - network-firewall:DeleteResourcePolicy
+      - network-firewall:DeleteRuleGroup
+      - network-firewall:ListTagsForResource
+      - network-firewall:PutResourcePolicy
+      - network-firewall:TagResource
+      - network-firewall:UntagResource
+      - network-firewall:UpdateFirewallDeleteProtection
+      - network-firewall:UpdateFirewallDescription
+      - network-firewall:UpdateFirewallPolicy
+      - network-firewall:UpdateFirewallPolicyChangeProtection
+      - network-firewall:UpdateLoggingConfiguration
+      - network-firewall:UpdateRuleGroup
+      - network-firewall:UpdateSubnetChangeProtection
+    Resource:
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall-policy/AnsibleTest-*'
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateful-rulegroup/AnsibleTest-*'
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateless-rulegroup/AnsibleTest-*'
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - network-firewall:AssociateSubnets
+      - network-firewall:CreateFirewall
+      - network-firewall:DeleteFirewall
+      - network-firewall:DisassociateSubnets
+    Resource:
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
