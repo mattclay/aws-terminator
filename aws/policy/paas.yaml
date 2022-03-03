@@ -36,6 +36,12 @@ Statement:
       - eks:DeleteCluster
       - eks:DescribeCluster
       - eks:ListClusters
+      - eks:CreateFargateProfile
+      - eks:DeleteFargateProfile
+      - eks:DescribeFargateProfile
+      - eks:ListFargateProfiles
+      - eks:ListTagsForResource
+      - eks:UntagResource
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:DescribeApplications
@@ -70,6 +76,7 @@ Statement:
     Resource:
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:fargateprofile/*/*/*'
       - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'

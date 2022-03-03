@@ -303,7 +303,17 @@ class EksCluster(Terminator):
     def created_time(self):
         return self.instance['createdAt']
 
+    #EKS Fargate Profile is cluster dependent and can only be listed or described through it.
+    def _find_eks_fargate_profile(self):
+        return self.client.list_fargate_profiles(clusterName=self.name)['fargateProfileNames']
+
     def terminate(self):
+        for profile in self._find_eks_fargate_profile():
+            self.client.delete_fargate_profile(clusterName=self.name, fargateProfileName=profile)
+            # To delete a cluster it cannot have any active fargates,
+            # so we need to delete it and wait for the end to proceed.
+            waiter = self.client.get_waiter('fargate_profile_deleted')
+            waiter.wait(clusterName=self.name, fargateProfileName=profile)
         self.client.delete_cluster(name=self.name)
 
 
