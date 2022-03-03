@@ -41,6 +41,7 @@ Statement:
       - eks:DescribeFargateProfile
       - eks:ListFargateProfiles
       - eks:ListTagsForResource
+      - eks:TagResource
       - eks:UntagResource
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
