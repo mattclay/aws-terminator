@@ -303,7 +303,7 @@ class EksCluster(Terminator):
     def created_time(self):
         return self.instance['createdAt']
 
-    #EKS Fargate Profile is cluster dependent and can only be listed or described through it.
+    # EKS Fargate Profile is cluster dependent and can only be listed or described through it.
     def _find_eks_fargate_profile(self):
         return self.client.list_fargate_profiles(clusterName=self.name)['fargateProfileNames']
 
