@@ -292,7 +292,6 @@ class EksCluster(Terminator):
             for cluster in cluster_list:
                 results.append(client.describe_cluster(name=cluster)['cluster'])
             return results
-
         return Terminator._create(credentials, EksCluster, 'eks', _build_cluster_results)
 
     @property
@@ -303,18 +302,55 @@ class EksCluster(Terminator):
     def created_time(self):
         return self.instance['createdAt']
 
-    # EKS Fargate Profile is cluster dependent and can only be listed or described through it.
-    def _find_eks_fargate_profile(self):
-        return self.client.list_fargate_profiles(clusterName=self.name)['fargateProfileNames']
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
 
     def terminate(self):
-        for profile in self._find_eks_fargate_profile():
-            self.client.delete_fargate_profile(clusterName=self.name, fargateProfileName=profile)
-            # To delete a cluster it cannot have any active fargates,
-            # so we need to delete it and wait for the end to proceed.
-            waiter = self.client.get_waiter('fargate_profile_deleted')
-            waiter.wait(clusterName=self.name, fargateProfileName=profile)
-        self.client.delete_cluster(name=self.name)
+        try:
+            self.client.delete_cluster(name=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
+
+
+class EksFargateProfile(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_eks_fargate_profiles(client):
+            results = []
+            for cluster in client.list_clusters()['clusters']:
+                for fargate_profile in client.list_fargate_profiles(clusterName=cluster)['fargateProfileNames']:
+                    results.append(client.describe_fargate_profile(clusterName=cluster, fargateProfileName=fargate_profile)['fargateProfile'])
+            return results
+        return Terminator._create(credentials, EksFargateProfile, 'eks', _build_eks_fargate_profiles)
+
+    @property
+    def name(self):
+        return self.instance['fargateProfileName']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def ignore(self):
+        return self.instance['status'] == ('DELETING')
+
+    @property
+    def cluster_name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
+        try:
+            self.client.delete_fargate_profile(clusterName=self.cluster_name, fargateProfileName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
 
 
 class ElasticLoadBalancing(Terminator):
