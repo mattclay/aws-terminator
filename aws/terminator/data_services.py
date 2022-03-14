@@ -178,10 +178,10 @@ class RdsDbParameterGroup(DbTerminator):
         self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
 
-class RdsDBInstance(DbTerminator):
+class RdsDbInstance(DbTerminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDBInstance, 'rds', lambda client: client.describe_db_instances()['DBInstances'])
+        return Terminator._create(credentials, RdsDbInstance, 'rds', lambda client: client.describe_db_instances()['DBInstances'])
 
     @property
     def id(self):
@@ -197,6 +197,44 @@ class RdsDBInstance(DbTerminator):
 
     def terminate(self):
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
+
+
+class RdsDbSnapshot(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsDbSnapshot, 'rds', lambda client: client.describe_db_snapshots()['DBSnapshots'])
+
+    @property
+    def id(self):
+        return self.instance['DBSnapshotArn']
+
+    @property
+    def name(self):
+        return self.instance['DBSnapshotIdentifier']
+
+    def terminate(self):
+        self.client.delete_db_snapshot(DBInstanceIdentifier=self.name)
+
+
+class RdsDbClusterSnapshot(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsDbClusterSnapshot, 'rds', lambda client: client.describe_db_cluster_snapshots()['DBClusterSnapshots'])
+
+    @property
+    def id(self):
+        return self.instance['DBClusterSnapshotArn']
+
+    @property
+    def name(self):
+        return self.instance['DBClusterSnapshotIdentifier']
+
+    @property
+    def created_time(self):
+        return self.instance['SnapshotCreateTime']
+
+    def terminate(self):
+        self.client.delete_db_cluster_snapshot(DBClusterSnapshotIdentifier=self.name)
 
 
 class RedshiftCluster(Terminator):
