@@ -175,6 +175,44 @@ class Ec2TransitGateway(Terminator):
         self.client.delete_transit_gateway(TransitGatewayId=self.id)
 
 
+class Ec2TransitGatewayAttachment(Terminator):
+    @staticmethod
+    def create(credentials):
+        account = get_account_id(credentials)
+        filters = [{
+            'Name': 'transit-gateway-owner-id',
+            'Values': [account]
+        }]
+        return Terminator._create(credentials, Ec2TransitGatewayAttachment, 'ec2',
+                                  lambda client: client.describe_transit_gateway_attachments(Filters=filters)['TransitGatewayAttachments'])
+
+    @property
+    def id(self):
+        return self.instance['TransitGatewayAttachmentId']
+
+    @property
+    def name(self):
+        return "{0}/{1}".format(
+            self.instance['TransitGatewayId'],
+            self.instance['ResourceId'])
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def ignore(self):
+        # We can only delete resources in specific states:
+        # https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#vpc-attachment-lifecycle
+        return self.instance['State'] not in ('available', 'pending-acceptance')
+
+    def terminate(self):
+        if self.instance['ResourceType'] == 'vpc':
+            self.client.delete_transit_gateway_vpc_attachment(TransitGatewayAttachmentId=self.id)
+        elif self.instance['ResourceType'] in ('peering', 'tgw-peering'):
+            self.client.delete_transit_gateway_peering_attachment(TransitGatewayAttachmentId=self.id)
+
+
 class ElasticBeanstalk(Terminator):
     @staticmethod
     def create(credentials):

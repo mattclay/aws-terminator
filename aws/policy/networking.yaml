@@ -26,6 +26,8 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ec2:AcceptTransitGatewayPeeringAttachment
+      - ec2:AcceptTransitGatewayVpcAttachment
       - ec2:AcceptVpcPeeringConnection
       - ec2:AllocateAddress
       - ec2:AssociateAddress
@@ -46,6 +48,8 @@ Statement:
       - ec2:CreateInternetGateway
       - ec2:CreateNatGateway
       - ec2:CreateTransitGateway
+      - ec2:CreateTransitGatewayPeeringAttachment
+      - ec2:CreateTransitGatewayVpcAttachment
       - ec2:CreateNetworkAcl
       - ec2:CreateNetworkAclEntry
       - ec2:CreateNetworkInterface
@@ -76,6 +80,8 @@ Statement:
       - ec2:DeleteVpnConnection
       - ec2:DeleteVpnGateway
       - ec2:DeleteTransitGateway
+      - ec2:DeleteTransitGatewayPeeringAttachment
+      - ec2:DeleteTransitGatewayVpcAttachment
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
@@ -85,8 +91,12 @@ Statement:
       - ec2:DisassociateVpcCidrBlock
       - ec2:ModifyNetworkInterfaceAttribute
       - ec2:ModifySubnetAttribute
+      - ec2:ModifyTransitGatewayPeeringAttachment
+      - ec2:ModifyTransitGatewayVpcAttachment
       - ec2:ModifyVpcAttribute
       - ec2:ModifyVpcEndpoint
+      - ec2:RejectTransitGatewayPeeringAttachment
+      - ec2:RejectTransitGatewayVpcAttachment
       - ec2:RejectVpcPeeringConnection
       - ec2:ReleaseAddress
       - ec2:ReplaceNetworkAclAssociation
