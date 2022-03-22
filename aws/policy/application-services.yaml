@@ -30,6 +30,7 @@ Statement:
       - ssm:GetDeployablePatchSnapshotForInstance
       - ssm:GetDocument
       - ssm:DescribeDocument
+      - ssm:DeleteDocument
       - ssm:GetManifest
       - ssm:ListAssociations
       - ssm:ListInstanceAssociations
