@@ -213,7 +213,7 @@ class RdsDbSnapshot(DbTerminator):
         return self.instance['DBSnapshotIdentifier']
 
     def terminate(self):
-        self.client.delete_db_snapshot(DBInstanceIdentifier=self.name)
+        self.client.delete_db_snapshot(DBSnapshotIdentifier=self.name)
 
 
 class RdsDbClusterSnapshot(Terminator):
