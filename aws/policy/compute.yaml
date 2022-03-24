@@ -2,16 +2,23 @@ Version: '2012-10-17'
 Statement:
 
   # Restrict the types of instances that can be started
-  - Sid: AllowEc2RunInstancesInstanceType
+  # ASGs call run-instances --dry-run so the actions need to be grouped
+  - Sid: AllowRunInstancesInstanceType
     Effect: Allow
     Action:
+      - autoscaling:CreateAutoScalingGroup
       - autoscaling:CreateLaunchConfiguration
+      - autoscaling:UpdateAutoScalingGroup
+      - autoscaling:DetachInstances
       - ec2:RunInstances
       - ec2:StartInstances
     Resource:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:image/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:launch-template/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:snapshot/*'
     Condition:
       StringEqualsIfExists:
         ec2:InstanceType:
@@ -20,27 +27,6 @@ Statement:
           - t3.nano
           - t3.micro
           - m1.large  # lowest cost instance type with EBS optimization supported
-
-  # Restrict the Types of instance that can be spun up using ASGs
-  - Sid: AllowAsgInstancesInstanceType
-    Effect: Allow
-    Action:
-      - autoscaling:CreateAutoScalingGroup
-      - autoscaling:CancelInstanceRefresh
-      - autoscaling:StartInstanceRefresh
-      - autoscaling:UpdateAutoScalingGroup
-      - autoscaling:DisableMetricsCollection
-      - autoscaling:DetachLoadBalancerTargetGroups
-      - autoscaling:DetachLoadBalancers
-      - autoscaling:EnableMetricsCollection
-      - autoscaling:TerminateInstanceInAutoScalingGroup
-    Resource:
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
-    Condition:
-      StringEqualsIfExists:
-        autoscaling:InstanceTypes:
-          - t3.nano
-          - t3.micro
 
   # Permit RunInstance to access any of the usual objects attached to an
   # instance
@@ -55,6 +41,8 @@ Statement:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:ec2:{{ aws_region }}::image/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:launch-template/*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -65,11 +53,13 @@ Statement:
       - ec2:CreateKeyPair
       - ec2:CreateLaunchTemplate
       - ec2:CreateLaunchTemplateVersion
+      - ec2:CreatePlacementGroup
       - ec2:CreateSnapshot
       - ec2:CreateTags
       - ec2:DeleteKeyPair
       - ec2:DeleteLaunchTemplate
       - ec2:DeleteLaunchTemplateVersions
+      - ec2:DeletePlacementGroup
       - ec2:DeleteSnapshot
       - ec2:DeleteTags
       - ec2:DeregisterImage
@@ -130,25 +120,33 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      - autoscaling:EnableMetricsCollection
       - ec2:CreateVolume
       - elasticloadbalancing:CreateLoadBalancer
       - elasticloadbalancing:CreateRule
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - autoscaling:AttachLoadBalancerTargetGroups
+      - autoscaling:CancelInstanceRefresh
       - autoscaling:CreateOrUpdateTags
       - autoscaling:DeleteAutoScalingGroup
       - autoscaling:DeleteLaunchConfiguration
       - autoscaling:DeletePolicy
+      - autoscaling:DeleteScheduledAction
       - autoscaling:DeleteTags
+      - autoscaling:DetachLoadBalancers
+      - autoscaling:DetachLoadBalancerTargetGroups
+      - autoscaling:DisableMetricsCollection
       - autoscaling:PutScalingPolicy
       - autoscaling:PutScheduledUpdateGroupAction
-      - autoscaling:DeleteScheduledAction
-      - autoscaling:AttachLoadBalancerTargetGroups
+      - autoscaling:StartInstanceRefresh
+      - autoscaling:TerminateInstanceInAutoScalingGroup
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer

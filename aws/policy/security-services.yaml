@@ -14,6 +14,9 @@ Statement:
       ArnLike:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
+          - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
+          - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
+          - 'arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy'
           - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
           - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
           - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
@@ -39,7 +42,6 @@ Statement:
       - iam:ListPolicies
       - iam:ListInstanceProfiles
       - iam:GetUser
-      - acm:ImportCertificate
       - acm:ListCertificates
       - acm:ListTagsForCertificate
     Resource: "*"
@@ -125,6 +127,12 @@ Statement:
       - acm:DeleteCertificate
       - acm:DescribeCertificate
       - acm:GetCertificate
+      - acm:ImportCertificate
+      - acm:ListCertificates
+      - acm:ListTagsForCertificate
+      - acm:RemoveTagsFromCertificate
+      - acm:RenewCertificate
+      - acm:RequestCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
@@ -150,6 +158,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # This is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
@@ -159,8 +168,10 @@ Statement:
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'autoscaling.amazonaws.com'
           - 'spot.amazonaws.com'
+          - 'eks-fargate.amazonaws.com'
