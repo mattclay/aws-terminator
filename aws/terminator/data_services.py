@@ -216,6 +216,31 @@ class RdsDbSnapshot(DbTerminator):
         self.client.delete_db_snapshot(DBSnapshotIdentifier=self.name)
 
 
+class RdsDbCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsDbCluster, 'rds', lambda client: client.describe_db_clusters()['DBClusters'])
+
+    @property
+    def id(self):
+        return self.instance['DBClusterArn']
+
+    @property
+    def name(self):
+        return self.instance['DBClusterIdentifier']
+    
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+    
+    @property
+    def created_time(self):
+        return self.instance['ClusterCreateTime']
+
+    def terminate(self):
+        self.client.delete_db_cluster(DBClusterIdentifier=self.name, SkipFinalSnapshot=True)
+
+
 class RdsDbClusterSnapshot(Terminator):
     @staticmethod
     def create(credentials):
