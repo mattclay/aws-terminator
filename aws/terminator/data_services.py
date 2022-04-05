@@ -228,11 +228,11 @@ class RdsDbCluster(Terminator):
     @property
     def name(self):
         return self.instance['DBClusterIdentifier']
-    
+
     @property
     def age_limit(self):
         return datetime.timedelta(minutes=60)
-    
+
     @property
     def created_time(self):
         return self.instance['ClusterCreateTime']
