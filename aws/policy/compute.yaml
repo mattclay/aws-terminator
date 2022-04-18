@@ -141,10 +141,12 @@ Statement:
       - autoscaling:DeleteScheduledAction
       - autoscaling:DeleteTags
       - autoscaling:DetachLoadBalancers
+      - autoscaling:DeleteLifecycleHook
       - autoscaling:DetachLoadBalancerTargetGroups
       - autoscaling:DisableMetricsCollection
       - autoscaling:PutScalingPolicy
       - autoscaling:PutScheduledUpdateGroupAction
+      - autoscaling:PutLifecycleHook
       - autoscaling:StartInstanceRefresh
       - autoscaling:TerminateInstanceInAutoScalingGroup
       - ec2:DeleteVolume
