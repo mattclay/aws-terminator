@@ -79,6 +79,8 @@ Statement:
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
       - rds:RestoreDBInstanceToPointInTime
+      - rds:RestoreDBInstanceFromDBSnapshot
+      - rds:RestoreDBInstanceFromS3
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
       - rds:ModifyDBInstance
