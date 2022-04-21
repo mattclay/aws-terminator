@@ -499,3 +499,66 @@ class NetworkFirewallRuleGroup(DbTerminator):
 
     def terminate(self):
         self.client.delete_rule_group(RuleGroupArn=self.id)
+
+
+class TransitGateway(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, TransitGateway, 'ec2', lambda client: client.describe_transit_gateways()['TransitGateways'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
+    @property
+    def id(self):
+        return self.instance['TransitGatewayArn']
+
+    @property
+    def name(self):
+        return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def ignore(self):
+        # describe_transit_gateways will return results in deleting and deleted states.
+        # Ignore connections in these current states.
+        return self.instance.get('State') in ['deleting', 'deleted']
+
+    def terminate(self):
+        self.client.delete_transit_gateway(TransitGatewayId=self.id)
+
+
+class TransitGatewayVpcAttachment(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, TransitGatewayVpcAttachment, 'ec2',
+                                  lambda client: client.describe_transit_gateway_vpc_attachments()['TransitGatewayVpcAttachments'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
+    @property
+    def id(self):
+        return self.instance['TransitGatewayAttachmentId']
+
+    @property
+    def name(self):
+        return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def ignore(self):
+        # describe_transit_gateway_vpc_attachments will return results in deleting and deleted states.
+        # Ignore connections in these current states.
+        return self.instance.get('State') in ['deleting', 'deleted']
+
+    def terminate(self):
+        self.client.delete_transit_gateway_vpc_attachment(TransitGatewayAttachmentId=self.id)
