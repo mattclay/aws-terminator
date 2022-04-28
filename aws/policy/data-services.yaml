@@ -102,6 +102,7 @@ Statement:
       - rds:DeleteDBClusterSnapshot
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
+      - rds:CopyDBSnapshot
       - rds:DescribeExportTasks
       - rds:StartExportTask
       - rds:CancelExportTask
