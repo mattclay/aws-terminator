@@ -85,6 +85,7 @@ Statement:
       - glue:GetConnections
       - glue:GetCrawlers
       - glue:GetJobs
+      - logs:ListLogDeliveries
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
