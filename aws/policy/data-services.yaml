@@ -43,12 +43,7 @@ Statement:
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:DeleteCacheSubnetGroup
-      - elasticache:DescribeCacheClusters
-      - elasticache:DescribeCacheEngineVersions
-      - elasticache:DescribeCacheParameterGroups
-      - elasticache:DescribeCacheParameters
-      - elasticache:DescribeCacheSecurityGroups
-      - elasticache:DescribeCacheSubnetGroups
+      - elasticache:DescribeCache*
       - elasticache:DescribeEngineDefaultParameters
       - elasticache:DescribeUpdateActions
       - elasticache:ModifyCacheCluster
@@ -102,6 +97,7 @@ Statement:
       - rds:DeleteDBClusterSnapshot
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
+      - rds:CopyDBSnapshot
       - rds:DescribeExportTasks
       - rds:StartExportTask
       - rds:CancelExportTask
