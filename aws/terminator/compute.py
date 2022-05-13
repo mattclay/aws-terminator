@@ -660,6 +660,7 @@ class Ec2SpotInstanceRequest(Terminator):
     def terminate(self):
         self.client.cancel_spot_instance_requests(SpotInstanceRequestIds=[self.id])
 
+
 class EcsCluster(Terminator):
     @staticmethod
     def create(credentials):
