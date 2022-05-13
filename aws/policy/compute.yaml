@@ -121,13 +121,8 @@ Statement:
       - elasticloadbalancing:ModifyTargetGroupAttributes
       - elasticloadbalancing:ModifyRule
       - elasticloadbalancing:SetIpAddressType
-      - ecs:DescribeServices
-      - ecs:DescribeClusters
-      - ecs:DescribeTaskDefinition
-      - ecs:ListServices
-      - ecs:ListClusters
-      - ecs:ListTagsForResource
-      - ecs:ListTaskDefinitions
+      - ecs:Describe*
+      - ecs:List*
       - ecs:TagResource
       - ecs:UntagResource
       - ecs:PutAccountSetting
