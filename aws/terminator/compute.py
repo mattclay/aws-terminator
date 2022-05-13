@@ -683,4 +683,161 @@ class EcsCluster(Terminator):
         return self.instance['clusterName']
 
     def terminate(self):
+        def _paginate_task_results(cluster, container_instance):
+            names = self.get_paginator('list_tasks').paginate(
+                cluster=cluster,
+                containerInstance=container_instance,
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['taskArns']
+
+            if not names:
+                return []
+
+            return self.client.describe_taks(cluster=cluster, tasks=names)['tasks']
+
+        # Deregister all container instances first
+        names = self.client.get_paginator('list_container_instances').paginate(
+            cluster=self.name,
+            PaginationConfig={
+                'PageSize': 100,
+            }
+        ).build_full_result()['containerInstanceArns']
+
+        for name in names:
+            # If there are tasks running on container instances, stop them first
+            tasks = _paginate_task_results(cluster=self.name, containerInstance=name['containerInstanceArn'])
+            for task in tasks:
+                self.client.stop_task(cluster=self.name, task=task['taskArn'])
+            self.client.deregister_container_instance(cluster=self.name, containerInstance=name['containerInstanceArn'])
+
         self.client.delete_cluster(cluster=self.name)
+
+
+class EcsService(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_service_results(client):
+            names = client.get_paginator('list_clusters').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['clusterArns']
+
+            if not names:
+                return []
+
+            results = []
+            clusters = client.describe_clusters(name=names)['clusters']
+            for cluster in clusters:
+                names = client.get_paginator('list_services').paginate(
+                    cluster=cluster,
+                    PaginationConfig={
+                        'PageSize': 100,
+                    }
+                ).build_full_result()['serviceArns']
+
+                if not names:
+                    continue
+            
+                results.append(client.describe_services(cluster=cluster, services=names)['services'])
+            return results
+
+        return Terminator._create(credentials, EcsService, 'ecs', _paginate_service_results)
+
+    @property
+    def name(self):
+        return self.instance['serviceName']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def cluster_name(self):
+        return self.instance['clusterArn']
+
+    def terminate(self):
+        self.client.delete_service(cluster=self.cluster_name, service=self.name, force=True)
+
+
+class EcsContainerInstance(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_container_instance_results(client):
+            names = client.get_paginator('list_clusters').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['clusterArns']
+
+            if not names:
+                return []
+
+            results = []
+            clusters = client.describe_clusters(name=names)['clusters']
+            for cluster in clusters:
+                names = client.get_paginator('list_container_instances').paginate(
+                    cluster=cluster,
+                    PaginationConfig={
+                        'PageSize': 100,
+                    }
+                ).build_full_result()['containerInstanceArns']
+
+                if not names:
+                    continue
+            
+                results.append(client.describe_container_instances(cluster=cluster, containerInstances=names)['containerInstances'])
+            return results
+
+        return Terminator._create(credentials, EcsContainerInstance, 'ecs', _paginate_container_instance_results)
+
+    @property
+    def name(self):
+        return self.instance['containerInstanceArn']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['registeredAt']
+
+    def terminate(self):
+        def _paginate_task_results(cluster, container_instance):
+            names = self.get_paginator('list_tasks').paginate(
+                cluster=cluster,
+                containerInstance=container_instance,
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['taskArns']
+
+            if not names:
+                return []
+
+            return self.client.describe_taks(cluster=cluster, tasks=names)['tasks']
+
+        names = self.client.get_paginator('list_clusters').paginate(
+            PaginationConfig={
+                'PageSize': 100,
+            }
+        ).build_full_result()['clusterArns']
+
+        if names:
+            clusters = self.client.describe_clusters(name=names)['clusters']
+            for cluster in clusters:
+                # If there are tasks running on container instances, stop them first
+                tasks = _paginate_task_results(cluster=cluster['clusterName'], containerInstance=self.name)
+                for task in tasks:
+                    self.client.stop_task(cluster=cluster['clusterName'], task=task['taskArn'])
+                try:
+                    self.client.deregister_container_instance(cluster=cluster['clusterName'], containerInstance=self.name)
+                except botocore.exceptions.ClientError as ex:
+                    pass
