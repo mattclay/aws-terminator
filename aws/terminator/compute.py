@@ -659,3 +659,28 @@ class Ec2SpotInstanceRequest(Terminator):
 
     def terminate(self):
         self.client.cancel_spot_instance_requests(SpotInstanceRequestIds=[self.id])
+
+class EcsCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_cluster_results(client):
+            names = client.get_paginator('list_clusters').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['clusterArns']
+
+            if not names:
+                return []
+
+            return [
+                client.describe_clusters(name=names)['clusters']
+            ]
+        return Terminator._create(credentials, EcsCluster, 'ecs', _paginate_cluster_results)
+
+    @property
+    def name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
+        self.client.delete_cluster(cluster=self.name)
