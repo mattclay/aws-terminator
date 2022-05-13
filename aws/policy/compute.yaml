@@ -150,9 +150,7 @@ Statement:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
-      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
-      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:service:*'
-      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:task:*'
+      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
