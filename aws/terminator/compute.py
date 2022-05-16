@@ -684,7 +684,7 @@ class Ecs(Terminator):
 
     def terminate(self):
         def _paginate_task_results(container_instance):
-            names = self.get_paginator('list_tasks').paginate(
+            names = self.client.get_paginator('list_tasks').paginate(
                 cluster=self.name,
                 containerInstance=container_instance,
                 PaginationConfig={
@@ -696,7 +696,7 @@ class Ecs(Terminator):
                 return []
 
             return self.client.describe_taks(cluster=self.name, tasks=names)['tasks']
-        
+
         def _paginate_container_instance_results():
             names = self.client.get_paginator('list_container_instances').paginate(
                 cluster=self.name,
@@ -707,9 +707,9 @@ class Ecs(Terminator):
 
             if not names:
                 return []
-            
+
             return self.client.describe_container_instances(cluster=self.name, containerInstances=names)['containerInstances']
-        
+
         def _paginate_service_results():
             names = self.client.get_paginator('list_services').paginate(
                 cluster=self.name,
@@ -720,13 +720,13 @@ class Ecs(Terminator):
 
             if not names:
                 return []
-        
+
             return self.client.describe_services(cluster=self.name, services=names)['services']
-        
+
         container_instances = _paginate_container_instance_results()
         for name in container_instances:
             # If there are tasks running on a container instance, stop them first
-            tasks = _paginate_task_results(cluster=self.name, containerInstance=name['containerInstanceArn'])
+            tasks = _paginate_task_results(name['containerInstanceArn'])
             for task in tasks:
                 self.client.stop_task(cluster=self.name, task=task['taskArn'])
 
@@ -735,6 +735,6 @@ class Ecs(Terminator):
         # If there are running services, delete them first
         services = _paginate_service_results()
         for name in services:
-            self.client.delete_service(cluster=self.cluster_name, service=name['serviceName'], force=True)
+            self.client.delete_service(cluster=self.name, service=name['serviceName'], force=True)
 
         self.client.delete_cluster(cluster=self.name)
