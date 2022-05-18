@@ -171,6 +171,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
@@ -178,3 +179,4 @@ Statement:
           - 'spot.amazonaws.com'
           - 'eks-fargate.amazonaws.com'
           - 'transitgateway.amazonaws.com'
+          - 'network-firewall.amazonaws.com'
