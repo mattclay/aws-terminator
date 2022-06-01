@@ -662,6 +662,14 @@ class Ec2SpotInstanceRequest(Terminator):
 
 
 class Ecs(Terminator):
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=20)
+
+    @property
+    def name(self):
+        return self.instance['clusterName']
+
     @staticmethod
     def create(credentials):
         def _paginate_cluster_results(client):
@@ -677,10 +685,6 @@ class Ecs(Terminator):
             return client.describe_clusters(name=names)['clusters']
 
         return Terminator._create(credentials, Ecs, 'ecs', _paginate_cluster_results)
-
-    @property
-    def name(self):
-        return self.instance['clusterName']
 
     def terminate(self):
         def _paginate_task_results(container_instance):
@@ -729,12 +733,31 @@ class Ecs(Terminator):
             tasks = _paginate_task_results(name['containerInstanceArn'])
             for task in tasks:
                 self.client.stop_task(cluster=self.name, task=task['taskArn'])
-
-            self.client.deregister_container_instance(containerInstance=name['containerInstanceArn'])
-
+        
         # If there are running services, delete them first
         services = _paginate_service_results()
         for name in services:
             self.client.delete_service(cluster=self.name, service=name['serviceName'], force=True)
+        
+        # Deregister container instances
+        for name in container_instances:
+            self.client.deregister_container_instance(containerInstance=name['containerInstanceArn'])
+        
+        # Delete cluster
+        try:
+            self.client.delete_cluster(cluster=self.name)
+        except (botocore.exceptions.ClusterContainsServicesException, botocore.exceptions.ClusterContainsTasksException):
+            pass
 
+
+class EcsCluster(Terminator):
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
+    @property
+    def name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
         self.client.delete_cluster(cluster=self.name)
