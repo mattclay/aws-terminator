@@ -661,7 +661,7 @@ class Ec2SpotInstanceRequest(Terminator):
         self.client.cancel_spot_instance_requests(SpotInstanceRequestIds=[self.id])
 
 
-class Ecs(Terminator):
+class Ecs(DbTerminator):
     @property
     def age_limit(self):
         return datetime.timedelta(minutes=20)
@@ -733,24 +733,24 @@ class Ecs(Terminator):
             tasks = _paginate_task_results(name['containerInstanceArn'])
             for task in tasks:
                 self.client.stop_task(cluster=self.name, task=task['taskArn'])
-        
+
         # If there are running services, delete them first
         services = _paginate_service_results()
         for name in services:
             self.client.delete_service(cluster=self.name, service=name['serviceName'], force=True)
-        
+
         # Deregister container instances
         for name in container_instances:
             self.client.deregister_container_instance(containerInstance=name['containerInstanceArn'])
-        
+
         # Delete cluster
         try:
             self.client.delete_cluster(cluster=self.name)
-        except (botocore.exceptions.ClusterContainsServicesException, botocore.exceptions.ClusterContainsTasksException):
+        except (self.client.exceptions.ClusterContainsServicesException, self.client.exceptions.ClusterContainsTasksException):
             pass
 
 
-class EcsCluster(Terminator):
+class EcsCluster(DbTerminator):
     @property
     def age_limit(self):
         return datetime.timedelta(minutes=30)
