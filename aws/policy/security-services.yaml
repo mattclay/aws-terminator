@@ -66,6 +66,11 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - cloudtrail:AddTags
+      - cloudtrail:DescribeTrails
+      - cloudtrail:ListTags
+      - cloudtrail:ListTrails
+      - cloudtrail:RemoveTags
       - iam:GetRole
       - iam:ListAttachedRolePolicies
       - iam:ListRoles
@@ -134,6 +139,12 @@ Statement:
       - acm:RemoveTagsFromCertificate
       - acm:RenewCertificate
       - acm:RequestCertificate
+      - cloudtrail:CreateTrail
+      - cloudtrail:DeleteTrail
+      - cloudtrail:GetTrailStatus
+      - cloudtrail:StartLogging
+      - cloudtrail:StopLogging
+      - cloudtrail:UpdateTrail
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
       - iam:CreateRole
@@ -153,6 +164,7 @@ Statement:
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
+      - 'arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:trail/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'

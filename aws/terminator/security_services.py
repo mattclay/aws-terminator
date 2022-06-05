@@ -4,6 +4,27 @@ import botocore.exceptions
 from . import DbTerminator, Terminator
 
 
+class CloudTrail(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, CloudTrail, 'cloudtrail', lambda client: client.describe_trails()['trailList'])
+
+    @property
+    def id(self):
+        return self.instance['TrailARN']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def ignore(self):
+        return not self.name.startswith('ansible-test')
+
+    def terminate(self):
+        self.client.delete_trail(Name=self.id)
+
+
 class IamRole(Terminator):
     @staticmethod
     def create(credentials):
