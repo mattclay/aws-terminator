@@ -21,11 +21,14 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:AddTagsToResource
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
-      - dms:ModifyEndpoint
       - dms:DeleteReplicationSubnetGroup
+      - dms:ListTagsForResource
+      - dms:ModifyEndpoint
       - dms:ModifyReplicationSubnetGroup
+      - dms:RemoveTagsFromResource
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
@@ -107,6 +110,7 @@ Statement:
       - rds:PromoteReadReplicaDBCluster
       - rds:CopyDBClusterSnapshot
     Resource:
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
