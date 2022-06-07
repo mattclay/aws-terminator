@@ -147,3 +147,36 @@ Statement:
       StringLike:
         lambda:FunctionArn:
           - arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*
+  
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ecs:CreateCluster
+    Resource: "*"
+  
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - ecs:Describe*
+      - ecs:List*
+      - ecs:TagResource
+      - ecs:UntagResource
+      - ecs:PutAccountSetting
+      - ecs:RegisterTaskDefinition
+      - ecs:DeregisterTaskDefinition
+    Resource:
+      - "*"
+  
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ecs:RunTask
+      - ecs:StartTask
+      - ecs:StopTask
+      - ecs:DeleteCluster
+      - ecs:CreateService
+      - ecs:DeleteService
+      - ecs:UpdateService
+      - ecs:UpdateCluster
+    Resource:
+      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
