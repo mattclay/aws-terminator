@@ -196,6 +196,9 @@ Statement:
     Action:
       - SNS:Subscribe
       - SNS:Unsubscribe
+      - SNS:ListTagsForResource
+      - SNS:TagResource
+      - SNS:UntagResource
     Resource:
       # https://aws.amazon.com/blogs/aws/subscribe-to-aws-public-ip-address-changes-via-amazon-sns/
       - 'arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged'
