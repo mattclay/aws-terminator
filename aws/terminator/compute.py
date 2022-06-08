@@ -175,6 +175,44 @@ class Ec2TransitGateway(Terminator):
         self.client.delete_transit_gateway(TransitGatewayId=self.id)
 
 
+class Ec2TransitGatewayAttachment(Terminator):
+    @staticmethod
+    def create(credentials):
+        account = get_account_id(credentials)
+        filters = [{
+            'Name': 'transit-gateway-owner-id',
+            'Values': [account]
+        }]
+        return Terminator._create(credentials, Ec2TransitGatewayAttachment, 'ec2',
+                                  lambda client: client.describe_transit_gateway_attachments(Filters=filters)['TransitGatewayAttachments'])
+
+    @property
+    def id(self):
+        return self.instance['TransitGatewayAttachmentId']
+
+    @property
+    def name(self):
+        return "{0}/{1}".format(
+            self.instance['TransitGatewayId'],
+            self.instance['ResourceId'])
+
+    @property
+    def created_time(self):
+        return self.instance['CreationTime']
+
+    @property
+    def ignore(self):
+        # We can only delete resources in specific states:
+        # https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#vpc-attachment-lifecycle
+        return self.instance['State'] not in ('available', 'pending-acceptance')
+
+    def terminate(self):
+        if self.instance['ResourceType'] == 'vpc':
+            self.client.delete_transit_gateway_vpc_attachment(TransitGatewayAttachmentId=self.id)
+        elif self.instance['ResourceType'] in ('peering', 'tgw-peering'):
+            self.client.delete_transit_gateway_peering_attachment(TransitGatewayAttachmentId=self.id)
+
+
 class ElasticBeanstalk(Terminator):
     @staticmethod
     def create(credentials):
@@ -292,7 +330,6 @@ class EksCluster(Terminator):
             for cluster in cluster_list:
                 results.append(client.describe_cluster(name=cluster)['cluster'])
             return results
-
         return Terminator._create(credentials, EksCluster, 'eks', _build_cluster_results)
 
     @property
@@ -303,8 +340,55 @@ class EksCluster(Terminator):
     def created_time(self):
         return self.instance['createdAt']
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
     def terminate(self):
-        self.client.delete_cluster(name=self.name)
+        try:
+            self.client.delete_cluster(name=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
+
+
+class EksFargateProfile(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_eks_fargate_profiles(client):
+            results = []
+            for cluster in client.list_clusters()['clusters']:
+                for fargate_profile in client.list_fargate_profiles(clusterName=cluster)['fargateProfileNames']:
+                    results.append(client.describe_fargate_profile(clusterName=cluster, fargateProfileName=fargate_profile)['fargateProfile'])
+            return results
+        return Terminator._create(credentials, EksFargateProfile, 'eks', _build_eks_fargate_profiles)
+
+    @property
+    def name(self):
+        return self.instance['fargateProfileName']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def ignore(self):
+        return self.instance['status'] == ('DELETING')
+
+    @property
+    def cluster_name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
+        try:
+            self.client.delete_fargate_profile(clusterName=self.cluster_name, fargateProfileName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
 
 
 class ElasticLoadBalancing(Terminator):
