@@ -34,7 +34,6 @@ Statement:
       - wafv2:DeleteFirewallManagerRuleGroups
       - wafv2:DisassociateFirewallManager
       - wafv2:UpdateIPSet
-      - wafv2:TagResource
     Resource:
       - 'arn:aws:wafv2:{{ aws_region }}:{{ aws_account_id }}:*'
 
@@ -110,6 +109,9 @@ Statement:
       - waf:UpdateSqlInjectionMatchSet
       - waf:UpdateWebACL
       - waf:UpdateXssMatchSet
+      - wafv2:ListTagsForResource
+      - wafv2:TagResource
+      - wafv2:UntagResource
     Resource: "*"
     Condition:
       StringEquals:

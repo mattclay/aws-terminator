@@ -21,11 +21,14 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - dms:AddTagsToResource
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
-      - dms:ModifyEndpoint
       - dms:DeleteReplicationSubnetGroup
+      - dms:ListTagsForResource
+      - dms:ModifyEndpoint
       - dms:ModifyReplicationSubnetGroup
+      - dms:RemoveTagsFromResource
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
@@ -43,12 +46,7 @@ Statement:
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:DeleteCacheSubnetGroup
-      - elasticache:DescribeCacheClusters
-      - elasticache:DescribeCacheEngineVersions
-      - elasticache:DescribeCacheParameterGroups
-      - elasticache:DescribeCacheParameters
-      - elasticache:DescribeCacheSecurityGroups
-      - elasticache:DescribeCacheSubnetGroups
+      - elasticache:DescribeCache*
       - elasticache:DescribeEngineDefaultParameters
       - elasticache:DescribeUpdateActions
       - elasticache:ModifyCacheCluster
@@ -79,6 +77,8 @@ Statement:
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBSubnetGroup
       - rds:RestoreDBInstanceToPointInTime
+      - rds:RestoreDBInstanceFromDBSnapshot
+      - rds:RestoreDBInstanceFromS3
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
       - rds:ModifyDBInstance
@@ -100,6 +100,7 @@ Statement:
       - rds:DeleteDBClusterSnapshot
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
+      - rds:CopyDBSnapshot
       - rds:DescribeExportTasks
       - rds:StartExportTask
       - rds:CancelExportTask
@@ -107,7 +108,9 @@ Statement:
       - rds:RestoreDBClusterFromSnapshot
       - rds:RestoreDBClusterFromS3
       - rds:PromoteReadReplicaDBCluster
+      - rds:CopyDBClusterSnapshot
     Resource:
+      - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:dynamodb:{{ aws_region }}:{{ aws_account_id }}:table/*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'

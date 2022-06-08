@@ -25,6 +25,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
+          - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
 
   # Legacy - We need to backport ansible-collections/community.aws/63 or
   # wait until community.aws drops CI support for Ansible 2.9
@@ -169,9 +170,13 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'autoscaling.amazonaws.com'
           - 'spot.amazonaws.com'
           - 'eks-fargate.amazonaws.com'
+          - 'transitgateway.amazonaws.com'
+          - 'network-firewall.amazonaws.com'
