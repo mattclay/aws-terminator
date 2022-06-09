@@ -121,10 +121,12 @@ Statement:
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:UpdatePipeline
+      - logs:AssociateKmsKey
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
       - logs:DeleteMetricFilter
       - logs:DescribeMetricFilters
+      - logs:DisassociateKmsKey
       - logs:ListTagsLogGroup
       - logs:PutMetricFilter
       - logs:PutRetentionPolicy
@@ -200,6 +202,7 @@ Statement:
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
+
   # Used to test some of the cross-account features
   - Sid: PermitReadOnlyThirdParty
     Effect: Allow
