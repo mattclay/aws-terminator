@@ -29,6 +29,7 @@ Statement:
       - ssm:GetDocument
       - ssm:DescribeDocument
       - ssm:GetManifest
+      - ssm:List*
       - ssm:PutInventory
       - ssm:PutComplianceItems
       - ssm:PutConfigurePackageResult
@@ -69,9 +70,19 @@ Statement:
       - kinesis:DescribeStream
       - cloudformation:DescribeStacks
       - cloudformation:ListExports
+        # These cloudformation permissions simply enable use of the Cloud Control API.
+        # The underlying resources the API is managing would still require their own permissions.
+      - cloudformation:CreateResource
+      - cloudformation:DeleteResource
+      - cloudformation:GetResource
+      - cloudformation:GetResourceRequestStatus
+      - cloudformation:ListResources
+      - cloudformation:ListResourceRequests
+      - cloudformation:UpdateResource
       - glue:GetConnections
       - glue:GetCrawlers
       - glue:GetJobs
+      - logs:ListLogDeliveries
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
