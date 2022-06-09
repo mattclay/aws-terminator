@@ -123,10 +123,13 @@ Statement:
       - codepipeline:UpdatePipeline
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
-      - logs:PutRetentionPolicy
-      - logs:DescribeMetricFilters
       - logs:DeleteMetricFilter
+      - logs:DescribeMetricFilters
+      - logs:ListTagsLogGroup
       - logs:PutMetricFilter
+      - logs:PutRetentionPolicy
+      - logs:TagLogGroup
+      - logs:UntagLogGroup
       - SNS:CreateTopic
       - SNS:DeleteTopic
       - SNS:GetTopicAttributes
