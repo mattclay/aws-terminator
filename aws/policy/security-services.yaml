@@ -98,6 +98,7 @@ Statement:
       - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
+      - logs:ListLogDeliveries
       - secretsmanager:DescribeSecret
       - secretsmanager:ListSecrets
     Resource: "*"
@@ -150,6 +151,18 @@ Statement:
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
       - iam:UpdateServerCertificate
+      - logs:AssociateKmsKey
+      - logs:CreateLogGroup
+      - logs:DeleteLogGroup
+      - logs:DeleteMetricFilter
+      - logs:DescribeLogGroups
+      - logs:DescribeMetricFilters
+      - logs:DisassociateKmsKey
+      - logs:ListTagsLogGroup
+      - logs:PutMetricFilter
+      - logs:PutRetentionPolicy
+      - logs:TagLogGroup
+      - logs:UntagLogGroup
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
@@ -157,9 +170,12 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
-      # This is hard coded into DMS...
+      # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
+      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
+
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation

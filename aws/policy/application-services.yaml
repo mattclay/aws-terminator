@@ -3,48 +3,24 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ses:DescribeActiveReceiptRuleSet
-      - ses:DescribeReceiptRuleSet
-      - ses:CreateReceiptRuleSet
-      - ses:DeleteReceiptRuleSet
-      - ses:ListReceiptRuleSets
-      - ses:SetActiveReceiptRuleSet
-      - ses:GetIdentityNotificationAttributes
-      - ses:GetIdentityVerificationAttributes
-      - ses:GetIdentityDkimAttributes
-      - ses:DeleteIdentity
-      - ses:ListIdentities
-      - ses:SetIdentityFeedbackForwardingEnabled
-      - ses:SetIdentityHeadersInNotificationsEnabled
-      - ses:SetIdentityNotificationTopic
-      - ses:VerifyDomainIdentity
-      - ses:VerifyDomainDkim
-      - ses:SetIdentityDkimEnabled
-      - ses:VerifyEmailIdentity
-      - ses:GetIdentityPolicies
-      - ses:PutIdentityPolicy
-      - ses:DeleteIdentityPolicy
-      - ses:ListIdentityPolicies
-      - ssm:DescribeParameters
-      - ssm:DescribeAssociation
-      - ssm:GetDeployablePatchSnapshotForInstance
-      - ssm:GetDocument
-      - ssm:DescribeDocument
-      - ssm:GetManifest
-      - ssm:ListAssociations
-      - ssm:ListInstanceAssociations
-      - ssm:PutInventory
-      - ssm:PutComplianceItems
-      - ssm:PutConfigurePackageResult
-      - ssm:UpdateAssociationStatus
-      - ssm:UpdateInstanceAssociationStatus
-      - ssm:UpdateInstanceInformation
-      - ssm:StartSession
-      - ssm:TerminateSession
-      - ssmmessages:CreateControlChannel
-      - ssmmessages:CreateDataChannel
-      - ssmmessages:OpenControlChannel
-      - ssmmessages:OpenDataChannel
+      ###
+      # These cloudformation permissions simply enable use of the Cloud Control API.
+      # The underlying resources the API is managing would still require their own permissions.
+      - cloudformation:CreateResource
+      - cloudformation:DeleteResource
+      - cloudformation:DescribeStacks
+      - cloudformation:GetResource
+      - cloudformation:GetResourceRequestStatus
+      - cloudformation:ListExports
+      - cloudformation:ListResourceRequests
+      - cloudformation:ListResources
+      - cloudformation:UpdateResource
+      ###
+      - codebuild:BatchGetProjects
+      - codebuild:ListProjects
+      - codecommit:ListRepositories
+      - codepipeline:GetPipeline
+      - codepipeline:ListPipelines
       - ec2messages:AcknowledgeMessage
       - ec2messages:DeleteMessage
       - ec2messages:FailMessage
@@ -52,48 +28,70 @@ Statement:
       - ec2messages:GetMessages
       - ec2messages:SendReply
       - events:CreateRule
-      - events:DescribeRule
       - events:DeleteRule
+      - events:DescribeRule
       - events:ListTargetsByRule
       - events:PutRule
       - events:PutTargets
       - events:RemoveTargets
-      - codebuild:BatchGetProjects
-      - codebuild:ListProjects
-      - codecommit:ListRepositories
-      - codepipeline:ListPipelines
-      - codepipeline:GetPipeline
-      - sqs:CreateQueue
-      - sqs:DeleteQueue
-      - sqs:GetQueueUrl
-      - sqs:GetQueueAttributes
-      - sqs:ListQueues
-      - sqs:SetQueueAttributes
-      - kinesis:ListStreams
-      - kinesis:DescribeStream
-      - cloudformation:DescribeStacks
-      - cloudformation:ListExports
-        # These cloudformation permissions simply enable use of the Cloud Control API.
-        # The underlying resources the API is managing would still require their own permissions.
-      - cloudformation:CreateResource
-      - cloudformation:DeleteResource
-      - cloudformation:GetResource
-      - cloudformation:GetResourceRequestStatus
-      - cloudformation:ListResources
-      - cloudformation:ListResourceRequests
-      - cloudformation:UpdateResource
       - glue:GetConnections
       - glue:GetCrawlers
       - glue:GetJobs
-      - logs:ListLogDeliveries
+      - kinesis:DescribeStream
+      - kinesis:ListStreams
+      - ses:CreateReceiptRuleSet
+      - ses:DeleteIdentity
+      - ses:DeleteIdentityPolicy
+      - ses:DeleteReceiptRuleSet
+      - ses:DescribeActiveReceiptRuleSet
+      - ses:DescribeReceiptRuleSet
+      - ses:GetIdentityDkimAttributes
+      - ses:GetIdentityNotificationAttributes
+      - ses:GetIdentityPolicies
+      - ses:GetIdentityVerificationAttributes
+      - ses:ListIdentities
+      - ses:ListIdentityPolicies
+      - ses:ListReceiptRuleSets
+      - ses:PutIdentityPolicy
+      - ses:SetActiveReceiptRuleSet
+      - ses:SetIdentityDkimEnabled
+      - ses:SetIdentityFeedbackForwardingEnabled
+      - ses:SetIdentityHeadersInNotificationsEnabled
+      - ses:SetIdentityNotificationTopic
+      - ses:VerifyDomainDkim
+      - ses:VerifyDomainIdentity
+      - ses:VerifyEmailIdentity
+      - sqs:CreateQueue
+      - sqs:DeleteQueue
+      - sqs:GetQueueAttributes
+      - sqs:GetQueueUrl
+      - sqs:ListQueues
+      - sqs:SetQueueAttributes
+      - ssm:DescribeAssociation
+      - ssm:DescribeDocument
+      - ssm:DescribeParameters
+      - ssm:GetDeployablePatchSnapshotForInstance
+      - ssm:GetDocument
+      - ssm:GetManifest
+      - ssm:ListAssociations
+      - ssm:ListInstanceAssociations
+      - ssmmessages:CreateControlChannel
+      - ssmmessages:CreateDataChannel
+      - ssmmessages:OpenControlChannel
+      - ssmmessages:OpenDataChannel
+      - ssm:PutComplianceItems
+      - ssm:PutConfigurePackageResult
+      - ssm:PutInventory
+      - ssm:StartSession
+      - ssm:TerminateSession
+      - ssm:UpdateAssociationStatus
+      - ssm:UpdateInstanceAssociationStatus
+      - ssm:UpdateInstanceInformation
     Resource: "*"
+
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ssm:PutParameter
-      - ssm:DeleteParameter
-      - ssm:GetParametersByPath
-      - ssm:GetParameters
       - cloudformation:CreateChangeSet
       - cloudformation:CreateStack
       - cloudformation:DeleteChangeSet
@@ -102,18 +100,18 @@ Statement:
       - cloudformation:DescribeStackEvents
       - cloudformation:DescribeStacks
       - cloudformation:GetStackPolicy
-      - cloudformation:SetStackPolicy
       - cloudformation:GetTemplate
       - cloudformation:ListChangeSets
       - cloudformation:ListStackResources
+      - cloudformation:SetStackPolicy
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
       - cloudwatch:DeleteAlarms
       - cloudwatch:DescribeAlarms
       - cloudwatch:PutMetricAlarm
       - codebuild:CreateProject
-      - codebuild:UpdateProject
       - codebuild:DeleteProject
+      - codebuild:UpdateProject
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
       - codecommit:GetRepository
@@ -121,37 +119,6 @@ Statement:
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:UpdatePipeline
-      - logs:CreateLogGroup
-      - logs:DeleteLogGroup
-      - logs:PutRetentionPolicy
-      - logs:DescribeMetricFilters
-      - logs:DeleteMetricFilter
-      - logs:PutMetricFilter
-      - SNS:CreateTopic
-      - SNS:DeleteTopic
-      - SNS:GetTopicAttributes
-      - SNS:ListTopics
-      - SNS:ListSubscriptionsByTopic
-      - SNS:ListSubscriptions
-      - SNS:SetTopicAttributes
-      - SNS:GetSubscriptionAttributes
-      - SNS:SetSubscriptionAttributes
-      - SNS:Subscribe
-      - SNS:Unsubscribe
-      - states:DescribeExecution
-      - states:DescribeStateMachine
-      - states:DeleteStateMachine
-      - states:ListExecutions
-      - states:ListStateMachines
-      - states:ListTagsForResource
-      - states:TagResource
-      - states:UntagResource
-      - logs:DescribeLogGroups
-      - kinesis:AddTagsToStream
-      - kinesis:ListTagsForStream
-      - kinesis:RemoveTagsFromStream
-      - kinesis:StartStreamEncryption
-      - kinesis:StopStreamEncryption
       - glue:DeleteCrawler
       - glue:DeleteJob
       - glue:GetCrawler
@@ -159,23 +126,50 @@ Statement:
       - glue:GetTags
       - glue:TagResource
       - glue:UntagResource
-      - glue:UpdateJob
       - glue:UpdateCrawler
+      - glue:UpdateJob
+      - kinesis:AddTagsToStream
+      - kinesis:ListTagsForStream
+      - kinesis:RemoveTagsFromStream
+      - kinesis:StartStreamEncryption
+      - kinesis:StopStreamEncryption
+      - SNS:CreateTopic
+      - SNS:DeleteTopic
+      - SNS:GetSubscriptionAttributes
+      - SNS:GetTopicAttributes
+      - SNS:ListSubscriptions
+      - SNS:ListSubscriptionsByTopic
+      - SNS:ListTopics
+      - SNS:SetSubscriptionAttributes
+      - SNS:SetTopicAttributes
+      - SNS:Subscribe
+      - SNS:Unsubscribe
+      - ssm:DeleteParameter
+      - ssm:GetParameters
+      - ssm:GetParametersByPath
+      - ssm:PutParameter
+      - states:DeleteStateMachine
+      - states:DescribeExecution
+      - states:DescribeStateMachine
+      - states:ListExecutions
+      - states:ListStateMachines
+      - states:ListTagsForResource
+      - states:TagResource
+      - states:UntagResource
     Resource:
-      - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
+      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
       - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:codecommit:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:codepipeline:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:sqs:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
-      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
-      - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
-      - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
+      - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sqs:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -197,6 +191,7 @@ Statement:
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
+
   # Used to test some of the cross-account features
   - Sid: PermitReadOnlyThirdParty
     Effect: Allow
