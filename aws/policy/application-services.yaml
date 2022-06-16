@@ -145,6 +145,7 @@ Statement:
       - SNS:Subscribe
       - SNS:Unsubscribe
       - ssm:DeleteParameter
+      - ssm:GetParameter
       - ssm:GetParameters
       - ssm:GetParametersByPath
       - ssm:PutParameter
