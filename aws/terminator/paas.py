@@ -147,19 +147,31 @@ class Ecs(DbTerminator):
         return Terminator._create(credentials, Ecs, 'ecs', _paginate_cluster_results)
 
     def terminate(self):
-        def _paginate_task_results(container_instance):
+        def _paginate_task_results(container_instance=None):
+            params = {
+                'cluster': self.name,
+                'PaginationConfig': {
+                    'PageSize': 100,
+                }
+            }
+
+            if container_instance:
+                params['containerInstance'] = container_instance
+
             names = self.client.get_paginator('list_tasks').paginate(
-                cluster=self.name,
-                containerInstance=container_instance,
+                **params
+            ).build_full_result()['taskArns']
+
+            return [] if not names else names
+
+        def _paginate_task_definition_results():
+            names = self.client.get_paginator('list_task_definitions').paginate(
                 PaginationConfig={
                     'PageSize': 100,
                 }
-            ).build_full_result()['taskArns']
+            ).build_full_result()['taskDefinitionArns']
 
-            if not names:
-                return []
-
-            return self.client.describe_taks(cluster=self.name, tasks=names)['tasks']
+            return [] if not names else names
 
         def _paginate_container_instance_results():
             names = self.client.get_paginator('list_container_instances').paginate(
@@ -169,10 +181,7 @@ class Ecs(DbTerminator):
                 }
             ).build_full_result()['containerInstanceArns']
 
-            if not names:
-                return []
-
-            return self.client.describe_container_instances(cluster=self.name, containerInstances=names)['containerInstances']
+            return [] if not names else names
 
         def _paginate_service_results():
             names = self.client.get_paginator('list_services').paginate(
@@ -182,26 +191,27 @@ class Ecs(DbTerminator):
                 }
             ).build_full_result()['serviceArns']
 
-            if not names:
-                return []
-
-            return self.client.describe_services(cluster=self.name, services=names)['services']
-
-        container_instances = _paginate_container_instance_results()
-        for name in container_instances:
-            # If there are tasks running on a container instance, stop them first
-            tasks = _paginate_task_results(name['containerInstanceArn'])
-            for task in tasks:
-                self.client.stop_task(cluster=self.name, task=task['taskArn'])
+            return [] if not names else names
 
         # If there are running services, delete them first
         services = _paginate_service_results()
-        for name in services:
-            self.client.delete_service(cluster=self.name, service=name['serviceName'], force=True)
+        for each in services:
+            self.client.delete_service(cluster=self.name, service=each, force=True)
 
-        # Deregister container instances
-        for name in container_instances:
-            self.client.deregister_container_instance(containerInstance=name['containerInstanceArn'])
+        # Deregister container instances and stop any running task
+        container_instances = _paginate_container_instance_results()
+        for each in container_instances:
+            self.client.deregister_container_instance(containerInstance=each['containerInstanceArn'], force=True)
+
+        # Deregister task definitions
+        task_definitions = _paginate_task_definition_results()
+        for each in task_definitions:
+            self.client.deregister_task_definition(taskDefinition=each)
+
+        # Stop all the tasks
+        tasks = _paginate_task_results()
+        for each in tasks:
+            self.client.stop_task(cluster=self.name, task=each)
 
         # Delete cluster
         try:
