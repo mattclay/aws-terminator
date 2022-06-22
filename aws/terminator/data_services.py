@@ -202,7 +202,7 @@ class RdsDbInstance(DbTerminator):
 class RdsDbSnapshot(DbTerminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDbSnapshot, 'rds', lambda client: client.describe_db_snapshots()['DBSnapshots'])
+        return Terminator._create(credentials, RdsDbSnapshot, 'rds', lambda client: client.describe_db_snapshots(SnapshotType='manual')['DBSnapshots'])
 
     @property
     def id(self):
@@ -244,7 +244,7 @@ class RdsDbCluster(Terminator):
 class RdsDbClusterSnapshot(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDbClusterSnapshot, 'rds', lambda client: client.describe_db_cluster_snapshots()['DBClusterSnapshots'])
+        return Terminator._create(credentials, RdsDbClusterSnapshot, 'rds', lambda client: client.describe_db_cluster_snapshots(SnapshotType='manual')['DBClusterSnapshots'])
 
     @property
     def id(self):
