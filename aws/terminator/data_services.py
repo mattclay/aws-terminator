@@ -196,13 +196,15 @@ class RdsDbInstance(DbTerminator):
         return datetime.timedelta(minutes=60)
 
     def terminate(self):
+        self.client.modify_db_instance(DBInstanceIdentifier=self.name, BackupRetentionPeriod=0)
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
 
 
 class RdsDbSnapshot(DbTerminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDbSnapshot, 'rds', lambda client: client.describe_db_snapshots()['DBSnapshots'])
+        return Terminator._create(credentials, RdsDbSnapshot, 'rds',
+                                  lambda client: client.describe_db_snapshots(SnapshotType='manual')['DBSnapshots'])
 
     @property
     def id(self):
@@ -238,13 +240,15 @@ class RdsDbCluster(Terminator):
         return self.instance['ClusterCreateTime']
 
     def terminate(self):
+        self.client.modify_db_cluster(DBClusterIdentifier=self.name, BackupRetentionPeriod=1)
         self.client.delete_db_cluster(DBClusterIdentifier=self.name, SkipFinalSnapshot=True)
 
 
 class RdsDbClusterSnapshot(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDbClusterSnapshot, 'rds', lambda client: client.describe_db_cluster_snapshots()['DBClusterSnapshots'])
+        return Terminator._create(credentials, RdsDbClusterSnapshot, 'rds',
+                                  lambda client: client.describe_db_cluster_snapshots(SnapshotType='manual')['DBClusterSnapshots'])
 
     @property
     def id(self):
