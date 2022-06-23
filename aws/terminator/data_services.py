@@ -204,7 +204,7 @@ class RdsDbSnapshot(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, RdsDbSnapshot, 'rds',
-                                   lambda client: client.describe_db_snapshots(SnapshotType='manual')['DBSnapshots'])
+                                  lambda client: client.describe_db_snapshots(SnapshotType='manual')['DBSnapshots'])
 
     @property
     def id(self):
