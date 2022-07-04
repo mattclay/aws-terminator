@@ -142,7 +142,7 @@ class Ecs(DbTerminator):
             if not names:
                 return []
 
-            return client.describe_clusters(name=names)['clusters']
+            return client.describe_clusters(clusters=names)['clusters']
 
         return Terminator._create(credentials, Ecs, 'ecs', _paginate_cluster_results)
 
@@ -241,7 +241,7 @@ class EcsCluster(DbTerminator):
             if not names:
                 return []
 
-            return client.describe_clusters(name=names)['clusters']
+            return client.describe_clusters(clusters=names)['clusters']
 
         return Terminator._create(credentials, EcsCluster, 'ecs', _paginate_cluster_results)
 
