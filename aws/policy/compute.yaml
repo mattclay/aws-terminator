@@ -134,6 +134,7 @@ Statement:
     Action:
       - autoscaling:AttachLoadBalancerTargetGroups
       - autoscaling:CancelInstanceRefresh
+      - autoscaling:CompleteLifecycleAction
       - autoscaling:CreateOrUpdateTags
       - autoscaling:DeleteAutoScalingGroup
       - autoscaling:DeleteLaunchConfiguration
