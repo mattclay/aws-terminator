@@ -5,7 +5,7 @@ Statement:
     Action:
       - route53:ChangeResourceRecordSets
       - route53:ListResourceRecordSets
-      - route53:ListHostedZones
+      - route53:ListHostedZones*
       - route53:CreateHostedZone
       - route53:GetHostedZone
       - route53:DeleteHostedZone
