@@ -196,7 +196,7 @@ class RdsDbClusterParameterGroup(DbTerminator):
         return self.name.startswith('default')
 
     def terminate(self):
-        self.client.delete_db_parameter_group(DBClusterParameterGroupName=self.name)
+        self.client.delete_db_cluster_parameter_group(DBClusterParameterGroupName=self.name)
 
 
 class RdsDbInstance(DbTerminator):
