@@ -72,9 +72,11 @@ Statement:
       - redshift:RebootCluster
       - rds:AddTagsToResource
       - rds:CreateDBParameterGroup
+      - rds:CreateDBClusterParameterGroup
       - rds:CreateDBSubnetGroup
       - rds:DeleteDBCluster
       - rds:DeleteDBParameterGroup
+      - rds:DeleteDBClusterParameterGroup
       - rds:DeleteDBSubnetGroup
       - rds:RestoreDBInstanceToPointInTime
       - rds:RestoreDBInstanceFromDBSnapshot
@@ -90,6 +92,7 @@ Statement:
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
+      - rds:ModifyDBClusterParameterGroup
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
       - rds:DescribeOptionGroups

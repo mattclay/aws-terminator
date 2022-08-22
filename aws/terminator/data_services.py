@@ -178,6 +178,27 @@ class RdsDbParameterGroup(DbTerminator):
         self.client.delete_db_parameter_group(DBParameterGroupName=self.name)
 
 
+class RdsDbClusterParameterGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsDbClusterParameterGroup, 'rds', lambda client: client.describe_db_cluster_parameter_groups()['DBClusterParameterGroups'])
+
+    @property
+    def id(self):
+        return self.instance['DBClusterParameterGroupArn']
+
+    @property
+    def name(self):
+        return self.instance['DBClusterParameterGroup']
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    def terminate(self):
+        self.client.delete_db_parameter_group(DBClusterParameterGroupName=self.name)
+
+
 class RdsDbInstance(DbTerminator):
     @staticmethod
     def create(credentials):
