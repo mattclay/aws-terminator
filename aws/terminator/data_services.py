@@ -181,7 +181,7 @@ class RdsDbParameterGroup(DbTerminator):
 class RdsDbClusterParameterGroup(DbTerminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, RdsDbClusterParameterGroup, 'rds', 
+        return Terminator._create(credentials, RdsDbClusterParameterGroup, 'rds',
                                   lambda client: client.describe_db_cluster_parameter_groups()['DBClusterParameterGroups'])
 
     @property
