@@ -5,6 +5,8 @@ Statement:
     Effect: Allow
     Action:
       - eks:CreateCluster
+      - eks:CreateNodegroup
+      - eks:UpdateNodegroupConfig
       - lambda:InvokeFunction
       - lightsail:CreateInstances
       - lightsail:StartInstance
@@ -14,6 +16,7 @@ Statement:
       - ecr:UploadLayerPart
     Resource:
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
@@ -43,6 +46,9 @@ Statement:
       - eks:ListTagsForResource
       - eks:TagResource
       - eks:UntagResource
+      - eks:DescribeNodegroup
+      - eks:UpdateNodegroupVersion
+      - eks:DeleteNodegroup
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:DescribeApplications
@@ -78,6 +84,7 @@ Statement:
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:fargateprofile/*/*/*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
