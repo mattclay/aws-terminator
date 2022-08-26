@@ -6,6 +6,7 @@ Statement:
       ###
       # These cloudformation permissions simply enable use of the Cloud Control API.
       # The underlying resources the API is managing would still require their own permissions.
+      - cloudformation:CancelResourceRequest
       - cloudformation:CreateResource
       - cloudformation:DeleteResource
       - cloudformation:DescribeStacks

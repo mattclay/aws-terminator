@@ -58,6 +58,7 @@ Statement:
       - s3:PutObjectAcl
       - s3:PutObjectTagging
       - s3:PutObjectVersionTagging
+      - s3:PutReplicationConfiguration
       - elasticfilesystem:CreateFileSystem
       - elasticfilesystem:CreateMountTarget
       - elasticfilesystem:CreateTags
