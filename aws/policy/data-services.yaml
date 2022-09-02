@@ -127,6 +127,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:*'
