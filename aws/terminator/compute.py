@@ -554,6 +554,10 @@ class LaunchConfiguration(Terminator):
         )
 
     @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
+    @property
     def id(self):
         return self.instance['LaunchConfigurationName']
 
