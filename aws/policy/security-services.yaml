@@ -120,7 +120,7 @@ Statement:
       - secretsmanager:PutResourcePolicy
       - secretsmanager:DeleteResourcePolicy
     Resource:
-      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
@@ -169,7 +169,7 @@ Statement:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
       # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
