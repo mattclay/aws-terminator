@@ -70,6 +70,8 @@ Statement:
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
+      - elasticfilesystem:DescribeBackupPolicy
+      - elasticfilesystem:PutBackupPolicy
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
