@@ -1,35 +1,46 @@
 - hosts: localhost
-  collections:
-    - mattclay.aws
   gather_facts: False
-  vars:
-    aws_region: "us-east-1"
-    stage: "prod"
-    terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
-    packaging_dir: "{{ playbook_dir }}/../.cache/packaging"
+
+  collections:
+    - amazon.aws
+    - community.aws
+
+  vars_files:
+    - vars/main.yml
+
+
   tasks:
     - name: load config
       tags: always
       include_vars:
         file: config.yml
+
     - name: check config
       tags: always
       assert:
         that: 'test_account_id != lambda_account_id'
+
     - name: get aws account facts
       tags: always
-      aws_account_facts:
+      aws_caller_info:
+      register: caller_info
+
+    - set_fact:
+        aws_account_id: "{{ caller_info.account }}"
+
     - name: show configuration
       tags: always
       debug: msg="aws_region={{ aws_region }}, stage={{ stage }}, aws_account_id={{ aws_account_id }}"
+
     - name: verify aws_account_id matches lambda_account_id
       tags: always
       assert:
         that: "aws_account_id == lambda_account_id"
+
     - name: create iam role for terminator functions
       tags: iam
-      community.aws.iam_role:
-        name: "{{ api_name }}-terminator-{{ stage }}"
+      iam_role:
+        name: "{{ iam_role_name }}"
         description: "iam role for terminator functions"
         state: present
         assume_role_policy_document:
@@ -39,100 +50,107 @@
             Principal:
               Service: "lambda.amazonaws.com"
             Effect: "Allow"
+
     - name: create iam policy for terminator functions
       tags: iam
       iam_policy:
         iam_type: role
-        iam_name: "{{ api_name }}-terminator-{{ stage }}"
-        policy_name: "{{ api_name }}-terminator-{{ stage }}"
+        iam_name: "{{ iam_role_name }}"
+        policy_name: "{{ iam_policy_name }}"
         state: present
         policy_json: "{{ terminator_policy | to_nice_json }}"
+
     - name: create virtualenv with terminator requirements
       tags: lambda
       pip:
         requirements: "{{ playbook_dir }}/requirements.txt"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
-        virtualenv_python: python3.7
+        virtualenv_python: "{{ lambda_python_version }}"
+
     - name: package terminator requirements
       tags: lambda
-      lambda_package:
+      terminator_lambda_package:
         src: "{{ packaging_dir }}/terminator-requirements"
         dest: "{{ packaging_dir }}/terminator-requirements.zip"
         include:
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/*"
         exclude:
           # pre-compiled bytecode
           - "*.pyc"
           # packaging information not needed at runtime
           - "*.dist-info/*"
           # only used for botocore documentation generation
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/docutils/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/docutils/*"
           # installed during creation of the virtualenv
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/pip/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/wheel/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/setuptools/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/pkg_resources/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/easy_install.py"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pip/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/wheel/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/setuptools/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pkg_resources/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/easy_install.py"
+
     - name: publish terminator requirements layer
       tags: lambda
       lambda_layer:
         name: "{{ api_name }}-terminator-requirements"
         description: "Python requirements for {{ api_name }}-terminator"
         compatible_runtimes:
-          - python3.7
-        path: "{{ packaging_dir }}/terminator-requirements.zip"
+          - "{{ lambda_python_version }}"
+        content:
+          zip_file: "{{ packaging_dir }}/terminator-requirements.zip"
         license_info: GPL-3.0-only
-        region: "{{ aws_region }}"
-        state: present
-      register: terminator_requirements_layer
+      register: terminator_layer
+
     - name: create terminator package
       tags: lambda
-      lambda_package:
+      terminator_lambda_package:
         src: "{{ playbook_dir }}"
         dest: "{{ packaging_dir }}/terminator.zip"
         include:
           - "{{ playbook_dir }}/terminator_lambda.py"
           - "{{ playbook_dir }}/terminator/*.py"
+
     - name: deploy terminator package
       tags: lambda
       lambda:
-        region: "{{ aws_region }}"
         name: "{{ api_name }}-terminator"
-        local_path: "{{ packaging_dir }}/terminator.zip"
-        runtime: python3.7
+        zip_file: "{{ packaging_dir }}/terminator.zip"
+        runtime: "{{ lambda_python_version }}"
         timeout: 60
         handler: terminator_lambda.lambda_handler
         memory_size: 128
         role: "{{ api_name }}-terminator-{{ stage }}"
-        publish: True
-        qualifier: "{{ stage }}"
-        environment:
+        environment_variables:
           TEST_ACCOUNT_ID: "{{ test_account_id }}"
           API_NAME: "{{ api_name }}"
         layers:
-          - "{{ terminator_requirements_layer.layer.layer_version_arn }}"
+          - layer_version_arn: "{{ terminator_layer.layer_versions.0.layer_version_arn }}"
       register: terminator_function
+
     - name: alias terminator functions
       tags: lambda
       lambda_alias:
-        region: "{{ aws_region }}"
-        state: present
+        function_name: "{{ terminator_function.configuration.function_name }}"
         name: "{{ stage }}"
         description: "{{ stage }} alias"
-        function_name: "{{ terminator_function.meta.function_name }}"
-        version: "{{ terminator_function.meta.version }}"
+        function_version: "{{ terminator_function.configuration.version | int }}"
+      register: alias
+
     - name: schedule terminator event
       tags: schedule
-      cloudwatch_event:
-        region: "{{ aws_region }}"
-        rule_name: "{{ api_name }}-terminator-{{ stage }}"
+      cloudwatchevent_rule:
+        name: "{{ api_name }}-terminator-{{ stage }}"
+        state: present
         schedule_expression: rate(5 minutes)
-        function_name: "{{ api_name }}-terminator:{{ stage }}"
-      register: event
+        targets:
+          - id: "{{ rule_target_id }}"
+            arn: "{{ alias.alias_arn }}"
+      register: event_rule
+
     - name: schedule terminator event permissions
       tags: schedule
       lambda_policy:
-        region: "{{ aws_region }}"
-        function_name: "{{ api_name }}-terminator:{{ stage }}"
-        source_arn: "arn:aws:events:{{ aws_region }}:{{ aws_account_id }}:rule/{{ api_name }}-terminator-{{ stage }}"
-        principal_service: events.amazonaws.com
+        function_name: "{{ alias.alias_arn }}"
+        statement_id: "{{ rule_target_id }}"
+        action: "lambda:InvokeFunction"
+        source_arn: "{{ event_rule.rule.arn }}"
+        principal: "events.amazonaws.com"
