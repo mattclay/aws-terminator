@@ -32,7 +32,13 @@
         name: "{{ api_name }}-terminator-{{ stage }}"
         description: "iam role for terminator functions"
         state: present
-        assume_role_policy_document: '{"Version": "2012-10-17", "Statement": {"Action": "sts:AssumeRole", "Principal": {"Service": "lambda.amazonaws.com"}, "Effect":"Allow"}}'
+        assume_role_policy_document:
+          Version: "2012-10-17"
+          Statement:
+            Action: "sts:AssumeRole"
+            Principal:
+              Service": "lambda.amazonaws.com"
+            Effect: "Allow"
     - name: create iam policy for terminator functions
       tags: iam
       iam_policy:
