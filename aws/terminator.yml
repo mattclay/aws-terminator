@@ -28,17 +28,11 @@
         that: "aws_account_id == lambda_account_id"
     - name: create iam role for terminator functions
       tags: iam
-      iam:
-        iam_type: role
+      community.aws.iam_role:
         name: "{{ api_name }}-terminator-{{ stage }}"
+        description: "iam role for terminator functions"
         state: present
-        trust_policy:
-          Version: '2012-10-17'
-          Statement:
-            - Action: sts:AssumeRole
-              Effect: Allow
-              Principal:
-                Service: lambda.amazonaws.com
+        assume_role_policy_document: '{"Version": "2012-10-17", "Statement": {"Action": "sts:AssumeRole", "Principal": {"Service": "lambda.amazonaws.com"}, "Effect":"Allow"}}'
     - name: create iam policy for terminator functions
       tags: iam
       iam_policy:
