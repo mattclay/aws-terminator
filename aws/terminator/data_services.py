@@ -224,7 +224,7 @@ class RdsDbInstance(DbTerminator):
             self.client.modify_db_instance(DBInstanceIdentifier=self.name, BackupRetentionPeriod=0, DeletionProtection=False)
         except botocore.exceptions.ClientError as ex:
             # The instance can't be modifed when it's part of a cluster
-            if ex.response['Error']['Code'] != 'InvalidParameterCombination':
+            if ex.response['Error']['Code'] == 'InvalidParameterCombination':
                 pass
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
 
