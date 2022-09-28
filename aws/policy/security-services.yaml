@@ -73,6 +73,7 @@ Statement:
       - iam:ListRolePolicies
       - iam:ListRoleTags
       - iam:ListSAMLProviders
+      - iam:ListServerCertificates
       - iam:TagRole
       - iam:UntagRole
       - kms:CreateAlias
@@ -147,7 +148,6 @@ Statement:
       - iam:GetSAMLProvider
       - iam:GetServerCertificate
       - iam:ListInstanceProfilesForRole
-      - iam:ListServerCertificates
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
