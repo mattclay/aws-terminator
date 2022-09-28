@@ -1,5 +1,7 @@
 import datetime
 
+import botocore.exceptions
+
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
@@ -218,7 +220,12 @@ class RdsDbInstance(DbTerminator):
         return datetime.timedelta(minutes=60)
 
     def terminate(self):
-        self.client.modify_db_instance(DBInstanceIdentifier=self.name, BackupRetentionPeriod=0)
+        try:
+            self.client.modify_db_instance(DBInstanceIdentifier=self.name, BackupRetentionPeriod=0, DeletionProtection=False)
+        except botocore.exceptions.ClientError as ex:
+            # The instance can't be modifed when it's part of a cluster
+            if ex.response['Error']['Code'] != 'InvalidParameterCombination':
+                raise
         self.client.delete_db_instance(DBInstanceIdentifier=self.name, SkipFinalSnapshot=True)
 
 
@@ -262,7 +269,7 @@ class RdsDbCluster(Terminator):
         return self.instance['ClusterCreateTime']
 
     def terminate(self):
-        self.client.modify_db_cluster(DBClusterIdentifier=self.name, BackupRetentionPeriod=1)
+        self.client.modify_db_cluster(DBClusterIdentifier=self.name, BackupRetentionPeriod=1, DeletionProtection=False)
         self.client.delete_db_cluster(DBClusterIdentifier=self.name, SkipFinalSnapshot=True)
 
 
