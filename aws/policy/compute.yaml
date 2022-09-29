@@ -67,6 +67,7 @@ Statement:
       - ec2:DetachVolume
       - ec2:DisassociateIamInstanceProfile
       - ec2:GetLaunchTemplateData
+      - ec2:GetInstanceUefiData
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
