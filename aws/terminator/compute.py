@@ -391,6 +391,45 @@ class EksFargateProfile(Terminator):
                 raise
 
 
+class EksNodegroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_eks_nodgroups(client):
+            results = []
+            for cluster in client.list_clusters()['clusters']:
+                for nodegroup in client.list_nodegroups(clusterName=cluster)['nodegroups']:
+                    results.append(client.describe_nodegroup(clusterName=cluster, nodegroupName=nodegroup)['nodegroup'])
+            return results
+        return Terminator._create(credentials, EksNodegroup, 'eks', _build_eks_nodgroups)
+
+    @property
+    def name(self):
+        return self.instance['nodegroupName']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def ignore(self):
+        return self.instance['status'] == ('DELETING')
+
+    @property
+    def cluster_name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
+        try:
+            self.client.delete_nodegroup(clusterName=self.cluster_name, nodegroupName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
+
+
 class ElasticLoadBalancing(Terminator):
     @staticmethod
     def create(credentials):
