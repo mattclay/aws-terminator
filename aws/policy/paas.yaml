@@ -59,11 +59,15 @@ Statement:
       - lambda:CreateFunction
       - lambda:DeleteAlias
       - lambda:DeleteFunction
+      - lambda:DeleteLayerVersion
       - lambda:GetAlias
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
+      - lambda:ListLayers
+      - lambda:ListLayerVersions
       - lambda:ListTags
+      - lambda:PublishLayerVersion
       - lambda:RemovePermission
       - lambda:TagResource
       - lambda:UntagResource
@@ -89,6 +93,7 @@ Statement:
       - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
 
   # - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
   #   Effect: Allow
