@@ -43,6 +43,7 @@ Statement:
       - eks:DeleteFargateProfile
       - eks:DescribeFargateProfile
       - eks:ListFargateProfiles
+      - eks:ListNodegroups
       - eks:ListTagsForResource
       - eks:TagResource
       - eks:UntagResource
