@@ -8,7 +8,6 @@
   vars_files:
     - vars/main.yml
 
-
   tasks:
     - name: load config
       tags: always
@@ -66,6 +65,7 @@
         requirements: "{{ playbook_dir }}/requirements.txt"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
         virtualenv_python: "{{ lambda_python_version }}"
+      check_mode: false
 
     - name: package terminator requirements
       tags: lambda
@@ -87,6 +87,7 @@
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/setuptools/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pkg_resources/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/easy_install.py"
+      check_mode: false
 
     - name: publish terminator requirements layer
       tags: lambda
@@ -108,6 +109,7 @@
         include:
           - "{{ playbook_dir }}/terminator_lambda.py"
           - "{{ playbook_dir }}/terminator/*.py"
+      check_mode: false
 
     - name: deploy terminator package
       tags: lambda

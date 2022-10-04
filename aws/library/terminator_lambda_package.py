@@ -7,7 +7,7 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
 ---
-module: lambda_package
+module: terminator_lambda_package
 short_description: Package files in a ZIP archive for deployment as Lambda functions
 description:
     - Package files in a ZIP archive for deployment as Lambda functions.
@@ -38,10 +38,11 @@ options:
         description:
             - Mapping of files that should be renamed in the package.
         type: dict
+        default: {}
 '''
 
 EXAMPLES = '''
-lambda_package:
+terminator_lambda_package:
     src: my_lambda_functions
     dest: my_lambda_functions.zip
     include:
@@ -63,33 +64,15 @@ from ansible.module_utils.basic import (
 )
 
 
-def main():
-    argument_spec = dict(
-        src=dict(type='path', required=True),
-        dest=dict(type='path', required=True),
-        include=dict(type='list', elements='str'),
-        exclude=dict(type='list', elements='str'),
-        rename=dict(type='dict'),
-    )
-
-    module = AnsibleModule(
-        argument_spec=argument_spec,
-        supports_check_mode=True,
-    )
-
-    impl = LambdaPackageModule(module, module.check_mode, module.params)
-    module.exit_json(**impl.run())
-
-
-class LambdaPackageModule:
-    def __init__(self, module, check_mode, params):
+class TerminatorLambdaPackage:
+    def __init__(self, module):
         self.module = module
-        self.check_mode = check_mode
-        self.src = params['src']
-        self.dest = params['dest']
-        self.include = params['include']
-        self.exclude = params['exclude']
-        self.rename = params['rename'] or {}
+        self.check_mode = module.check_mode
+        self.src = module.params['src']
+        self.dest = module.params['dest']
+        self.include = module.params['include']
+        self.exclude = module.params['exclude']
+        self.rename = module.params['rename']
 
     def run(self):
         try:
@@ -101,7 +84,7 @@ class LambdaPackageModule:
 
             current_package = None
 
-        new_package = self.create_package()
+        new_package, paths = self.create_package()
 
         changed = current_package != new_package
 
@@ -113,7 +96,8 @@ class LambdaPackageModule:
             changed=changed,
             package=dict(
                 size=len(new_package),
-            )
+            ),
+            files=[src_path for dst_path, src_path in paths]
         )
 
         return result
@@ -121,7 +105,7 @@ class LambdaPackageModule:
     def create_package(self):
         paths = []
 
-        for root, _dummy, filenames in os.walk(self.src):
+        for root, _ignored, filenames in os.walk(self.src):
             for filename in filenames:
                 src_path = os.path.join(root, filename)
                 dst_path = os.path.relpath(src_path, self.src)
@@ -154,8 +138,25 @@ class LambdaPackageModule:
                 with open(src_path, 'rb') as src_file:
                     zip_file.writestr(zip_info, src_file.read())
 
-        return data.getvalue()
+        return data.getvalue(), paths
 
+
+def main():
+    argument_spec = dict(
+        src=dict(type='path', required=True),
+        dest=dict(type='path', required=True),
+        include=dict(type='list', elements='str'),
+        exclude=dict(type='list', elements='str'),
+        rename=dict(type='dict', default={}),
+    )
+
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+    )
+
+    impl = TerminatorLambdaPackage(module)
+    module.exit_json(**impl.run())
 
 if __name__ == '__main__':
     main()
