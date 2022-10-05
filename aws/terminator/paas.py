@@ -22,7 +22,7 @@ class LambdaEventSourceMapping(DbTerminator):
         self.client.delete_event_source_mapping(UUID=self.id)
 
 
-class LambdaLayers(DbTerminator):
+class LambdaLayers(Terminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, LambdaLayers, 'lambda', lambda client: client.list_layers()['Layers'])
@@ -34,6 +34,10 @@ class LambdaLayers(DbTerminator):
     @property
     def name(self):
         return self.instance['LayerName']
+
+    @property
+    def created_time(self):
+        return self.instance['LatestMatchingVersion']['CreatedDate']
 
     def terminate(self):
         for version in self.client.list_layer_versions(LayerName=self.name)['LayerVersions']:
