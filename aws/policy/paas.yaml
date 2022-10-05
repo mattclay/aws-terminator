@@ -64,7 +64,6 @@ Statement:
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetPolicy
-      - lambda:ListLayers
       - lambda:ListLayerVersions
       - lambda:ListTags
       - lambda:PublishLayerVersion
@@ -109,11 +108,12 @@ Statement:
       - ecr:CreateRepository
       - ecr:DescribeRepositories
       - ecr:PutImageTagMutability
-      - lambda:ListFunctions
-      - lambda:ListVersionsByFunction
-      - lambda:ListAliases
       - lambda:GetEventSourceMapping
+      - lambda:ListAliases
       - lambda:ListEventSourceMappings
+      - lambda:ListFunctions
+      - lambda:ListLayers
+      - lambda:ListVersionsByFunction
     Resource:
       - "*"
 

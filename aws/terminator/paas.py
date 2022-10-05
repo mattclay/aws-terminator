@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from . import DbTerminator, Terminator
 
 
@@ -37,7 +39,7 @@ class LambdaLayers(Terminator):
 
     @property
     def created_time(self):
-        return self.instance['LatestMatchingVersion']['CreatedDate']
+        return datetime.strptime(self.instance['LatestMatchingVersion']['CreatedDate'], "%Y-%m-%dT%H:%M:%S.%f%z")
 
     def terminate(self):
         for version in self.client.list_layer_versions(LayerName=self.name)['LayerVersions']:
