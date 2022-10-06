@@ -1,0 +1,8 @@
+aws_region: "us-east-1"
+stage: "prod"
+terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
+packaging_dir: "{{ playbook_dir }}/../.cache/packaging"
+lambda_python_version: "python3.7"
+iam_role_name: "{{ api_name }}-terminator-{{ stage }}"
+iam_policy_name: "{{ api_name }}-terminator-{{ stage }}"
+rule_target_id: "{{ test_account_id }}"
