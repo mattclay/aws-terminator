@@ -158,5 +158,6 @@ def main():
     impl = TerminatorLambdaPackage(module)
     module.exit_json(**impl.run())
 
+
 if __name__ == '__main__':
     main()
