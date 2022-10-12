@@ -64,7 +64,6 @@ Statement:
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetLayerVersion
-      - lambda:GetLayerVersionByArn
       - lambda:GetPolicy
       - lambda:ListLayerVersions
       - lambda:ListTags
