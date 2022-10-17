@@ -13,3 +13,4 @@ disable=
   too-many-locals,
   too-many-statements,
   unused-argument,
+  wrong-import-position,
