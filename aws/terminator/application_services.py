@@ -38,7 +38,7 @@ class CloudWatchLogGroup(Terminator):
     def created_time(self):
         # self.instance['creationTime'] is the number of milliseconds after Jan 1, 1970 00:00:00 UTC
         milliseconds = self.instance['creationTime']
-        return datetime.fromtimestamp(milliseconds/1000.0, tz=timezone.utc)
+        return datetime.fromtimestamp(milliseconds / 1000.0, tz=timezone.utc)
 
     def terminate(self):
         self.client.delete_log_group(logGroupName=self.name)
