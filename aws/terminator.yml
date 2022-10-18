@@ -4,6 +4,7 @@
   collections:
     - amazon.aws
     - community.aws
+    - community.general
 
   vars_files:
     - vars/main.yml
@@ -62,38 +63,33 @@
     - name: create virtualenv with terminator requirements
       tags: lambda
       pip:
-        requirements: "{{ playbook_dir }}/requirements.txt"
+        requirements: "{{ virtualenv_requirement_file }}"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
         virtualenv_python: "{{ lambda_python_version }}"
       check_mode: false
 
     - name: package terminator requirements
       tags: lambda
-      terminator_lambda_package:
-        src: "{{ packaging_dir }}/terminator-requirements"
+      archive:
+        format: zip
         dest: "{{ packaging_dir }}/terminator-requirements.zip"
-        include:
+        path:
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/*"
-        exclude:
-          # pre-compiled bytecode
+        exclusion_patterns:
           - "*.pyc"
-          # packaging information not needed at runtime
           - "*.dist-info/*"
-          # only used for botocore documentation generation
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/docutils/*"
-          # installed during creation of the virtualenv
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pip/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/wheel/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/setuptools/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pkg_resources/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/easy_install.py"
-      check_mode: false
 
     - name: publish terminator requirements layer
       tags: lambda
       lambda_layer:
-        name: "{{ api_name }}-terminator-requirements"
-        description: "Python requirements for {{ api_name }}-terminator"
+        name: "{{ lambda_layer_name }}"
+        description: "Python requirements for {{ lambda_function_name }}"
         compatible_runtimes:
           - "{{ lambda_python_version }}"
         content:
@@ -103,27 +99,22 @@
 
     - name: create terminator package
       tags: lambda
-      terminator_lambda_package:
-        src: "{{ playbook_dir }}"
+      archive:
+        format: zip
         dest: "{{ packaging_dir }}/terminator.zip"
-        include:
-          - "{{ playbook_dir }}/terminator_lambda.py"
-          - "{{ playbook_dir }}/terminator/*.py"
-      check_mode: false
+        path: "{{ lambda_function_path }}"
 
     - name: deploy terminator package
       tags: lambda
       lambda:
-        name: "{{ api_name }}-terminator"
+        name: "{{ lambda_function_name }}"
         zip_file: "{{ packaging_dir }}/terminator.zip"
         runtime: "{{ lambda_python_version }}"
         timeout: 60
-        handler: terminator_lambda.lambda_handler
+        handler: "{{ lambda_function_handler }}"
         memory_size: 128
-        role: "{{ api_name }}-terminator-{{ stage }}"
-        environment_variables:
-          TEST_ACCOUNT_ID: "{{ test_account_id }}"
-          API_NAME: "{{ api_name }}"
+        role: "{{ iam_role_name }}"
+        environment_variables: "{{ lambda_function_env_variables }}"
         layers:
           - layer_version_arn: "{{ terminator_layer.layer_versions.0.layer_version_arn }}"
       register: terminator_function
@@ -132,15 +123,15 @@
       tags: lambda
       lambda_alias:
         function_name: "{{ terminator_function.configuration.function_name }}"
-        name: "{{ stage }}"
-        description: "{{ stage }} alias"
+        name: "{{ lambda_alias_name }}"
+        description: "{{ lambda_alias_name }} alias"
         function_version: "{{ terminator_function.configuration.version | int }}"
       register: alias
 
     - name: schedule terminator event
       tags: schedule
       cloudwatchevent_rule:
-        name: "{{ api_name }}-terminator-{{ stage }}"
+        name: "{{ cloudwatch_event_rule_name }}"
         state: present
         schedule_expression: rate(5 minutes)
         targets:
