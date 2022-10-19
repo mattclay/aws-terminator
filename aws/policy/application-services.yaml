@@ -75,6 +75,7 @@ Statement:
       - ssm:GetDocument
       - ssm:GetManifest
       - ssm:ListAssociations
+      - ssm:ListDocuments
       - ssm:ListInstanceAssociations
       - ssmmessages:CreateControlChannel
       - ssmmessages:CreateDataChannel
@@ -95,7 +96,6 @@ Statement:
     Action:
       - ssm:CreateDocument
       - ssm:DeleteDocument
-      - ssm:ListDocuments
       - cloudformation:CreateChangeSet
       - cloudformation:CreateStack
       - cloudformation:DeleteChangeSet
