@@ -75,6 +75,7 @@ Statement:
       - ssm:GetDocument
       - ssm:GetManifest
       - ssm:ListAssociations
+      - ssm:ListDocuments
       - ssm:ListInstanceAssociations
       - ssmmessages:CreateControlChannel
       - ssmmessages:CreateDataChannel
@@ -93,6 +94,8 @@ Statement:
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - ssm:CreateDocument
+      - ssm:DeleteDocument
       - cloudformation:CreateChangeSet
       - cloudformation:CreateStack
       - cloudformation:DeleteChangeSet
@@ -159,6 +162,7 @@ Statement:
       - states:TagResource
       - states:UntagResource
     Resource:
+      - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:document/*'
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
       - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
       - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
