@@ -89,6 +89,9 @@ Statement:
       - ssm:UpdateAssociationStatus
       - ssm:UpdateInstanceAssociationStatus
       - ssm:UpdateInstanceInformation
+      - ssm:ListTagsForResource
+      - ssm:AddTagsToResource
+      - ssm:RemoveTagsFromResource
     Resource: "*"
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
