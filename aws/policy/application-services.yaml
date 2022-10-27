@@ -68,6 +68,7 @@ Statement:
       - sqs:GetQueueUrl
       - sqs:ListQueues
       - sqs:SetQueueAttributes
+      - ssm:AddTagsToResource
       - ssm:DescribeAssociation
       - ssm:DescribeDocument
       - ssm:DescribeParameters
@@ -77,6 +78,7 @@ Statement:
       - ssm:ListAssociations
       - ssm:ListDocuments
       - ssm:ListInstanceAssociations
+      - ssm:ListTagsForResource
       - ssmmessages:CreateControlChannel
       - ssmmessages:CreateDataChannel
       - ssmmessages:OpenControlChannel
@@ -84,14 +86,12 @@ Statement:
       - ssm:PutComplianceItems
       - ssm:PutConfigurePackageResult
       - ssm:PutInventory
+      - ssm:RemoveTagsFromResource
       - ssm:StartSession
       - ssm:TerminateSession
       - ssm:UpdateAssociationStatus
       - ssm:UpdateInstanceAssociationStatus
       - ssm:UpdateInstanceInformation
-      - ssm:ListTagsForResource
-      - ssm:AddTagsToResource
-      - ssm:RemoveTagsFromResource
     Resource: "*"
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
