@@ -5,13 +5,13 @@ pr:
   - master
 
 pool:
-  vmImage: 'ubuntu-18.04'
+  vmImage: 'ubuntu-22.04'
 
 steps:
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '3.7'
-    displayName: Install Python 3.7
+      versionSpec: '3.9'
+    displayName: Install Python 3.9
   - script: make test-all-requirements FLAGS=--user
     displayName: Install test requirements
   - script: make test-all
