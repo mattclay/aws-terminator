@@ -52,34 +52,34 @@
       pip:
         requirements: "{{ playbook_dir }}/requirements.txt"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
-        virtualenv_python: python3.7
+        virtualenv_python: python3.9
     - name: package terminator requirements
       tags: lambda
       lambda_package:
         src: "{{ packaging_dir }}/terminator-requirements"
         dest: "{{ packaging_dir }}/terminator-requirements.zip"
         include:
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/*"
         exclude:
           # pre-compiled bytecode
           - "*.pyc"
           # packaging information not needed at runtime
           - "*.dist-info/*"
           # only used for botocore documentation generation
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/docutils/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/docutils/*"
           # installed during creation of the virtualenv
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/pip/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/wheel/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/setuptools/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/pkg_resources/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.7/site-packages/easy_install.py"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/pip/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/wheel/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/setuptools/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/pkg_resources/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/easy_install.py"
     - name: publish terminator requirements layer
       tags: lambda
       lambda_layer:
         name: "{{ api_name }}-terminator-requirements"
         description: "Python requirements for {{ api_name }}-terminator"
         compatible_runtimes:
-          - python3.7
+          - python3.9
         path: "{{ packaging_dir }}/terminator-requirements.zip"
         license_info: GPL-3.0-only
         region: "{{ aws_region }}"
@@ -99,7 +99,7 @@
         region: "{{ aws_region }}"
         name: "{{ api_name }}-terminator"
         local_path: "{{ packaging_dir }}/terminator.zip"
-        runtime: python3.7
+        runtime: python3.9
         timeout: 60
         handler: terminator_lambda.lambda_handler
         memory_size: 128
