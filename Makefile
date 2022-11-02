@@ -9,12 +9,11 @@ default:
 .PHONY: test-all
 test-all: test
 	make test -C aws
-	make test -C hacking
+	tox
 
 .PHONY: test-all-requirements
 test-all-requirements: test-requirements
 	make test-requirements -C aws FLAGS="$(FLAGS)"
-	make test-requirements -C hacking
 
 .PHONY: test
 test: yamllint

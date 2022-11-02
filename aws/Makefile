@@ -31,22 +31,3 @@ terminator_lambda:
 .PHONY: test_policy
 test_policy:
 	$(RUN_TEST_POLICY_PLAYBOOK)
-
-.PHONY: test
-test: yamllint pycodestyle pylint
-
-.PHONY: test-requirements
-test-requirements:
-	"$(PYTHON3)" -m pip install -c ../constraints.txt -r requirements.txt -r test-requirements.txt --disable-pip-version-check $(FLAGS)
-
-.PHONY: yamllint
-yamllint:
-	"$(PYTHON3)" -m yamllint --config-file ../.yamllint .
-
-.PHONY: pycodestyle
-pycodestyle:
-	find . -name '*.py' | xargs "$(PYTHON3)" -m pycodestyle --config ../pycodestyle.ini
-
-.PHONY: pylint
-pylint:
-	find . -name '*.py' | xargs "$(PYTHON3)" -m pylint --rcfile pylint.rc
