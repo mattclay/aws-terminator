@@ -219,5 +219,9 @@ class Secret(Terminator):
     def created_time(self):
         return self.instance['CreatedDate']
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=30)
+
     def terminate(self):
         self.client.delete_secret(SecretId=self.name, RecoveryWindowInDays=7)
