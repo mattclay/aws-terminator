@@ -25,8 +25,8 @@ Statement:
           - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
           - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole
-          - arn:aws:iam::aws:policy/AWSLambdaInvocation-DynamoDB
+          - 'arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole'
+          - 'arn:aws:iam::aws:policy/AWSLambdaInvocation-DynamoDB'
           - 'arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
