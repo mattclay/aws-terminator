@@ -367,3 +367,41 @@ class SsmDocument(Terminator):
 
     def terminate(self):
         self.client.delete_document(Name=self.name)
+
+
+class CloudFrontDistribution(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_distributions(client):
+            return client.get_paginator('list_distributions').paginate().build_full_result()['DistributionList']['Items']
+        return Terminator._create(credentials, CloudFrontDistribution, 'cloudfront', paginate_distributions)
+
+    @property
+    def created_time(self):
+        return self.instance['LastModifiedTime']
+
+    @property
+    def name(self):
+        return self.instance['DomainName']
+
+    def terminate(self):
+        self.client.delete_distribution(Id=self.instance['Id'])
+
+
+class CloudFrontStreamingDistribution(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_streaming_distributions(client):
+            return client.get_paginator('list_streaming_distributions').paginate().build_full_result()['StreamingDistributionList']['Items']
+        return Terminator._create(credentials, CloudFrontStreamingDistribution, 'cloudfront', paginate_streaming_distributions)
+
+    @property
+    def created_time(self):
+        return self.instance['LastModifiedTime']
+
+    @property
+    def name(self):
+        return self.instance['DomainName']
+
+    def terminate(self):
+        self.client.delete_streaming_distribution(Id=self.instance['Id'])

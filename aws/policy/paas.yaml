@@ -24,6 +24,14 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - cloudfront:CreateDistribution
+      - cloudfront:CreateDistributionWithTags
+      - cloudfront:DeleteDistribution
+      - cloudfront:UpdateDistribution
+      - cloudfront:TagResource
+      - cloudfront:UntagResource
+      - cloudfront:ListTagsForResource
+      - cloudfront:DeleteStreamingDistribution
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
@@ -86,6 +94,7 @@ Statement:
       - lightsail:StopInstance
       - lightsail:ReleaseStaticIp
     Resource:
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:fargateprofile/*/*/*'
@@ -115,6 +124,21 @@ Statement:
       - lambda:ListFunctions
       - lambda:ListLayers
       - lambda:ListVersionsByFunction
+      - cloudfront:GetDistribution
+      - cloudfront:GetDistributionConfig
+      - cloudfront:GetStreamingDistribution
+      - cloudfront:GetStreamingDistributionConfig
+      - cloudfront:ListCloudFrontOriginAccessIdentities
+      - cloudfront:ListDistributions
+      - cloudfront:ListDistributionsByWebACLId
+      - cloudfront:ListStreamingDistributions
+      - cloudfront:CreateCloudFrontOriginAccessIdentity
+      - cloudfront:DeleteCloudFrontOriginAccessIdentity
+      - cloudfront:GetCloudFrontOriginAccessIdentity
+      - cloudfront:GetCloudFrontOriginAccessIdentityConfig
+      - cloudfront:UpdateCloudFrontOriginAccessIdentity
+      - cloudfront:GetInvalidation
+      - cloudfront:CreateInvalidation
     Resource:
       - "*"
 
