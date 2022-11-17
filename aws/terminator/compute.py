@@ -192,9 +192,7 @@ class Ec2TransitGatewayAttachment(Terminator):
 
     @property
     def name(self):
-        return "{0}/{1}".format(
-            self.instance['TransitGatewayId'],
-            self.instance['ResourceId'])
+        return f"{self.instance['TransitGatewayId']}/{self.instance['ResourceId']}"
 
     @property
     def created_time(self):

@@ -270,7 +270,7 @@ class Terminator(abc.ABC):
 class DbTerminator(Terminator):
     """Base class for classes which find and terminate AWS resources with age tracked via DynamoDB."""
     def __init__(self, client: botocore.client.BaseClient, instance: typing.Dict[str, typing.Any]):
-        super(DbTerminator, self).__init__(client, instance)
+        super().__init__(client, instance)
 
         self._kvs_key = None
         self._kvs_value = None
