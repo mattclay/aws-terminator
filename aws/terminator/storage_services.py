@@ -52,7 +52,7 @@ class SSMBucketObjects(Terminator):
     def create(credentials):
         def paginate_objects(client):
             list_bucket_objects_result = client.get_paginator('list_objects_v2').paginate(Bucket='ssm-encrypted-test-bucket').build_full_result()
-            bucket_contents = dict()
+            bucket_contents = {}
             if list_bucket_objects_result.get('Contents'):
                 bucket_contents = list_bucket_objects_result['Contents']
             return bucket_contents

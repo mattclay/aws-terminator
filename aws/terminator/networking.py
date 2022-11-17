@@ -139,7 +139,7 @@ class Ec2Subnet(DbTerminator):
 class Ec2InternetGateway(DbTerminator):
     def __init__(self, client, instance):
         self._ignore = None
-        super(Ec2InternetGateway, self).__init__(client, instance)
+        super().__init__(client, instance)
 
     @staticmethod
     def create(credentials):
@@ -161,7 +161,7 @@ class Ec2InternetGateway(DbTerminator):
     def ignore(self):
         if self._ignore is None:
             attachments = self._find_vpc_attachments()
-            self._ignore = any([self.is_vpc_default(attachment_id) for attachment_id in attachments])
+            self._ignore = any(self.is_vpc_default(attachment_id) for attachment_id in attachments)
         return self._ignore
 
     def _find_vpc_attachments(self):
@@ -269,7 +269,7 @@ class Ec2RouteTable(DbTerminator):
         # The main route table of a VPC cannot be deleted.
         # See: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html
         # They will be removed when the VPC is deleted.
-        return any([association['Main'] for association in self.instance.get('Associations', [])])
+        return any(association['Main'] for association in self.instance.get('Associations', []))
 
     def terminate(self):
         for association in self.instance.get('Associations', []):

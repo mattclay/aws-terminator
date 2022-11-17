@@ -50,7 +50,7 @@ def main():
 
     yaml.add_multi_constructor('', default_ctor)
 
-    with open(config_path) as config_fd:
+    with open(config_path, encoding="utf-8") as config_fd:
         config = yaml.load(config_fd, Loader=yaml.BaseLoader)
 
     test_account_id = config['test_account_id']
