@@ -12,16 +12,16 @@ Statement:
       - codecommit:*Repository
     Resource: "*"
 
-  # - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
-  #   Effect: Allow
-  #   Action:
-  #     -
-  #   Resource:
-  #    -
+#  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+#    Effect: Allow
+#    Action:
+#      -
+#    Resource:
+#     -
 
-  # - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-  #   Effect: Allow
-  #   Action:
-  #     -
-  #    Resource:
-  #     -
+#  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+#    Effect: Allow
+#    Action:
+#      -
+#     Resource:
+#      -
