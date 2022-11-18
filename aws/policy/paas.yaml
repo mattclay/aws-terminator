@@ -14,7 +14,12 @@ Statement:
       - ecr:InitiateLayerUpload
       - ecr:PutImage
       - ecr:UploadLayerPart
+      - cloudfront:CreateDistribution
+      - cloudfront:CreateStreamingDistribution
+      - cloudfront:CreateStreamingDistributionWithTags
     Resource:
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:streaming-distribution/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
@@ -24,13 +29,10 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - cloudfront:CreateDistribution
-      - cloudfront:CreateDistributionWithTags
       - cloudfront:DeleteDistribution
       - cloudfront:UpdateDistribution
       - cloudfront:TagResource
       - cloudfront:UntagResource
-      - cloudfront:ListTagsForResource
       - cloudfront:DeleteStreamingDistribution
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
@@ -95,6 +97,7 @@ Statement:
       - lightsail:ReleaseStaticIp
     Resource:
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:streaming-distribution/*'
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:fargateprofile/*/*/*'
@@ -104,12 +107,15 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
 
-  # - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
-  #   Effect: Allow
-  #   Action:
-  #     -
-  #   Resource:
-  #     - "*"
+  - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - cloudfront:CreateCloudFrontOriginAccessIdentity
+      - cloudfront:DeleteCloudFrontOriginAccessIdentity
+      - cloudfront:UpdateCloudFrontOriginAccessIdentity
+      - cloudfront:CreateInvalidation
+    Resource:
+      - "*"
 
   - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -124,21 +130,8 @@ Statement:
       - lambda:ListFunctions
       - lambda:ListLayers
       - lambda:ListVersionsByFunction
-      - cloudfront:GetDistribution
-      - cloudfront:GetDistributionConfig
-      - cloudfront:GetStreamingDistribution
-      - cloudfront:GetStreamingDistributionConfig
-      - cloudfront:ListCloudFrontOriginAccessIdentities
-      - cloudfront:ListDistributions
-      - cloudfront:ListDistributionsByWebACLId
-      - cloudfront:ListStreamingDistributions
-      - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - cloudfront:DeleteCloudFrontOriginAccessIdentity
-      - cloudfront:GetCloudFrontOriginAccessIdentity
-      - cloudfront:GetCloudFrontOriginAccessIdentityConfig
-      - cloudfront:UpdateCloudFrontOriginAccessIdentity
-      - cloudfront:GetInvalidation
-      - cloudfront:CreateInvalidation
+      - cloudfront:Get*
+      - cloudfront:List*
     Resource:
       - "*"
 
