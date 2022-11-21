@@ -12,7 +12,9 @@ steps:
     inputs:
       versionSpec: '3.7'
     displayName: Install Python 3.7
-  - script: make test-all-requirements FLAGS=--user
+  - script: pip install --user tox
+    displayName: Install tox
+  - script: tox --notest
     displayName: Install test requirements
-  - script: make test-all
+  - script: tox
     displayName: Run tests
