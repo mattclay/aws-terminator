@@ -1,4 +1,4 @@
-# note: The dependencies will be include in the Lamda package.
+# note: The dependencies will be included in the Lambda package.
 boto3==1.25.5
 botocore==1.28.5
 certifi==2022.9.24
