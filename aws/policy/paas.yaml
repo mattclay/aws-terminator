@@ -14,12 +14,7 @@ Statement:
       - ecr:InitiateLayerUpload
       - ecr:PutImage
       - ecr:UploadLayerPart
-      - cloudfront:CreateDistribution
-      - cloudfront:CreateStreamingDistribution
-      - cloudfront:CreateStreamingDistributionWithTags
     Resource:
-      - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
-      - 'arn:aws:cloudfront::{{ aws_account_id }}:streaming-distribution/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
@@ -29,11 +24,8 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - cloudfront:DeleteDistribution
-      - cloudfront:UpdateDistribution
       - cloudfront:TagResource
       - cloudfront:UntagResource
-      - cloudfront:DeleteStreamingDistribution
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
@@ -111,9 +103,15 @@ Statement:
     Effect: Allow
     Action:
       - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - cloudfront:DeleteCloudFrontOriginAccessIdentity
-      - cloudfront:UpdateCloudFrontOriginAccessIdentity
+      - cloudfront:CreateDistribution
       - cloudfront:CreateInvalidation
+      - cloudfront:CreateStreamingDistribution
+      - cloudfront:CreateStreamingDistributionWithTags
+      - cloudfront:DeleteCloudFrontOriginAccessIdentity
+      - cloudfront:DeleteDistribution
+      - cloudfront:DeleteStreamingDistribution
+      - cloudfront:UpdateCloudFrontOriginAccessIdentity
+      - cloudfront:UpdateDistribution
     Resource:
       - "*"
 

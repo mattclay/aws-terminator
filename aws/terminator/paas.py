@@ -46,12 +46,6 @@ class LambdaLayers(Terminator):
             self.client.delete_layer_version(LayerName=self.name, VersionNumber=version['Version'])
 
 
-def wait_until_deployed(client, Id, waiter_name, wait_timeout=1800):
-    waiter = client.get_waiter(waiter_name)
-    attempts = 1 + int(wait_timeout / 60)
-    waiter.wait(Id=Id, WaiterConfig={'MaxAttempts': attempts})
-
-
 class CloudFrontDistribution(Terminator):
     @staticmethod
     def create(credentials):
@@ -80,14 +74,12 @@ class CloudFrontDistribution(Terminator):
         distribution = distribution['Distribution']
         if distribution.get('Status') == "Deployed":
             if distribution['DistributionConfig']['Enabled']:
+                # disable distribution
                 distribution['DistributionConfig']['Enabled'] = False
                 self.client.update_distribution(DistributionConfig=distribution['DistributionConfig'], Id=self.Id, IfMatch=ETag)
-                # wait until the distribution is deployed
-                wait_until_deployed(self.client, self.Id, 'distribution_deployed')
-                # Get ETag value after update
-                distribution = self.client.get_distribution(Id=self.Id)
-                ETag = distribution['ETag']
-            self.client.delete_distribution(Id=self.Id, IfMatch=ETag)
+            else:
+                # delete distribution
+                self.client.delete_distribution(Id=self.Id, IfMatch=ETag)
 
 
 class CloudFrontStreamingDistribution(Terminator):
@@ -117,13 +109,11 @@ class CloudFrontStreamingDistribution(Terminator):
         streaming_distribution = streaming_distribution['StreamingDistribution']
         if streaming_distribution.get('Status') == "Deployed":
             if streaming_distribution['StreamingDistributionConfig']['Enabled']:
+                # disable streaming distribution
                 streaming_distribution['StreamingDistributionConfig']['Enabled'] = False
                 self.client.update_streaming_distribution(StreamingDistributionConfig=streaming_distribution['StreamingDistributionConfig'],
                                                           Id=self.Id,
                                                           IfMatch=ETag)
-                # wait until the streaming distribution is deployed
-                wait_until_deployed(self.client, self.Id, 'streaming_distribution_deployed')
-                # Get ETag value after update
-                streaming_distribution = self.client.get_streaming_distribution(Id=self.Id)
-                ETag = streaming_distribution['ETag']
-            self.client.delete_streaming_distribution(Id=self.Id, IfMatch=ETag)
+            else:
+                # delete streaming distribution
+                self.client.delete_streaming_distribution(Id=self.Id, IfMatch=ETag)
