@@ -102,7 +102,7 @@
         runtime: python3.9
         timeout: 120
         handler: terminator_lambda.lambda_handler
-        memory_size: 128
+        memory_size: 256
         role: "{{ api_name }}-terminator-{{ stage }}"
         publish: True
         qualifier: "{{ stage }}"
