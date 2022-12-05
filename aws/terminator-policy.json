@@ -17,7 +17,7 @@
         {
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
-            "Resource": "arn:aws:iam::{{ test_account_id }}:role/{{ iam_role_name }}"
+            "Resource": "arn:aws:iam::{{ test_account_id }}:role/{{ api_name }}-test-{{ stage }}"
         },
         {
             "Effect": "Allow",

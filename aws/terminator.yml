@@ -9,6 +9,10 @@
   vars_files:
     - vars/main.yml
 
+  module_defaults:
+    group/aws:
+      region: '{{ aws_region }}'
+
   tasks:
     - name: load config
       tags: always
@@ -66,7 +70,6 @@
         requirements: "{{ virtualenv_requirement_file }}"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
         virtualenv_python: "{{ lambda_python_version }}"
-      check_mode: false
 
     - name: package terminator requirements
       tags: lambda
@@ -85,17 +88,82 @@
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pkg_resources/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/easy_install.py"
 
-    - name: publish terminator requirements layer
+    - name: Retrieve layer versions
+      lambda_layer_info:
+      register: layer_latest_version
+
+    - name: Get latest version of terminator lambda layer
+      set_fact:
+        lambda_last_version: "{{ layer_latest_version.layers_versions | selectattr('layer_name', 'equalto', lambda_layer_name) | list }}"
+
+    - block:
+        - set_fact:
+            last_version_number: "{{ lambda_last_version.0.version }}"
+            layer_version_arn: "{{ lambda_last_version.0.layer_version_arn }}"
+
+        - name: Get last version content
+          lambda_layer_info:
+            name: "{{ lambda_layer_name }}"
+            version_number: "{{ last_version_number | int }}"
+          register: layer_info
+
+        - block:
+          - name: Create temporary file to download archive in
+            tempfile:
+              state: directory
+            register: tmpfile
+
+          - name: Download lambda layer archive
+            get_url:
+              dest: "{{ tmpfile.path }}/terminator_layer.zip"
+              url: "{{ layer_info.layers_versions.0.content.location }}"
+
+          - name: Compare files from an archive with a local directory
+            terminator_compare_archives:
+              zipfile_1: "{{ packaging_dir }}/terminator-requirements.zip"
+              zipfile_2: "{{ packaging_dir }}/terminator-requirements.zip"
+            register: compare_archives
+
+          always:
+            - name: Delete temporay file
+              file:
+                state: absent
+                path: "{{ tmpfile.path }}"
+              ignore_errors: true
+
+      when: lambda_last_version | length > 0
+
+    - block:
+        - name: publish terminator requirements layer
+          tags: lambda
+          lambda_layer:
+            name: "{{ lambda_layer_name }}"
+            description: "Python requirements for {{ lambda_function_name }}"
+            compatible_runtimes:
+              - "{{ lambda_python_version }}"
+            content:
+              zip_file: "{{ packaging_dir }}/terminator-requirements.zip"
+            license_info: GPL-3.0-only
+          register: terminator_layer
+
+        - set_fact:
+            last_version_number: "{{ terminator_layer.layer_versions.0.version }}"
+            layer_version_arn: "{{ terminator_layer.layer_versions.0.layer_version_arn }}"
+
+      when: (lambda_last_version | length == 0) or (compare_archives is defined and not compare_archives.equals)
+
+    - name: Retrieve layer versions
+      lambda_layer_info:
+        name: "{{ lambda_layer_name }}"
+      register: layer_versions
+
+    - name: Delete others layer versions
       tags: lambda
       lambda_layer:
+        state: absent
         name: "{{ lambda_layer_name }}"
-        description: "Python requirements for {{ lambda_function_name }}"
-        compatible_runtimes:
-          - "{{ lambda_python_version }}"
-        content:
-          zip_file: "{{ packaging_dir }}/terminator-requirements.zip"
-        license_info: GPL-3.0-only
-      register: terminator_layer
+        version: "{{ item }}"
+      with_items: "{{ layer_versions.layers_versions | map(attribute='version') | list | difference([last_version_number|int]) }}"
 
     - name: create terminator package
       tags: lambda
@@ -116,7 +184,7 @@
         role: "{{ iam_role_name }}"
         environment_variables: "{{ lambda_function_env_variables }}"
         layers:
-          - layer_version_arn: "{{ terminator_layer.layer_versions.0.layer_version_arn }}"
+          - layer_version_arn: "{{ layer_version_arn }}"
       register: terminator_function
 
     - name: alias terminator functions
