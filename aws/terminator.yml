@@ -12,6 +12,7 @@
   module_defaults:
     group/aws:
       region: '{{ aws_region }}'
+      aws_profile: "ansible"
 
   tasks:
     - name: load config
@@ -64,6 +65,12 @@
         state: present
         policy_json: "{{ terminator_policy | to_nice_json }}"
 
+    - name: Remove existing virtual environment directory
+      file:
+        state: absent
+        path: "{{ packaging_dir }}/terminator-requirements"
+      ignore_errors: true
+
     - name: create virtualenv with terminator requirements
       tags: lambda
       pip:
@@ -73,97 +80,40 @@
 
     - name: package terminator requirements
       tags: lambda
-      archive:
-        format: zip
+      mattclay.aws.lambda_package:
+        src: "{{ packaging_dir }}/terminator-requirements"
         dest: "{{ packaging_dir }}/terminator-requirements.zip"
-        path:
+        include:
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/*"
-        exclusion_patterns:
+        exclude:
+          # pre-compiled bytecode
           - "*.pyc"
+          # packaging information not needed at runtime
           - "*.dist-info/*"
+          # only used for botocore documentation generation
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/docutils/*"
+          # installed during creation of the virtualenv
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pip/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/wheel/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/setuptools/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/pkg_resources/*"
           - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ lambda_python_version }}/site-packages/easy_install.py"
 
-    - name: Retrieve layer versions
-      lambda_layer_info:
-      register: layer_latest_version
-
-    - name: Get latest version of terminator lambda layer
-      set_fact:
-        lambda_last_version: "{{ layer_latest_version.layers_versions | selectattr('layer_name', 'equalto', lambda_layer_name) | list }}"
-
-    - block:
-        - set_fact:
-            last_version_number: "{{ lambda_last_version.0.version }}"
-            layer_version_arn: "{{ lambda_last_version.0.layer_version_arn }}"
-
-        - name: Get last version content
-          lambda_layer_info:
-            name: "{{ lambda_layer_name }}"
-            version_number: "{{ last_version_number | int }}"
-          register: layer_info
-
-        - block:
-          - name: Create temporary file to download archive in
-            tempfile:
-              state: directory
-            register: tmpfile
-
-          - name: Download lambda layer archive
-            get_url:
-              dest: "{{ tmpfile.path }}/terminator_layer.zip"
-              url: "{{ layer_info.layers_versions.0.content.location }}"
-
-          - name: Compare files from an archive with a local directory
-            terminator_compare_archives:
-              zipfile_1: "{{ packaging_dir }}/terminator-requirements.zip"
-              zipfile_2: "{{ packaging_dir }}/terminator-requirements.zip"
-            register: compare_archives
-
-          always:
-            - name: Delete temporay file
-              file:
-                state: absent
-                path: "{{ tmpfile.path }}"
-              ignore_errors: true
-
-      when: lambda_last_version | length > 0
-
-    - block:
-        - name: publish terminator requirements layer
-          tags: lambda
-          lambda_layer:
-            name: "{{ lambda_layer_name }}"
-            description: "Python requirements for {{ lambda_function_name }}"
-            compatible_runtimes:
-              - "{{ lambda_python_version }}"
-            content:
-              zip_file: "{{ packaging_dir }}/terminator-requirements.zip"
-            license_info: GPL-3.0-only
-          register: terminator_layer
-
-        - set_fact:
-            last_version_number: "{{ terminator_layer.layer_versions.0.version }}"
-            layer_version_arn: "{{ terminator_layer.layer_versions.0.layer_version_arn }}"
-
-      when: (lambda_last_version | length == 0) or (compare_archives is defined and not compare_archives.equals)
-
-    - name: Retrieve layer versions
-      lambda_layer_info:
-        name: "{{ lambda_layer_name }}"
-      register: layer_versions
-
-    - name: Delete others layer versions
+    - name: publish terminator requirements layer
       tags: lambda
-      lambda_layer:
-        state: absent
+      mattclay.aws.lambda_layer:
         name: "{{ lambda_layer_name }}"
-        version: "{{ item }}"
-      with_items: "{{ layer_versions.layers_versions | map(attribute='version') | list | difference([last_version_number|int]) }}"
+        description: "Python requirements for {{ lambda_function_name }}"
+        compatible_runtimes:
+          - "{{ lambda_python_version }}"
+        path: "{{ packaging_dir }}/terminator-requirements.zip"
+        license_info: GPL-3.0-only
+        region: "{{ aws_region }}"
+        state: present
+      register: terminator_requirements_layer
+
+    - set_fact:
+        layer_version_arn: "{{ terminator_requirements_layer.layer.layer_version_arn }}"
 
     - name: create terminator package
       tags: lambda
