@@ -1,5 +1,5 @@
 import datetime
-
+import botocore
 from . import DbTerminator, Terminator, get_tag_dict_from_tag_list
 
 
@@ -414,8 +414,23 @@ class Ec2SecurityGroup(DbTerminator):
     def ignore(self):
         return self.name == 'default' or self.name.startswith('default_elb_')
 
+    def revoke_sg_rules(self):
+        # Revoke Egress rules
+        self.client.revoke_security_group_egress(
+            GroupId=self.id, IpPermissions=self.instance.get("IpPermissionsEgress")
+        )
+
+        # Revoke Ingress rules
+        self.client.revoke_security_group_ingress(
+            GroupId=self.id, IpPermissions=self.instance.get("IpPermissions")
+        )
+
     def terminate(self):
-        self.client.delete_security_group(GroupId=self.id)
+        try:
+            self.client.delete_security_group(GroupId=self.id)
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] == "DependencyViolation":
+                self.revoke_sg_rules()
 
 
 class ApiGatewayRestApi(Terminator):
