@@ -177,6 +177,7 @@ Statement:
       - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sqs:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
+      - 'arn:aws:ssm:{{ aws_region }}::parameter/aws/service/*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
