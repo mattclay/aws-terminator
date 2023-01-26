@@ -80,6 +80,7 @@ Statement:
       - lambda:TagResource
       - lambda:UntagResource
       - lambda:UpdateAlias
+      - lambda:UpdateFunctionCode
       - lambda:UpdateFunctionConfiguration
       - lightsail:AllocateStaticIp
       - lightsail:CreateKeyPair
