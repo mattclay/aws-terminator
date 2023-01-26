@@ -367,3 +367,29 @@ class SsmDocument(Terminator):
 
     def terminate(self):
         self.client.delete_document(Name=self.name)
+
+
+class SsmSession(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_ssm_sessions(client):
+            ssm_sessions = client.get_paginator(
+                'describe_sessions').paginate(State='Active').build_full_result().get('Sessions', [])
+            return ssm_sessions
+
+        return Terminator._create(credentials, SsmSession, 'ssm', get_ssm_sessions)
+
+    @property
+    def created_time(self):
+        return self.instance['StartDate']
+
+    @property
+    def name(self):
+        return self.instance['SessionId']
+
+    @property
+    def id(self):
+        return self.instance['SessionId']
+
+    def terminate(self):
+        self.client.terminate_session(SessionId=self.name)
