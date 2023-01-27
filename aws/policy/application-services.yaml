@@ -89,6 +89,7 @@ Statement:
       - ssm:PutInventory
       - ssm:RemoveTagsFromResource
       - ssm:StartSession
+      - ssm:DescribeSessions
       - ssm:TerminateSession
       - ssm:UpdateAssociationStatus
       - ssm:UpdateInstanceAssociationStatus
