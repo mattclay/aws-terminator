@@ -115,13 +115,6 @@ Statement:
       - elasticloadbalancing:ModifyTargetGroupAttributes
       - elasticloadbalancing:ModifyRule
       - elasticloadbalancing:SetIpAddressType
-      - ecs:Describe*
-      - ecs:List*
-      - ecs:TagResource
-      - ecs:UntagResource
-      - ecs:PutAccountSetting
-      - ecs:RegisterTaskDefinition
-      - ecs:DeregisterTaskDefinition
     Resource:
       - "*"
 
@@ -132,19 +125,10 @@ Statement:
       - ec2:CreateVolume
       - elasticloadbalancing:CreateLoadBalancer
       - elasticloadbalancing:CreateRule
-      - ecs:RunTask
-      - ecs:StartTask
-      - ecs:StopTask
-      - ecs:DeleteCluster
-      - ecs:CreateService
-      - ecs:DeleteService
-      - ecs:UpdateService
-      - ecs:UpdateCluster
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
-      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow

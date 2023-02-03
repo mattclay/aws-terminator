@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from datetime import datetime
-=======
-import datetime
->>>>>>> ba35199 (Move ecs policies and terminator classes into paas files)
 
 from . import DbTerminator, Terminator
 
@@ -121,6 +117,8 @@ class CloudFrontStreamingDistribution(Terminator):
             else:
                 # delete streaming distribution
                 self.client.delete_streaming_distribution(Id=self.Id, IfMatch=ETag)
+
+
 class Ecs(DbTerminator):
     @property
     def age_limit(self):
