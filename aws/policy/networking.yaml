@@ -10,6 +10,7 @@ Statement:
       - route53:GetHostedZone
       - route53:DeleteHostedZone
       - route53:UpdateHostedZoneComment
+      - route53:AssociateVPCWithHostedZone
       - route53:ChangeTagsForResource
       - route53:ListTagsForResource
       - route53:ListTagsForResources
