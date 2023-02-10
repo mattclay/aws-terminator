@@ -15,6 +15,7 @@ Statement:
       - cloudformation:ListExports
       - cloudformation:ListResourceRequests
       - cloudformation:ListResources
+      - cloudformation:ListStacks
       - cloudformation:UpdateResource
       ###
       - codebuild:BatchGetProjects
@@ -105,7 +106,6 @@ Statement:
       - cloudformation:DeleteStack
       - cloudformation:DescribeChangeSet
       - cloudformation:DescribeStackEvents
-      - cloudformation:DescribeStacks
       - cloudformation:GetStackPolicy
       - cloudformation:GetTemplate
       - cloudformation:ListChangeSets
