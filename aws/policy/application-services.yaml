@@ -73,6 +73,7 @@ Statement:
       - ssm:DescribeParameters
       - ssm:GetDeployablePatchSnapshotForInstance
       - ssm:GetDocument
+      - ssm:GetInventory
       - ssm:GetManifest
       - ssm:List*
       - ssmmessages:CreateControlChannel
