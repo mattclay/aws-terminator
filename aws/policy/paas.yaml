@@ -178,5 +178,7 @@ Statement:
       - ecs:DeleteService
       - ecs:UpdateService
       - ecs:UpdateCluster
+      - ecs:*CapacityProvider
+      - ecs:PutClusterCapacityProviders
     Resource:
       - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'

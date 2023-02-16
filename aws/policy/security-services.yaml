@@ -31,6 +31,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
 
   # Legacy - We need to backport ansible-collections/community.aws/63 or
   # wait until community.aws drops CI support for Ansible 2.9
@@ -73,12 +74,7 @@ Statement:
     Action:
       - access-analyzer:ValidatePolicy
       - iam:GetRole
-      - iam:ListAttachedRolePolicies
-      - iam:ListRoles
-      - iam:ListRolePolicies
-      - iam:ListRoleTags
-      - iam:ListSAMLProviders
-      - iam:ListServerCertificates
+      - iam:List*
       - iam:TagRole
       - iam:UntagRole
       - kms:CreateAlias
@@ -92,12 +88,7 @@ Statement:
       - kms:GetKeyPolicy
       - kms:GetKeyRotationStatus
       - kms:GetPublicKey
-      - kms:ListAliases
-      - kms:ListGrants
-      - kms:ListKeyPolicies
-      - kms:ListKeys
-      - kms:ListResourceTags
-      - kms:ListRetirableGrants
+      - kms:List*
       - kms:PutKeyPolicy
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
@@ -181,6 +172,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
 
   # This allows AWS Services to autmatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
@@ -195,6 +187,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-nodegroup.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
@@ -204,3 +197,4 @@ Statement:
           - 'eks-nodegroup.amazonaws.com'
           - 'transitgateway.amazonaws.com'
           - 'network-firewall.amazonaws.com'
+          - 'ecs.amazonaws.com'
