@@ -140,6 +140,7 @@ Statement:
       - redshift:CreateCluster
     Resource:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
