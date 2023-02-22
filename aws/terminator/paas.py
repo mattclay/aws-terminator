@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from . import DbTerminator, Terminator
 
@@ -221,7 +221,7 @@ class Ecs(DbTerminator):
 class EcsCluster(DbTerminator):
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=30)
+        return timedelta(minutes=30)
 
     @property
     def name(self):

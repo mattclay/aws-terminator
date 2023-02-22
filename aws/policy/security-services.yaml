@@ -31,23 +31,11 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole'
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
-          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole'
-
-  # Legacy - We need to backport ansible-collections/community.aws/63 or
-  # wait until community.aws drops CI support for Ansible 2.9
-  - Sid: AllowPassRole
-    Effect: Allow
-    Action:
-      - iam:PassRole
-    Resource:
-      - 'arn:aws:iam::{{ aws_account_id }}:role/ansible_lambda_role'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - iam:ListAccountAliases
-      - iam:ListPolicies
-      - iam:ListInstanceProfiles
       - iam:GetUser
       - acm:ListCertificates
       - acm:ListTagsForCertificate
@@ -143,7 +131,6 @@ Statement:
       - iam:GetInstanceProfile
       - iam:GetSAMLProvider
       - iam:GetServerCertificate
-      - iam:ListInstanceProfilesForRole
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
@@ -198,3 +185,4 @@ Statement:
           - 'transitgateway.amazonaws.com'
           - 'network-firewall.amazonaws.com'
           - 'ecs.amazonaws.com'
+          - 'ecs-test.amazonaws.com'
