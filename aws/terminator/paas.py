@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from . import DbTerminator, Terminator
 
@@ -117,3 +117,131 @@ class CloudFrontStreamingDistribution(Terminator):
             else:
                 # delete streaming distribution
                 self.client.delete_streaming_distribution(Id=self.Id, IfMatch=ETag)
+
+
+class Ecs(DbTerminator):
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=20)
+
+    @property
+    def name(self):
+        return self.instance['clusterName']
+
+    @staticmethod
+    def create(credentials):
+        def _paginate_cluster_results(client):
+            names = client.get_paginator('list_clusters').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['clusterArns']
+
+            if not names:
+                return []
+
+            return client.describe_clusters(clusters=names)['clusters']
+
+        return Terminator._create(credentials, Ecs, 'ecs', _paginate_cluster_results)
+
+    def terminate(self):
+        def _paginate_task_results(container_instance=None):
+            params = {
+                'cluster': self.name,
+                'PaginationConfig': {
+                    'PageSize': 100,
+                }
+            }
+
+            if container_instance:
+                params['containerInstance'] = container_instance
+
+            names = self.client.get_paginator('list_tasks').paginate(
+                **params
+            ).build_full_result()['taskArns']
+
+            return [] if not names else names
+
+        def _paginate_task_definition_results():
+            names = self.client.get_paginator('list_task_definitions').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['taskDefinitionArns']
+
+            return [] if not names else names
+
+        def _paginate_container_instance_results():
+            names = self.client.get_paginator('list_container_instances').paginate(
+                cluster=self.name,
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['containerInstanceArns']
+
+            return [] if not names else names
+
+        def _paginate_service_results():
+            names = self.client.get_paginator('list_services').paginate(
+                cluster=self.name,
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['serviceArns']
+
+            return [] if not names else names
+
+        # If there are running services, delete them first
+        services = _paginate_service_results()
+        for each in services:
+            self.client.delete_service(cluster=self.name, service=each, force=True)
+
+        # Deregister container instances and stop any running task
+        container_instances = _paginate_container_instance_results()
+        for each in container_instances:
+            self.client.deregister_container_instance(containerInstance=each['containerInstanceArn'], force=True)
+
+        # Deregister task definitions
+        task_definitions = _paginate_task_definition_results()
+        for each in task_definitions:
+            self.client.deregister_task_definition(taskDefinition=each)
+
+        # Stop all the tasks
+        tasks = _paginate_task_results()
+        for each in tasks:
+            self.client.stop_task(cluster=self.name, task=each)
+
+        # Delete cluster
+        try:
+            self.client.delete_cluster(cluster=self.name)
+        except (self.client.exceptions.ClusterContainsServicesException, self.client.exceptions.ClusterContainsTasksException):
+            pass
+
+
+class EcsCluster(DbTerminator):
+    @property
+    def age_limit(self):
+        return timedelta(minutes=30)
+
+    @property
+    def name(self):
+        return self.instance['clusterName']
+
+    @staticmethod
+    def create(credentials):
+        def _paginate_cluster_results(client):
+            names = client.get_paginator('list_clusters').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['clusterArns']
+
+            if not names:
+                return []
+
+            return client.describe_clusters(clusters=names)['clusters']
+
+        return Terminator._create(credentials, EcsCluster, 'ecs', _paginate_cluster_results)
+
+    def terminate(self):
+        self.client.delete_cluster(cluster=self.name)
