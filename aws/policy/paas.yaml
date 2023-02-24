@@ -94,6 +94,10 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:StopInstance
       - lightsail:ReleaseStaticIp
+      - lightsail:PutInstancePublicPorts
+      - lightsail:GetInstanceSnapshot
+      - lightsail:CreateInstanceSnapshot
+      - lightsail:DeleteInstanceSnapshot
     Resource:
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'

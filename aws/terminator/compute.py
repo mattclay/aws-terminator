@@ -559,6 +559,25 @@ class LightsailStaticIp(Terminator):
         self.client.release_static_ip(staticIpName=self.name)
 
 
+class LightsailInstanceSnapshot(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_lightsail_instance_snapshots(client):
+            return client.get_paginator('get_instance_snapshots').paginate().build_full_result()['instanceSnapshots']
+        return Terminator._create(credentials, LightsailInstanceSnapshot, 'lightsail', _paginate_lightsail_instance_snapshots)
+
+    @property
+    def name(self):
+        return self.instance['name']
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    def terminate(self):
+        self.client.delete_instance_snapshot(instanceSnapshotName=self.name)
+
+
 class AutoScalingGroup(Terminator):
     @staticmethod
     def create(credentials):
