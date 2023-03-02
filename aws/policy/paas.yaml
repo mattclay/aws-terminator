@@ -10,6 +10,7 @@ Statement:
       - lambda:InvokeFunction
       - lightsail:CreateInstances
       - lightsail:StartInstance
+      - lightsail:CreateInstanceSnapshot
       - ecr:CompleteLayerUpload
       - ecr:InitiateLayerUpload
       - ecr:PutImage
@@ -94,6 +95,10 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:StopInstance
       - lightsail:ReleaseStaticIp
+      - lightsail:PutInstancePublicPorts
+      - lightsail:GetInstanceSnapshot
+      - lightsail:DeleteInstanceSnapshot
+      - lightsail:GetInstanceSnapshots
     Resource:
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
