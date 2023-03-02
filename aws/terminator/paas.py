@@ -146,7 +146,7 @@ class CloudFrontOriginAccessIdentity(DbTerminator):
 class Ecs(DbTerminator):
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=20)
+        return timedelta(minutes=20)
 
     @property
     def name(self):
