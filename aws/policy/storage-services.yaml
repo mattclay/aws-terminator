@@ -27,6 +27,7 @@ Statement:
       - s3:PutBucketAcl
       - s3:PutBucketLogging
       - s3:PutBucketNotification
+      - s3:PutBucketObjectLockConfiguration
       - s3:PutBucketOwnershipControls
       - s3:PutBucketPolicy
       - s3:PutBucketPublicAccessBlock
