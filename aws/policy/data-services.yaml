@@ -49,6 +49,7 @@ Statement:
       - elasticache:DescribeCache*
       - elasticache:DescribeEngineDefaultParameters
       - elasticache:DescribeUpdateActions
+      - elasticache:ListTagsForResource
       - elasticache:ModifyCacheCluster
       - elasticache:ModifyCacheParameterGroup
       - elasticache:ModifyCacheSubnetGroup
