@@ -17,6 +17,8 @@ Statement:
       - route53:CreateHealthCheck
       - route53:DeleteHealthCheck
       - route53:GetHealthCheck
+      - route53:GetHealthCheckStatus
+      - route53:GetHealthCheckLastFailureReason
       - route53:ListHealthChecks
       - route53:UpdateHealthCheck
       - network-firewall:ListFirewallPolicies
