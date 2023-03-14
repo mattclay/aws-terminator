@@ -52,6 +52,11 @@ Statement:
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
+      - backup:CreateBackupVault
+      - backup:DeleteBackupVault
+      - backup:List*
+      - backup:TagResource
+      - backup:UntagResource
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
