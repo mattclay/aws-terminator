@@ -50,6 +50,7 @@ Statement:
     Action:
       - kms:CancelKeyDeletion
       - kms:CreateKey
+      - kms:GenerateDataKey
       - kms:GenerateRandom
     Resource: "*"
     Condition:
@@ -135,6 +136,7 @@ Statement:
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
       - iam:UpdateServerCertificate
+      - kms:Decrypt
       - logs:AssociateKmsKey
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
@@ -157,6 +159,7 @@ Statement:
       # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
+      - 'arn:aws:kms:{{ aws_region }}:{{ aws_account_id }}:key/ansible-test-*'
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:*'
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'

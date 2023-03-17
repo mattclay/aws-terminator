@@ -57,6 +57,7 @@ Statement:
       - backup:List*
       - backup:TagResource
       - backup:UntagResource
+      - backup-storage:MountCapsule
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
