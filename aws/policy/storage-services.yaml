@@ -54,6 +54,7 @@ Statement:
       - elasticfilesystem:UpdateFileSystem
       - backup:CreateBackupVault
       - backup:DeleteBackupVault
+      - backup:DescribeBackupVault
       - backup:List*
       - backup:TagResource
       - backup:UntagResource
