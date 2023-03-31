@@ -77,6 +77,7 @@ class S3AccessPoint(Terminator):
     @staticmethod
     def create(credentials):
         account = get_account_id(credentials)
+
         def list_access_points(client):
             results = []
             access_points = client.list_access_points(AccountId=account).get("AccessPointList", [])
@@ -106,6 +107,7 @@ class S3AccessPointForObjectLambda(Terminator):
     @staticmethod
     def create(credentials):
         account = get_account_id(credentials)
+
         def list_access_points(client):
             results = []
             access_points = client.list_access_points_for_object_lambda(AccountId=account).get("ObjectLambdaAccessPointList", [])
