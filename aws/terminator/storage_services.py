@@ -72,6 +72,8 @@ class SSMBucketObjects(Terminator):
 
 
 class S3AccessPoint(Terminator):
+    _account_id = None
+
     @staticmethod
     def create(credentials):
         account = get_account_id(credentials)
@@ -99,6 +101,8 @@ class S3AccessPoint(Terminator):
 
 
 class S3AccessPointForObjectLambda(Terminator):
+    _account_id = None
+
     @staticmethod
     def create(credentials):
         account = get_account_id(credentials)
