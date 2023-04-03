@@ -1,7 +1,7 @@
 import botocore
 import botocore.exceptions
 
-from . import Terminator
+from . import Terminator, get_account_id
 
 
 class S3Bucket(Terminator):
@@ -69,3 +69,63 @@ class SSMBucketObjects(Terminator):
 
     def terminate(self):
         self.client.delete_object(Bucket='ssm-encrypted-test-bucket', Key=self.name)
+
+
+class S3AccessPoint(Terminator):
+    _account_id = None
+
+    @staticmethod
+    def create(credentials):
+        account = get_account_id(credentials)
+
+        def list_access_points(client):
+            results = []
+            access_points = client.list_access_points(AccountId=account).get("AccessPointList", [])
+            for ap in access_points:
+                results.append(client.get_access_point(AccountId=account, Name=ap['Name']))
+            return results
+        terminators = Terminator._create(credentials, S3AccessPoint, 's3control', list_access_points)
+        for terminator in terminators:
+            terminator._account_id = account
+        return terminators
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationDate']
+
+    def terminate(self):
+        self.client.delete_access_point(AccountId=self._account_id, Name=self.name)
+
+
+class S3AccessPointForObjectLambda(Terminator):
+    _account_id = None
+
+    @staticmethod
+    def create(credentials):
+        account = get_account_id(credentials)
+
+        def list_access_points(client):
+            results = []
+            access_points = client.list_access_points_for_object_lambda(AccountId=account).get("ObjectLambdaAccessPointList", [])
+            for ap in access_points:
+                results.append(client.get_access_point_for_object_lambda(AccountId=account, Name=ap['Name']))
+            return results
+        terminators = Terminator._create(credentials, S3AccessPointForObjectLambda, 's3control', list_access_points)
+        for terminator in terminators:
+            terminator._account_id = account
+        return terminators
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationDate']
+
+    def terminate(self):
+        self.client.delete_access_point_for_object_lambda(AccountId=self._account_id, Name=self.name)
