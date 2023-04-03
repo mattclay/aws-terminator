@@ -119,6 +119,31 @@ class CloudFrontStreamingDistribution(Terminator):
                 self.client.delete_streaming_distribution(Id=self.Id, IfMatch=ETag)
 
 
+class CloudFrontOriginAccessIdentity(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def list_cloud_front_origin_access_identities(client):
+            identities = []
+            result = client.get_paginator('list_cloud_front_origin_access_identities').paginate().build_full_result()
+            for identity in result.get('CloudFrontOriginAccessIdentityList', {}).get('Items', []):
+                identities.append(client.get_cloud_front_origin_access_identity(Id=identity['Id']))
+            return identities
+
+        return Terminator._create(credentials, CloudFrontOriginAccessIdentity, 'cloudfront', list_cloud_front_origin_access_identities)
+
+
+    @property
+    def id(self):
+        return self.instance['ETag']
+
+    @property
+    def name(self):
+        return self.instance['CloudFrontOriginAccessIdentity']['Id']
+
+    def terminate(self):
+        self.client.delete_cloud_front_origin_access_identity(Id=self.name, IfMatch=self.id)
+
+
 class Ecs(DbTerminator):
     @property
     def age_limit(self):
