@@ -131,7 +131,6 @@ class CloudFrontOriginAccessIdentity(DbTerminator):
 
         return Terminator._create(credentials, CloudFrontOriginAccessIdentity, 'cloudfront', list_cloud_front_origin_access_identities)
 
-
     @property
     def id(self):
         return self.instance['ETag']
