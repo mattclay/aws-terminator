@@ -226,4 +226,12 @@ class Secret(Terminator):
         return datetime.timedelta(minutes=30)
 
     def terminate(self):
-        self.client.delete_secret(SecretId=self.name, RecoveryWindowInDays=7)
+        try:
+            self.client.delete_secret(SecretId=self.name, RecoveryWindowInDays=7)
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] == "InvalidParameterException":
+                region_list = []
+                for region in self.client.describe_secret(SecretId=self.name).get('ReplicationStatus', ""):
+                    region_list.append(region.get('Region', ""))
+                self.client.remove_regions_from_replication(SecretId=self.name, RemoveReplicaRegions=region_list)
+                self.client.delete_secret(SecretId=self.name, RecoveryWindowInDays=7)
