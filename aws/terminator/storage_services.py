@@ -129,3 +129,55 @@ class S3AccessPointForObjectLambda(Terminator):
 
     def terminate(self):
         self.client.delete_access_point_for_object_lambda(AccountId=self._account_id, Name=self.name)
+
+
+class BackupPlan(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_plans(client):
+            list_backup_plans_result = (
+                client.get_paginator("list_backup_plans").paginate().build_full_result()
+            )
+            return list_backup_plans_result["BackupPlansList"]
+
+        return Terminator._create(credentials, BackupPlan, "backup", paginate_plans)
+
+    @property
+    def id(self):
+        return self.instance["BackupPlanId"]
+
+    @property
+    def name(self):
+        return self.instance["BackupPlanName"]
+
+    @property
+    def created_time(self):
+        return self.instance["CreationDate"]
+
+    def terminate(self):
+        self.client.delete_backup_plan(BackupPlanId=self.id)
+
+
+class BackupVault(Terminator):
+    @staticmethod
+    def create(credentials):
+        def paginate_vaults(client):
+            list_backup_vaults_result = (
+                client.get_paginator("list_backup_vaults")
+                .paginate()
+                .build_full_result()
+            )
+            return list_backup_vaults_result["BackupVaultList"]
+
+        return Terminator._create(credentials, BackupVault, "backup", paginate_vaults)
+
+    @property
+    def name(self):
+        return self.instance["BackupVaultName"]
+
+    @property
+    def created_time(self):
+        return self.instance["CreationDate"]
+
+    def terminate(self):
+        self.client.delete_backup_vault(BackupVaultName=self.name)

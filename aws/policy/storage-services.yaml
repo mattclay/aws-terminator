@@ -56,12 +56,16 @@ Statement:
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
+      - backup:CreateBackupPlan
       - backup:CreateBackupVault
+      - backup:DeleteBackupPlan
       - backup:DeleteBackupVault
       - backup:DescribeBackupVault
+      - backup:GetBackupPlan
       - backup:List*
       - backup:TagResource
       - backup:UntagResource
+      - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
     Resource: "*"
 
