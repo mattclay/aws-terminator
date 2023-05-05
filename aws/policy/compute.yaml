@@ -72,9 +72,11 @@ Statement:
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
       - ec2:ModifyLaunchTemplate
+      - ec2:ModifySnapshotAttribute
       - ec2:ModifyVolume
       - ec2:RegisterImage
       - ec2:ReplaceIamInstanceProfileAssociation
+      - ec2:ResetSnapshotAttribute
       - ec2:StopInstances
       - ec2:TerminateInstances
     Resource:
