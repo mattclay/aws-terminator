@@ -57,11 +57,13 @@ Statement:
       - elasticfilesystem:UntagResource
       - elasticfilesystem:UpdateFileSystem
       - backup:CreateBackupPlan
+      - backup:CreateBackupSelection
       - backup:CreateBackupVault
       - backup:DeleteBackupPlan
       - backup:DeleteBackupVault
       - backup:DescribeBackupVault
       - backup:GetBackupPlan
+      - backup:GetBackupSelection
       - backup:List*
       - backup:TagResource
       - backup:UntagResource

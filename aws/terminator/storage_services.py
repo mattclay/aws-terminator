@@ -181,3 +181,41 @@ class BackupVault(Terminator):
 
     def terminate(self):
         self.client.delete_backup_vault(BackupVaultName=self.name)
+
+
+class BackupSelection(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_backup_selections(client):
+            results = []
+            # Get AWS Backup plans
+            backup_plans = (
+                client.get_paginator("list_backup_plans").paginate().build_full_result()
+            )["BackupPlansList"]
+            for plan in backup_plans:
+                results.append((
+                    client.get_paginator("list_backup_selections")
+                    .paginate(BackupPlanId=plan["BackupPlanId"])
+                    .build_full_result()
+                )["BackupSelectionsList"])
+            return results
+        return Terminator._create(credentials, BackupSelection, "backup", _build_backup_selections)
+
+    @property
+    def name(self):
+        return self.instance["SelectionName"]
+
+    @property
+    def plan_id(self):
+        return self.instance["BackupPlanId"]
+
+    @property
+    def id(self):
+        return self.instance["SelectionId"]
+
+    @property
+    def created_time(self):
+        return self.instance["CreationDate"]
+
+    def terminate(self):
+        self.client.delete_backup_selection(BackupPlanId=self.plan_id, SelectionId=self.id)
