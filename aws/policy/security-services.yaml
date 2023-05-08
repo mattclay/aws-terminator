@@ -32,6 +32,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
           - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+          - 'arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
