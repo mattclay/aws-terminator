@@ -193,7 +193,7 @@ class BackupSelection(Terminator):
                 client.get_paginator("list_backup_plans").paginate().build_full_result()
             )["BackupPlansList"]
             for plan in backup_plans:
-                results.append((
+                results.extend((
                     client.get_paginator("list_backup_selections")
                     .paginate(BackupPlanId=plan["BackupPlanId"])
                     .build_full_result()
