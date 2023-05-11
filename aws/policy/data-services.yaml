@@ -17,6 +17,9 @@ Statement:
       - glue:GetConnections
       - rds:DescribeDB*
       - rds:List*
+      - es:Describe*
+      - es:Get*
+      - es:List*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -139,6 +142,12 @@ Statement:
       - rds:CreateDBCluster
       - elasticache:CreateCacheCluster
       - redshift:CreateCluster
+      - es:AddTags
+      - es:CreateDomain
+      - es:DeleteDomain
+      - es:RemoveTags
+      - es:UpdateDomainConfig
+      - es:UpgradeDomain
     Resource:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
@@ -147,7 +156,8 @@ Statement:
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
-  # This allows AWS Services to autmatically create their Default Service Linked Roles
+      - 'arn:aws:es:{{ aws_region }}:{{ aws_account_id }}:domain:*'
+  # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow

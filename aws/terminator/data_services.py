@@ -393,3 +393,46 @@ class KafkaCluster(Terminator):
 
     def terminate(self):
         self.client.delete_cluster(ClusterArn=self.id)
+
+
+class OpenSearch(Terminator):
+
+    @staticmethod
+    def create(credentials):
+        def get_available_clusters(client):
+            domains = []
+            for domain in client.list_domain_names()['DomainNames']:
+                try:
+                    domain_status = client.describe_domain(DomainName=domain['DomainName'])['DomainStatus']
+                    if not domain_status['Deleted']:
+                        # 'Deleted' is true if a delete request has been received for the domain
+                        # but resource cleanup is still in progress.
+                        domain_config = client.describe_domain_config(DomainName=domain['DomainName'])
+                        domain_status["CreationDate"] = domain_config['DomainConfig']['Status']['CreationDate']
+                        domains.append(domain_status)
+                except (botocore.exceptions.ClientError, botocore.exceptions.BotoCoreError):  # pylint: disable=duplicate-except
+                    # Unlikely, but possible. The domain may have been deleted after invoking
+                    # list_domain_names().
+                    pass
+            return domains
+
+        return Terminator._create(credentials, OpenSearch, 'opensearch', get_available_clusters)
+
+    @property
+    def id(self):
+        return self.instance['DomainId']
+
+    @property
+    def name(self):
+        return self.instance['DomainName']
+
+    @property
+    def created_time(self):
+        return self.instance['CreationDate']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
+    def terminate(self):
+        self.client.delete_domain(DomainName=self.name)
