@@ -57,6 +57,7 @@ Statement:
       - ec2:CreateNetworkAcl
       - ec2:CreateNetworkAclEntry
       - ec2:CreateNetworkInterface
+      - ec2:CreateNetworkInterfacePermission
       - ec2:CreateRoute
       - ec2:CreateRouteTable
       - ec2:CreateSecurityGroup
@@ -74,6 +75,7 @@ Statement:
       - ec2:DeleteNetworkAcl
       - ec2:DeleteNetworkAclEntry
       - ec2:DeleteNetworkInterface
+      - ec2:DeleteNetworkInterfacePermission
       - ec2:DeleteRoute
       - ec2:DeleteRouteTable
       - ec2:DeleteSecurityGroup
@@ -86,6 +88,9 @@ Statement:
       - ec2:DeleteTransitGateway
       - ec2:DeleteTransitGatewayPeeringAttachment
       - ec2:DeleteTransitGatewayVpcAttachment
+      - ec2:DescribeSubnets
+      - ec2:DescribeVpcs
+      - ec2:DescribeSecurityGroups
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
