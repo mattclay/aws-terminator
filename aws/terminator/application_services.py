@@ -393,3 +393,29 @@ class SsmSession(Terminator):
 
     def terminate(self):
         self.client.terminate_session(SessionId=self.name)
+
+
+class MqBroker(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_mq_brokers(client):
+            mq_brokers = client.get_paginator(
+                'list_brokers').paginate().build_full_result().get('BrokerSummaries', [])
+            return mq_brokers
+
+        return Terminator._create(credentials, MqBroker, 'mq', get_mq_brokers)
+
+    @property
+    def created_time(self):
+        return self.instance['Created']
+
+    @property
+    def name(self):
+        return self.instance['BrokerName']
+
+    @property
+    def id(self):
+        return self.instance['BrokerId']
+
+    def terminate(self):
+        self.client.delete_broker(BrokerId=self.id)
