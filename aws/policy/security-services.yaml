@@ -65,8 +65,8 @@ Statement:
       - access-analyzer:ValidatePolicy
       - iam:GetRole
       - iam:List*
-      - iam:TagRole
-      - iam:UntagRole
+      - iam:Tag*
+      - iam:Untag*
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
