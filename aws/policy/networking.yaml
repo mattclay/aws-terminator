@@ -169,3 +169,4 @@ Statement:
       - apigateway:PUT
     Resource:
       - 'arn:aws:apigateway:{{ aws_region }}::/restapis*'
+      - 'arn:aws:apigateway:{{ aws_region }}::/tags/*'
