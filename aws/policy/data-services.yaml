@@ -86,9 +86,12 @@ Statement:
       - rds:CreateDBInstance
       - rds:ModifyDBInstance
       - rds:DeleteDBInstance
+      - rds:StopDBCluster
       - rds:StopDBInstance
+      - rds:StartDBCluster
       - rds:StartDBInstance
       - rds:PromoteReadReplica
+      - rds:RebootDBCluster
       - rds:RebootDBInstance
       - rds:ListTagsForResource
       - rds:ModifyDBCluster
