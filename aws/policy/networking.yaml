@@ -91,6 +91,7 @@ Statement:
       - ec2:DescribeSubnets
       - ec2:DescribeVpcs
       - ec2:DescribeSecurityGroups
+      - ec2:DescribeTransitGateways
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
