@@ -21,6 +21,7 @@ Statement:
       - route53:GetHealthCheckLastFailureReason
       - route53:ListHealthChecks
       - route53:UpdateHealthCheck
+      - route53:GetChange
       - network-firewall:ListFirewallPolicies
       - network-firewall:ListFirewalls
       - network-firewall:ListRuleGroups
