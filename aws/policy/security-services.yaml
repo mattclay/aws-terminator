@@ -75,9 +75,7 @@ Statement:
       - kms:DisableKeyRotation
       - kms:EnableKey
       - kms:EnableKeyRotation
-      - kms:GetKeyPolicy
-      - kms:GetKeyRotationStatus
-      - kms:GetPublicKey
+      - kms:Get*
       - kms:List*
       - kms:PutKeyPolicy
       - kms:RetireGrant
@@ -119,8 +117,7 @@ Statement:
       - acm:DescribeCertificate
       - acm:GetCertificate
       - acm:ImportCertificate
-      - acm:ListCertificates
-      - acm:ListTagsForCertificate
+      - acm:List*
       - acm:RemoveTagsFromCertificate
       - acm:RenewCertificate
       - acm:RequestCertificate
@@ -131,9 +128,7 @@ Statement:
       - iam:DeleteInstanceProfile
       - iam:DeleteRole
       - iam:DeleteSAMLProvider
-      - iam:GetInstanceProfile
-      - iam:GetSAMLProvider
-      - iam:GetServerCertificate
+      - iam:Get*
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
@@ -143,8 +138,7 @@ Statement:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
       - logs:DeleteMetricFilter
-      - logs:DescribeLogGroups
-      - logs:DescribeMetricFilters
+      - logs:Describe*
       - logs:DisassociateKmsKey
       - logs:ListTagsLogGroup
       - logs:PutMetricFilter

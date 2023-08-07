@@ -16,9 +16,7 @@ Statement:
       - route53:ListTagsForResources
       - route53:CreateHealthCheck
       - route53:DeleteHealthCheck
-      - route53:GetHealthCheck
-      - route53:GetHealthCheckStatus
-      - route53:GetHealthCheckLastFailureReason
+      - route53:GetHealthCheck*
       - route53:ListHealthChecks
       - route53:UpdateHealthCheck
       - network-firewall:ListFirewallPolicies
@@ -88,9 +86,7 @@ Statement:
       - ec2:DeleteTransitGateway
       - ec2:DeleteTransitGatewayPeeringAttachment
       - ec2:DeleteTransitGatewayVpcAttachment
-      - ec2:DescribeSubnets
-      - ec2:DescribeVpcs
-      - ec2:DescribeSecurityGroups
+      - ec2:Describe*
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway

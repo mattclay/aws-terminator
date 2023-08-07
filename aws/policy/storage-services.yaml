@@ -17,16 +17,13 @@ Statement:
       - s3:GetEncryptionConfiguration
       - s3:GetLifecycleConfiguration
       - s3:GetMetricsConfiguration
-      - s3:GetObject
       - s3:GetObject*
       - s3:GetPublicAccessBlock
       - s3:HeadBucket
       - s3:HeadObject
       - s3:ListAccessPoints*
       - s3:ListAllMyBuckets
-      - s3:ListBucket
-      - s3:ListBucketVersions
-      - s3:ListBuckets
+      - s3:ListBucket*
       - s3:ListObjectsV2
       - s3:PutBucketAcl
       - s3:PutBucketLogging
@@ -63,8 +60,7 @@ Statement:
       - backup:DeleteBackupSelection
       - backup:DeleteBackupVault
       - backup:DescribeBackupVault
-      - backup:GetBackupPlan
-      - backup:GetBackupSelection
+      - backup:GetBackup*
       - backup:List*
       - backup:TagResource
       - backup:UntagResource

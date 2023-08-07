@@ -9,10 +9,8 @@ Statement:
       - cloudformation:CancelResourceRequest
       - cloudformation:CreateResource
       - cloudformation:DeleteResource
-      - cloudformation:DescribeStacks
-      - cloudformation:DescribeType
-      - cloudformation:GetResource
-      - cloudformation:GetResourceRequestStatus
+      - cloudformation:Describe*
+      - cloudformation:GetResource*
       - cloudformation:List*
       - cloudformation:UpdateResource
       ###
@@ -24,8 +22,7 @@ Statement:
       - ec2messages:AcknowledgeMessage
       - ec2messages:DeleteMessage
       - ec2messages:FailMessage
-      - ec2messages:GetEndpoint
-      - ec2messages:GetMessages
+      - ec2messages:Get*
       - ec2messages:SendReply
       - events:CreateRule
       - events:DeleteRule
@@ -34,9 +31,7 @@ Statement:
       - events:PutRule
       - events:PutTargets
       - events:RemoveTargets
-      - glue:GetConnections
-      - glue:GetCrawlers
-      - glue:GetJobs
+      - glue:Get*
       - kinesis:DescribeStream
       - kinesis:List*
       - mq:ListBrokers
@@ -46,10 +41,7 @@ Statement:
       - ses:DeleteReceiptRuleSet
       - ses:DescribeActiveReceiptRuleSet
       - ses:DescribeReceiptRuleSet
-      - ses:GetIdentityDkimAttributes
-      - ses:GetIdentityNotificationAttributes
-      - ses:GetIdentityPolicies
-      - ses:GetIdentityVerificationAttributes
+      - ses:GetIdentity*
       - ses:List*
       - ses:PutIdentityPolicy
       - ses:SetActiveReceiptRuleSet
@@ -62,20 +54,14 @@ Statement:
       - ses:VerifyEmailIdentity
       - sqs:CreateQueue
       - sqs:DeleteQueue
-      - sqs:GetQueueAttributes
-      - sqs:GetQueueUrl
+      - sqs:GetQueue*
       - sqs:List*
       - sqs:SetQueueAttributes
       - sqs:TagQueue
       - sqs:UntagQueue
       - ssm:AddTagsToResource
-      - ssm:DescribeAssociation
-      - ssm:DescribeDocument
-      - ssm:DescribeParameters
-      - ssm:GetDeployablePatchSnapshotForInstance
-      - ssm:GetDocument
-      - ssm:GetInventory
-      - ssm:GetManifest
+      - ssm:Describe*
+      - ssm:Get*
       - ssm:List*
       - ssmmessages:CreateControlChannel
       - ssmmessages:CreateDataChannel
@@ -102,11 +88,8 @@ Statement:
       - cloudformation:CreateStack
       - cloudformation:DeleteChangeSet
       - cloudformation:DeleteStack
-      - cloudformation:DescribeChangeSet
-      - cloudformation:DescribeStackEvents
-      - cloudformation:DescribeStacks
-      - cloudformation:GetStackPolicy
-      - cloudformation:GetTemplate
+      - cloudformation:Describe*
+      - cloudformation:Get*
       - cloudformation:List*
       - cloudformation:SetStackPolicy
       - cloudformation:UpdateStack
@@ -126,9 +109,7 @@ Statement:
       - codepipeline:UpdatePipeline
       - glue:DeleteCrawler
       - glue:DeleteJob
-      - glue:GetCrawler
-      - glue:GetJob
-      - glue:GetTags
+      - glue:Get*
       - glue:TagResource
       - glue:UntagResource
       - glue:UpdateCrawler
@@ -138,8 +119,7 @@ Statement:
       - kinesis:RemoveTagsFromStream
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
-      - mq:DescribeBroker
-      - mq:DescribeBrokerEngineTypes
+      - mq:DescribeBroker*
       - mq:CreateTags
       - SNS:CreateTopic
       - SNS:DeleteTopic
@@ -153,13 +133,10 @@ Statement:
       - SNS:Unsubscribe
       - SNS:UntagResource
       - ssm:DeleteParameter
-      - ssm:GetParameter
-      - ssm:GetParameters
-      - ssm:GetParametersByPath
+      - ssm:GetParameter*
       - ssm:PutParameter
       - states:DeleteStateMachine
-      - states:DescribeExecution
-      - states:DescribeStateMachine
+      - states:Describe*
       - states:List*
       - states:TagResource
       - states:UntagResource

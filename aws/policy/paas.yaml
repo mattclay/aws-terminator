@@ -47,13 +47,10 @@ Statement:
       - ecr:BatchCheckLayerAvailability
       - eks:DeleteCluster
       - eks:DescribeCluster
-      - eks:ListClusters
+      - eks:List*
       - eks:CreateFargateProfile
       - eks:DeleteFargateProfile
       - eks:DescribeFargateProfile
-      - eks:ListFargateProfiles
-      - eks:ListNodegroups
-      - eks:ListTagsForResource
       - eks:TagResource
       - eks:UntagResource
       - eks:DescribeNodegroup
@@ -69,13 +66,8 @@ Statement:
       - lambda:DeleteAlias
       - lambda:DeleteFunction
       - lambda:DeleteLayerVersion
-      - lambda:GetAlias
-      - lambda:GetFunction
-      - lambda:GetFunctionConfiguration
-      - lambda:GetLayerVersion
-      - lambda:GetPolicy
-      - lambda:ListLayerVersions
-      - lambda:ListTags
+      - lambda:Get*
+      - lambda:List*
       - lambda:PublishLayerVersion
       - lambda:RemovePermission
       - lambda:TagResource
@@ -87,11 +79,7 @@ Statement:
       - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
       - lightsail:DeleteKeyPair
-      - lightsail:GetInstance
-      - lightsail:GetInstances
-      - lightsail:GetKeyPairs
-      - lightsail:GetStaticIp
-      - lightsail:GetStaticIps
+      - lightsail:Get*
       - lightsail:RebootInstance
       - lightsail:StopInstance
       - lightsail:ReleaseStaticIp
@@ -130,11 +118,7 @@ Statement:
       - ecr:DescribeRepositories
       - ecr:PutImageTagMutability
       - lambda:GetEventSourceMapping
-      - lambda:ListAliases
-      - lambda:ListEventSourceMappings
-      - lambda:ListFunctions
-      - lambda:ListLayers
-      - lambda:ListVersionsByFunction
+      - lambda:List*
       - cloudfront:Get*
       - cloudfront:List*
     Resource:

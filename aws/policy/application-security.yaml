@@ -4,28 +4,18 @@ Statement:
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      - wafv2:ListRuleGroups
-      - wafv2:ListWebACLs
+      - wafv2:List*
       - wafv2:AssociateWebACL
       - wafv2:DeleteRuleGroup
       - wafv2:CreateRuleGroup
       - wafv2:PutFirewallManagerRuleGroups
-      - wafv2:GetWebACLForResource
-      - wafv2:GetLoggingConfiguration
+      - wafv2:Get*
       - wafv2:DeleteWebACL
-      - wafv2:GetRateBasedStatementManagedKeys
-      - wafv2:ListLoggingConfigurations
-      - wafv2:GetIPSet
       - wafv2:CreateWebACL
-      - wafv2:ListIPSets
-      - wafv2:GetWebACL
-      - wafv2:GetRuleGroup
       - wafv2:CreateIPSet
-      - wafv2:ListAvailableManagedRuleGroups
       - wafv2:DeleteIPSet
       - wafv2:DescribeManagedRuleGroup
       - wafv2:CheckCapacity
-      - wafv2:ListResourcesForWebACL
       - wafv2:DeleteLoggingConfiguration
       - wafv2:PutLoggingConfiguration
       - wafv2:DisassociateWebACL
@@ -40,22 +30,15 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - inspector:ListAssessmentTargets
+      - inspector:List*
       - inspector:CreateResourceGroup
       - inspector:CreateAssessmentTarget
-      - inspector:DescribeAssessmentTargets
-      - inspector:DescribeResourceGroups
+      - inspector:Describe*
       - inspector:UpdateAssessmentTarget
       - inspector:DeleteAssessmentTarget
-      - inspector:ListAssessmentTemplates
-      - inspector:ListRulesPackages
-      - inspector:DescribeRulesPackages
       - inspector:CreateAssessmentTemplate
       - inspector:DeleteAssessmentTemplate
       - inspector:SetTagsForResource
-      - inspector:DescribeAssessmentTemplates
-      - inspector:ListTagsForResource
-      - inspector:ListEventSubscriptions
       - waf:CreateByteMatchSet
       - waf:CreateGeoMatchSet
       - waf:CreateIPSet
@@ -80,21 +63,7 @@ Statement:
       - waf:DeleteSqlInjectionMatchSet
       - waf:DeleteWebACL
       - waf:DeleteXssMatchSet
-      - waf:GetByteMatchSet
-      - waf:GetChangeToken
-      - waf:GetChangeTokenStatus
-      - waf:GetGeoMatchSet
-      - waf:GetIPSet
-      - waf:GetRateBasedRule
-      - waf:GetRateBasedRuleManagedKeys
-      - waf:GetRegexMatchSet
-      - waf:GetRegexPatternSet
-      - waf:GetRule
-      - waf:GetRuleGroup
-      - waf:GetSizeConstraintSet
-      - waf:GetSqlInjectionMatchSet
-      - waf:GetWebACL
-      - waf:GetXssMatchSet
+      - waf:Get*
       - waf:List*
       - waf:TagResource
       - waf:UntagResource

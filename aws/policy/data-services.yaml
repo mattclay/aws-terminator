@@ -7,14 +7,12 @@ Statement:
       - dms:CreateEndpoint
       - dms:DescribeEndpoints
       - dynamodb:Scan
-      - dynamodb:ListTables
+      - dynamodb:List*
       - dynamodb:DescribeTable
-      - dynamodb:ListTagsOfResource
-      - glue:GetConnection
+      - glue:GetConnection*
       - glue:CreateConnection
       - glue:DeleteConnection
       - glue:UpdateConnection
-      - glue:GetConnections
       - rds:DescribeDB*
       - rds:List*
     Resource: "*"
@@ -46,9 +44,7 @@ Statement:
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:DeleteCacheSubnetGroup
-      - elasticache:DescribeCache*
-      - elasticache:DescribeEngineDefaultParameters
-      - elasticache:DescribeUpdateActions
+      - elasticache:Describe*
       - elasticache:ListTagsForResource
       - elasticache:ModifyCacheCluster
       - elasticache:ModifyCacheParameterGroup
@@ -65,9 +61,7 @@ Statement:
       - redshift:DeleteCluster
       - redshift:DeleteClusterSubnetGroup
       - redshift:DeleteTags
-      - redshift:DescribeClusters
-      - redshift:DescribeClusterSubnetGroups
-      - redshift:DescribeTags
+      - redshift:Describe*
       - redshift:ModifyCluster
       - redshift:ModifyClusterSubnetGroup
       - redshift:RebootCluster
