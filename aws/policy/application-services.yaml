@@ -10,7 +10,7 @@ Statement:
       - cloudformation:CreateResource
       - cloudformation:DeleteResource
       - cloudformation:Describe*
-      - cloudformation:GetResource*
+      - cloudformation:Get*
       - cloudformation:List*
       - cloudformation:UpdateResource
       ###
