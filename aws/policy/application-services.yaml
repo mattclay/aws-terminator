@@ -17,7 +17,7 @@ Statement:
       - codebuild:BatchGetProjects
       - codebuild:List*
       - codecommit:List*
-      - codepipeline:GetPipeline
+      - codepipeline:Get*
       - codepipeline:List*
       - ec2messages:AcknowledgeMessage
       - ec2messages:DeleteMessage
@@ -26,22 +26,21 @@ Statement:
       - ec2messages:SendReply
       - events:CreateRule
       - events:DeleteRule
-      - events:DescribeRule
+      - events:Describe*
       - events:List*
       - events:PutRule
       - events:PutTargets
       - events:RemoveTargets
       - glue:Get*
-      - kinesis:DescribeStream
+      - kinesis:Describe*
       - kinesis:List*
-      - mq:ListBrokers
+      - mq:List*
       - ses:CreateReceiptRuleSet
       - ses:DeleteIdentity
       - ses:DeleteIdentityPolicy
       - ses:DeleteReceiptRuleSet
-      - ses:DescribeActiveReceiptRuleSet
-      - ses:DescribeReceiptRuleSet
-      - ses:GetIdentity*
+      - ses:Describe*
+      - ses:Get*
       - ses:List*
       - ses:PutIdentityPolicy
       - ses:SetActiveReceiptRuleSet
@@ -54,7 +53,7 @@ Statement:
       - ses:VerifyEmailIdentity
       - sqs:CreateQueue
       - sqs:DeleteQueue
-      - sqs:GetQueue*
+      - sqs:Get*
       - sqs:List*
       - sqs:SetQueueAttributes
       - sqs:TagQueue
@@ -72,7 +71,7 @@ Statement:
       - ssm:PutInventory
       - ssm:RemoveTagsFromResource
       - ssm:StartSession
-      - ssm:DescribeSessions
+      - ssm:Describe*
       - ssm:TerminateSession
       - ssm:UpdateAssociationStatus
       - ssm:UpdateInstanceAssociationStatus
@@ -95,14 +94,14 @@ Statement:
       - cloudformation:UpdateStack
       - cloudformation:UpdateTerminationProtection
       - cloudwatch:DeleteAlarms
-      - cloudwatch:DescribeAlarms
+      - cloudwatch:Describe*
       - cloudwatch:PutMetricAlarm
       - codebuild:CreateProject
       - codebuild:DeleteProject
       - codebuild:UpdateProject
       - codecommit:CreateRepository
       - codecommit:DeleteRepository
-      - codecommit:GetRepository
+      - codecommit:Get*
       - codecommit:UpdateRepositoryDescription
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
@@ -119,12 +118,11 @@ Statement:
       - kinesis:RemoveTagsFromStream
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
-      - mq:DescribeBroker*
+      - mq:Describe*
       - mq:CreateTags
       - SNS:CreateTopic
       - SNS:DeleteTopic
-      - SNS:GetSubscriptionAttributes
-      - SNS:GetTopicAttributes
+      - SNS:Get*
       - SNS:List*
       - SNS:TagResource
       - SNS:SetSubscriptionAttributes
@@ -133,7 +131,7 @@ Statement:
       - SNS:Unsubscribe
       - SNS:UntagResource
       - ssm:DeleteParameter
-      - ssm:GetParameter*
+      - ssm:Get*
       - ssm:PutParameter
       - states:DeleteStateMachine
       - states:Describe*

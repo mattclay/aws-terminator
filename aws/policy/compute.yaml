@@ -66,8 +66,7 @@ Statement:
       - ec2:Describe*
       - ec2:DetachVolume
       - ec2:DisassociateIamInstanceProfile
-      - ec2:GetLaunchTemplateData
-      - ec2:GetInstanceUefiData
+      - ec2:Get*
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
@@ -108,7 +107,7 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:Describe*
-      - ec2:DescribeAvailabilityZones
+      - ec2:Describe*
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:Describe*

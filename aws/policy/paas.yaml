@@ -36,21 +36,19 @@ Statement:
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
-      - ecr:GetLifecyclePolicy
-      - ecr:GetRepositoryPolicy
+      - ecr:Get*
       - ecr:PutImageScanningConfiguration
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
-      - ecr:DescribeImages
-      - ecr:ListImages
+      - ecr:Describe*
+      - ecr:List*
       - ecr:BatchDeleteImages
       - ecr:BatchCheckLayerAvailability
       - eks:DeleteCluster
-      - eks:DescribeCluster
+      - eks:Describe*
       - eks:List*
       - eks:CreateFargateProfile
       - eks:DeleteFargateProfile
-      - eks:DescribeFargateProfile
       - eks:TagResource
       - eks:UntagResource
       - eks:DescribeNodegroup
@@ -58,7 +56,7 @@ Statement:
       - eks:DeleteNodegroup
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
-      - elasticbeanstalk:DescribeApplications
+      - elasticbeanstalk:Describe*
       - elasticbeanstalk:UpdateApplication
       - lambda:AddPermission
       - lambda:CreateAlias
@@ -113,11 +111,11 @@ Statement:
     Effect: Allow
     Action:
       - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - ecr:GetAuthorizationToken
+      - ecr:Get*
       - ecr:CreateRepository
-      - ecr:DescribeRepositories
+      - ecr:Describe*
       - ecr:PutImageTagMutability
-      - lambda:GetEventSourceMapping
+      - lambda:Get*
       - lambda:List*
       - cloudfront:Get*
       - cloudfront:List*

@@ -14,7 +14,7 @@ Statement:
       - wafv2:CreateWebACL
       - wafv2:CreateIPSet
       - wafv2:DeleteIPSet
-      - wafv2:DescribeManagedRuleGroup
+      - wafv2:Describe*
       - wafv2:CheckCapacity
       - wafv2:DeleteLoggingConfiguration
       - wafv2:PutLoggingConfiguration
@@ -78,7 +78,7 @@ Statement:
       - waf:UpdateSqlInjectionMatchSet
       - waf:UpdateWebACL
       - waf:UpdateXssMatchSet
-      - wafv2:ListTagsForResource
+      - wafv2:List*
       - wafv2:TagResource
       - wafv2:UntagResource
     Resource: "*"

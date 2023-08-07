@@ -3,17 +3,16 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - dms:DescribeReplicationSubnetGroups
+      - dms:Describe*
       - dms:CreateEndpoint
-      - dms:DescribeEndpoints
       - dynamodb:Scan
       - dynamodb:List*
-      - dynamodb:DescribeTable
-      - glue:GetConnection*
+      - dynamodb:Describe*
+      - glue:Get*
       - glue:CreateConnection
       - glue:DeleteConnection
       - glue:UpdateConnection
-      - rds:DescribeDB*
+      - rds:Describe*
       - rds:List*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
@@ -23,15 +22,15 @@ Statement:
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
       - dms:DeleteReplicationSubnetGroup
-      - dms:ListTagsForResource
+      - dms:List*
       - dms:ModifyEndpoint
       - dms:ModifyReplicationSubnetGroup
       - dms:RemoveTagsFromResource
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
-      - dynamodb:DescribeContinuousBackups
-      - dynamodb:GetItem
+      - dynamodb:Describe*
+      - dynamodb:Get*
       - dynamodb:PutItem
       - dynamodb:TagResource
       - dynamodb:UntagResource
@@ -45,15 +44,14 @@ Statement:
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:DeleteCacheSubnetGroup
       - elasticache:Describe*
-      - elasticache:ListTagsForResource
+      - elasticache:List*
       - elasticache:ModifyCacheCluster
       - elasticache:ModifyCacheParameterGroup
       - elasticache:ModifyCacheSubnetGroup
       - elasticache:RemoveTagsFromResource
-      - glacier:ListVaults
+      - glacier:List*
       - glacier:CreateVault
       - glacier:DeleteVault
-      - glacier:ListTagsForVault
       - glacier:AddTagsToVault
       - glacier:RemoveTagsFromVault
       - redshift:CreateClusterSubnetGroup
@@ -87,13 +85,13 @@ Statement:
       - rds:PromoteReadReplica
       - rds:RebootDBCluster
       - rds:RebootDBInstance
-      - rds:ListTagsForResource
+      - rds:List*
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
       - rds:ModifyDBClusterParameterGroup
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
-      - rds:DescribeOptionGroups
+      - rds:Describe*
       - rds:CreateOptionGroup
       - rds:ModifyOptionGroup
       - rds:DeleteOptionGroup
@@ -102,7 +100,6 @@ Statement:
       - rds:CreateDBSnapshot
       - rds:DeleteDBSnapshot
       - rds:CopyDBSnapshot
-      - rds:DescribeExportTasks
       - rds:StartExportTask
       - rds:CancelExportTask
       - rds:RestoreDBClusterToPointInTime

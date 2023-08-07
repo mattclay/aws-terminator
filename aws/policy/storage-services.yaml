@@ -12,19 +12,10 @@ Statement:
       - s3:DeleteObjects
       - s3:DeleteObjectTagging
       - s3:DeleteObjectVersionTagging
-      - s3:GetAccessPoint*
-      - s3:GetBucket*
-      - s3:GetEncryptionConfiguration
-      - s3:GetLifecycleConfiguration
-      - s3:GetMetricsConfiguration
-      - s3:GetObject*
-      - s3:GetPublicAccessBlock
+      - s3:Get*
       - s3:HeadBucket
       - s3:HeadObject
-      - s3:ListAccessPoints*
-      - s3:ListAllMyBuckets
-      - s3:ListBucket*
-      - s3:ListObjectsV2
+      - s3:List*
       - s3:PutBucketAcl
       - s3:PutBucketLogging
       - s3:PutBucketNotification
@@ -48,7 +39,7 @@ Statement:
       - elasticfilesystem:DeleteFileSystem
       - elasticfilesystem:DeleteMountTarget
       - elasticfilesystem:Describe*
-      - elasticfilesystem:ListTagsForResource
+      - elasticfilesystem:List*
       - elasticfilesystem:PutLifecycleConfiguration
       - elasticfilesystem:TagResource
       - elasticfilesystem:UntagResource
@@ -59,7 +50,7 @@ Statement:
       - backup:DeleteBackupPlan
       - backup:DeleteBackupSelection
       - backup:DeleteBackupVault
-      - backup:DescribeBackupVault
+      - backup:Describe*
       - backup:GetBackup*
       - backup:List*
       - backup:TagResource
