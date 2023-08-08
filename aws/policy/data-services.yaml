@@ -3,17 +3,23 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - dms:Describe*
       - dms:CreateEndpoint
-      - dynamodb:Scan
-      - dynamodb:List*
+      - dms:Describe*
+      - dms:List*
+      - dynamodb:Get*
       - dynamodb:Describe*
+      - dynamodb:List*
+      - dynamodb:Scan
+      - elasticache:Describe*
+      - elasticache:List*
+      - glacier:List*
       - glue:Get*
       - glue:CreateConnection
       - glue:DeleteConnection
       - glue:UpdateConnection
       - rds:Describe*
       - rds:List*
+      - redshift:Describe*
     Resource: "*"
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
@@ -22,7 +28,6 @@ Statement:
       - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
       - dms:DeleteReplicationSubnetGroup
-      - dms:List*
       - dms:ModifyEndpoint
       - dms:ModifyReplicationSubnetGroup
       - dms:RemoveTagsFromResource
@@ -30,7 +35,6 @@ Statement:
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
       - dynamodb:Describe*
-      - dynamodb:Get*
       - dynamodb:PutItem
       - dynamodb:TagResource
       - dynamodb:UntagResource
@@ -43,13 +47,10 @@ Statement:
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:DeleteCacheSubnetGroup
-      - elasticache:Describe*
-      - elasticache:List*
       - elasticache:ModifyCacheCluster
       - elasticache:ModifyCacheParameterGroup
       - elasticache:ModifyCacheSubnetGroup
       - elasticache:RemoveTagsFromResource
-      - glacier:List*
       - glacier:CreateVault
       - glacier:DeleteVault
       - glacier:AddTagsToVault
@@ -59,7 +60,6 @@ Statement:
       - redshift:DeleteCluster
       - redshift:DeleteClusterSubnetGroup
       - redshift:DeleteTags
-      - redshift:Describe*
       - redshift:ModifyCluster
       - redshift:ModifyClusterSubnetGroup
       - redshift:RebootCluster
@@ -85,13 +85,11 @@ Statement:
       - rds:PromoteReadReplica
       - rds:RebootDBCluster
       - rds:RebootDBInstance
-      - rds:List*
       - rds:ModifyDBCluster
       - rds:ModifyDBParameterGroup
       - rds:ModifyDBClusterParameterGroup
       - rds:ModifyDBSubnetGroup
       - rds:RemoveTagsFromResource
-      - rds:Describe*
       - rds:CreateOptionGroup
       - rds:ModifyOptionGroup
       - rds:DeleteOptionGroup

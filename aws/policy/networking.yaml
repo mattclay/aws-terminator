@@ -79,7 +79,6 @@ Statement:
       - ec2:DeleteTransitGateway
       - ec2:DeleteTransitGatewayPeeringAttachment
       - ec2:DeleteTransitGatewayVpcAttachment
-      - ec2:Describe*
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
@@ -121,7 +120,6 @@ Statement:
       - network-firewall:DeleteFirewallPolicy
       - network-firewall:DeleteResourcePolicy
       - network-firewall:DeleteRuleGroup
-      - network-firewall:List*
       - network-firewall:PutResourcePolicy
       - network-firewall:TagResource
       - network-firewall:UntagResource

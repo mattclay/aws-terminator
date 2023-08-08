@@ -36,12 +36,11 @@ Statement:
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
-      - ecr:Get*
+      - ecr:GetLifecyclePolicy
+      - ecr:GetRepositoryPolicy
       - ecr:PutImageScanningConfiguration
       - ecr:PutLifecyclePolicy
       - ecr:SetRepositoryPolicy
-      - ecr:Describe*
-      - ecr:List*
       - ecr:BatchDeleteImages
       - ecr:BatchCheckLayerAvailability
       - eks:DeleteCluster
@@ -64,8 +63,13 @@ Statement:
       - lambda:DeleteAlias
       - lambda:DeleteFunction
       - lambda:DeleteLayerVersion
-      - lambda:Get*
-      - lambda:List*
+      - lambda:GetAlias
+      - lambda:GetFunction
+      - lambda:GetFunctionConfiguration
+      - lambda:GetLayerVersion
+      - lambda:GetPolicy
+      - lambda:ListLayerVersions
+      - lambda:ListTags
       - lambda:PublishLayerVersion
       - lambda:RemovePermission
       - lambda:TagResource
@@ -77,7 +81,11 @@ Statement:
       - lightsail:CreateKeyPair
       - lightsail:DeleteInstance
       - lightsail:DeleteKeyPair
-      - lightsail:Get*
+      - lightsail:GetInstance
+      - lightsail:GetInstances
+      - lightsail:GetKeyPairs
+      - lightsail:GetStaticIp
+      - lightsail:GetStaticIps
       - lightsail:RebootInstance
       - lightsail:StopInstance
       - lightsail:ReleaseStaticIp
@@ -111,14 +119,19 @@ Statement:
     Effect: Allow
     Action:
       - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - ecr:Get*
-      - ecr:CreateRepository
-      - ecr:Describe*
-      - ecr:PutImageTagMutability
-      - lambda:Get*
-      - lambda:List*
       - cloudfront:Get*
       - cloudfront:List*
+      - ecr:GetAuthorizationToken
+      - ecr:CreateRepository
+      - ecr:Describe*
+      - ecr:List*
+      - ecr:PutImageTagMutability
+      - lambda:GetEventSourceMapping
+      - lambda:ListAliases
+      - lambda:ListEventSourceMappings
+      - lambda:ListFunctions
+      - lambda:ListLayers
+      - lambda:ListVersionsByFunction
     Resource:
       - "*"
 

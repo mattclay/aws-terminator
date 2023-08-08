@@ -4,17 +4,14 @@ Statement:
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      - wafv2:List*
       - wafv2:AssociateWebACL
       - wafv2:DeleteRuleGroup
       - wafv2:CreateRuleGroup
       - wafv2:PutFirewallManagerRuleGroups
-      - wafv2:Get*
       - wafv2:DeleteWebACL
       - wafv2:CreateWebACL
       - wafv2:CreateIPSet
       - wafv2:DeleteIPSet
-      - wafv2:Describe*
       - wafv2:CheckCapacity
       - wafv2:DeleteLoggingConfiguration
       - wafv2:PutLoggingConfiguration
@@ -78,6 +75,8 @@ Statement:
       - waf:UpdateSqlInjectionMatchSet
       - waf:UpdateWebACL
       - waf:UpdateXssMatchSet
+      - wafv2:Describe*
+      - wafv2:Get*
       - wafv2:List*
       - wafv2:TagResource
       - wafv2:UntagResource
