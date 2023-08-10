@@ -115,7 +115,6 @@ Statement:
       - acm:Describe*
       - acm:Get*
       - acm:ImportCertificate
-      - acm:List*
       - acm:RemoveTagsFromCertificate
       - acm:RenewCertificate
       - acm:RequestCertificate
