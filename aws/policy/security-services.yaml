@@ -38,8 +38,7 @@ Statement:
     Effect: Allow
     Action:
       - iam:GetUser
-      - acm:ListCertificates
-      - acm:ListTagsForCertificate
+      - acm:List*
     Resource: "*"
     Condition:
       StringEquals:
@@ -70,14 +69,12 @@ Statement:
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
-      - kms:DescribeKey
+      - kms:Describe*
       - kms:DisableKey
       - kms:DisableKeyRotation
       - kms:EnableKey
       - kms:EnableKeyRotation
-      - kms:GetKeyPolicy
-      - kms:GetKeyRotationStatus
-      - kms:GetPublicKey
+      - kms:Get*
       - kms:List*
       - kms:PutKeyPolicy
       - kms:RetireGrant
@@ -86,9 +83,9 @@ Statement:
       - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
-      - logs:ListLogDeliveries
-      - secretsmanager:DescribeSecret
-      - secretsmanager:ListSecrets
+      - logs:List*
+      - secretsmanager:Describe*
+      - secretsmanager:List*
     Resource: "*"
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
@@ -98,12 +95,11 @@ Statement:
       - iam:UploadServerCertificate
       - secretsmanager:CreateSecret
       - secretsmanager:DeleteSecret
-      - secretsmanager:GetSecretValue
+      - secretsmanager:Get*
       - secretsmanager:RotateSecret
       - secretsmanager:TagResource
       - secretsmanager:UntagResource
       - secretsmanager:UpdateSecret
-      - secretsmanager:GetResourcePolicy
       - secretsmanager:PutResourcePolicy
       - secretsmanager:DeleteResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
@@ -116,11 +112,9 @@ Statement:
     Action:
       - acm:AddTagsToCertificate
       - acm:DeleteCertificate
-      - acm:DescribeCertificate
-      - acm:GetCertificate
+      - acm:Describe*
+      - acm:Get*
       - acm:ImportCertificate
-      - acm:ListCertificates
-      - acm:ListTagsForCertificate
       - acm:RemoveTagsFromCertificate
       - acm:RenewCertificate
       - acm:RequestCertificate
@@ -143,10 +137,8 @@ Statement:
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
       - logs:DeleteMetricFilter
-      - logs:DescribeLogGroups
-      - logs:DescribeMetricFilters
+      - logs:Describe*
       - logs:DisassociateKmsKey
-      - logs:ListTagsLogGroup
       - logs:PutMetricFilter
       - logs:PutRetentionPolicy
       - logs:TagLogGroup

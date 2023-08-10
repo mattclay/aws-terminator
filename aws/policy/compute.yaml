@@ -63,11 +63,9 @@ Statement:
       - ec2:DeleteSnapshot
       - ec2:DeleteTags
       - ec2:DeregisterImage
-      - ec2:Describe*
       - ec2:DetachVolume
       - ec2:DisassociateIamInstanceProfile
-      - ec2:GetLaunchTemplateData
-      - ec2:GetInstanceUefiData
+      - ec2:Get*
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
@@ -108,7 +106,7 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:Describe*
-      - ec2:DescribeAvailabilityZones
+      - ec2:Describe*
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
       - elasticloadbalancing:Describe*
@@ -184,6 +182,6 @@ Statement:
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
-      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:loadbalancer/*'

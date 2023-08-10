@@ -4,26 +4,17 @@ Statement:
     Effect: Allow
     Action:
       - route53:ChangeResourceRecordSets
-      - route53:ListResourceRecordSets
-      - route53:ListHostedZones*
+      - route53:List*
       - route53:CreateHostedZone
-      - route53:GetHostedZone
+      - route53:Get*
       - route53:DeleteHostedZone
       - route53:UpdateHostedZoneComment
       - route53:AssociateVPCWithHostedZone
       - route53:ChangeTagsForResource
-      - route53:ListTagsForResource
-      - route53:ListTagsForResources
       - route53:CreateHealthCheck
       - route53:DeleteHealthCheck
-      - route53:GetHealthCheck
-      - route53:GetHealthCheckStatus
-      - route53:GetHealthCheckLastFailureReason
-      - route53:ListHealthChecks
       - route53:UpdateHealthCheck
-      - network-firewall:ListFirewallPolicies
-      - network-firewall:ListFirewalls
-      - network-firewall:ListRuleGroups
+      - network-firewall:List*
       - network-firewall:Describe*
     Resource: "*"
 
@@ -88,9 +79,6 @@ Statement:
       - ec2:DeleteTransitGateway
       - ec2:DeleteTransitGatewayPeeringAttachment
       - ec2:DeleteTransitGatewayVpcAttachment
-      - ec2:DescribeSubnets
-      - ec2:DescribeVpcs
-      - ec2:DescribeSecurityGroups
       - ec2:DetachInternetGateway
       - ec2:DetachNetworkInterface
       - ec2:DetachVpnGateway
@@ -132,7 +120,6 @@ Statement:
       - network-firewall:DeleteFirewallPolicy
       - network-firewall:DeleteResourcePolicy
       - network-firewall:DeleteRuleGroup
-      - network-firewall:ListTagsForResource
       - network-firewall:PutResourcePolicy
       - network-firewall:TagResource
       - network-firewall:UntagResource
