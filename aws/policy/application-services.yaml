@@ -16,20 +16,11 @@ Statement:
       ###
       - cloudwatch:Describe*
       - codebuild:BatchGetProjects
-      - codebuild:CreateProject
-      - codebuild:DeleteProject
       - codebuild:List*
-      - codebuild:UpdateProject
-      - codecommit:CreateRepository
-      - codecommit:DeleteRepository
       - codecommit:Get*
       - codecommit:List*
-      - codecommit:UpdateRepositoryDescription
-      - codepipeline:CreatePipeline
-      - codepipeline:DeletePipeline
       - codepipeline:Get*
       - codepipeline:List*
-      - codepipeline:UpdatePipeline
       - ec2messages:AcknowledgeMessage
       - ec2messages:DeleteMessage
       - ec2messages:FailMessage
@@ -45,9 +36,6 @@ Statement:
       - glue:Get*
       - kinesis:Describe*
       - kinesis:List*
-      - mq:CreateBroker
-      - mq:CreateTags
-      - mq:DeleteBroker
       - mq:Describe*
       - mq:List*
       - ses:CreateReceiptRuleSet
@@ -73,21 +61,6 @@ Statement:
       - sqs:SetQueueAttributes
       - sqs:TagQueue
       - sqs:UntagQueue
-      - SNS:CreateTopic
-      - SNS:DeleteTopic
-      - SNS:Get*
-      - SNS:List*
-      - SNS:Publish
-      - SNS:TagResource
-      - SNS:SetSubscriptionAttributes
-      - SNS:SetTopicAttributes
-      - SNS:Subscribe
-      - SNS:Unsubscribe
-      - SNS:UntagResource
-      - ssmmessages:CreateControlChannel
-      - ssmmessages:CreateDataChannel
-      - ssmmessages:OpenControlChannel
-      - ssmmessages:OpenDataChannel
       - ssm:AddTagsToResource
       - ssm:Describe*
       - ssm:Get*
@@ -101,15 +74,14 @@ Statement:
       - ssm:UpdateAssociationStatus
       - ssm:UpdateInstanceAssociationStatus
       - ssm:UpdateInstanceInformation
-      - states:CreateStateMachine
-      - states:DeleteStateMachine
+      - ssmmessages:CreateControlChannel
+      - ssmmessages:CreateDataChannel
+      - ssmmessages:OpenControlChannel
+      - ssmmessages:OpenDataChannel
+      - SNS:Get*
+      - SNS:List*
       - states:Describe*
       - states:List*
-      - states:StartExecution
-      - states:StopExecution
-      - states:TagResource
-      - states:UpdateStateMachine
-      - states:UntagResource
     Resource: "*"
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
@@ -126,6 +98,15 @@ Statement:
       - cloudformation:UpdateTerminationProtection
       - cloudwatch:DeleteAlarms
       - cloudwatch:PutMetricAlarm
+      - codebuild:CreateProject
+      - codebuild:DeleteProject
+      - codebuild:UpdateProject
+      - codecommit:CreateRepository
+      - codecommit:DeleteRepository
+      - codecommit:UpdateRepositoryDescription
+      - codepipeline:CreatePipeline
+      - codepipeline:DeletePipeline
+      - codepipeline:UpdatePipeline
       - glue:DeleteCrawler
       - glue:DeleteJob
       - glue:TagResource
@@ -136,29 +117,57 @@ Statement:
       - kinesis:RemoveTagsFromStream
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
+      - mq:CreateTags
+      - SNS:CreateTopic
+      - SNS:DeleteTopic
+      - SNS:TagResource
+      - SNS:SetSubscriptionAttributes
+      - SNS:SetTopicAttributes
+      - SNS:Subscribe
+      - SNS:Unsubscribe
+      - SNS:UntagResource
       - ssm:DeleteParameter
       - ssm:PutParameter
+      - states:DeleteStateMachine
+      - states:TagResource
+      - states:UntagResource
     Resource:
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:document/*'
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
       - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
+      - 'arn:aws:codebuild:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codecommit:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:codepipeline:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+      - 'arn:aws:mq:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
       - 'arn:aws:ssm:{{ aws_region }}::parameter/aws/service/*'
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      - glue:CreateCrawler
+      - glue:CreateJob
       - kinesis:CreateStream
       - kinesis:DecreaseStreamRetentionPeriod
       - kinesis:DeleteStream
       - kinesis:IncreaseStreamRetentionPeriod
       - kinesis:UpdateShardCount
-      - glue:CreateCrawler
-      - glue:CreateJob
+      - mq:CreateBroker
+      - mq:DeleteBroker
+      - SNS:Publish
+      - states:CreateStateMachine
+      - states:StartExecution
+      - states:StopExecution
+      - states:UpdateStateMachine
     Resource:
+      - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:mq:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'

@@ -140,7 +140,6 @@ Statement:
       - logs:DeleteMetricFilter
       - logs:Describe*
       - logs:DisassociateKmsKey
-      - logs:List*
       - logs:PutMetricFilter
       - logs:PutRetentionPolicy
       - logs:TagLogGroup

@@ -34,7 +34,6 @@ Statement:
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
-      - dynamodb:Describe*
       - dynamodb:PutItem
       - dynamodb:TagResource
       - dynamodb:UntagResource
