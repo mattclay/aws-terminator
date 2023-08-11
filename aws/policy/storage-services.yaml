@@ -57,11 +57,6 @@ Statement:
       - backup:UntagResource
       - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
-      - memorydb:CreateCluster
-      - memorydb:CreateParameterGroup
-      - memorydb:CreateSubnetGroup
-      - memorydb:CreateUser
-      - memorydb:CreateACL
       - memorydb:Describe*
       - memorydb:DeleteCluster
       - memorydb:DeleteParameterGroup
@@ -76,4 +71,14 @@ Statement:
     Effect: Allow
     Action:
       - s3:PutMetricsConfiguration
+    Resource: "*"
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - memorydb:CreateCluster
+      - memorydb:CreateParameterGroup
+      - memorydb:CreateSubnetGroup
+      - memorydb:CreateUser
+      - memorydb:CreateACL
     Resource: "*"
