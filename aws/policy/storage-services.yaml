@@ -57,6 +57,10 @@ Statement:
       - backup:UntagResource
       - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
+      - memorydb:Create*
+      - memorydb:Describe*
+      - memorydb:Delete*
+      - memorydb:List*
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
