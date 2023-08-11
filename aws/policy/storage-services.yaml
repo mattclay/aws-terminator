@@ -57,10 +57,19 @@ Statement:
       - backup:UntagResource
       - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
-      - memorydb:Create*
+      - memorydb:CreateCluster
+      - memorydb:CreateParameterGroup
+      - memorydb:CreateSubnetGroup
+      - memorydb:CreateUser
+      - memorydb:CreateACL
       - memorydb:Describe*
-      - memorydb:Delete*
+      - memorydb:DeleteCluster
+      - memorydb:DeleteParameterGroup
+      - memorydb:DeleteSubnetGroup
+      - memorydb:DeleteUser
+      - memorydb:DeleteACL
       - memorydb:List*
+      - memorydb:TagResource
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees

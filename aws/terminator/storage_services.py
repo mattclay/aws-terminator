@@ -219,3 +219,83 @@ class BackupSelection(Terminator):
 
     def terminate(self):
         self.client.delete_backup_selection(BackupPlanId=self.plan_id, SelectionId=self.id)
+
+class MemoryDBClusters(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', lambda client: client.describe_clusters()['Clusters'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_cluster(ClusterName=self.name)
+
+class MemoryDBACLs(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBACLs, 'memorydb', lambda client: client.describe_acls()['ACLs'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_acl(ACLName=self.name)
+
+class MemoryDBParameterGroups(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBParameterGroups, 'memorydb', lambda client: client.describe_parameter_groups()['ParameterGroups'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_parameter_group(ParameterGroupName=self.name)
+
+class MemoryDBSubnetGroups(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBSubnetGroups, 'memorydb', lambda client: client.describe_subnet_groups()['SubnetGroups'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_subnet_group(SubnetGroupName=self.name)
+
+class MemoryDBUsers(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBUsers, 'memorydb', lambda client: client.describe_users()['Users'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_user(UserName=self.name)
