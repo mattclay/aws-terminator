@@ -220,6 +220,7 @@ class BackupSelection(Terminator):
     def terminate(self):
         self.client.delete_backup_selection(BackupPlanId=self.plan_id, SelectionId=self.id)
 
+
 class MemoryDBClusters(Terminator):
     @staticmethod
     def create(credentials):
@@ -235,6 +236,7 @@ class MemoryDBClusters(Terminator):
 
     def terminate(self):
         self.client.delete_cluster(ClusterName=self.name)
+
 
 class MemoryDBACLs(Terminator):
     @staticmethod
@@ -252,6 +254,7 @@ class MemoryDBACLs(Terminator):
     def terminate(self):
         self.client.delete_acl(ACLName=self.name)
 
+
 class MemoryDBParameterGroups(Terminator):
     @staticmethod
     def create(credentials):
@@ -268,6 +271,7 @@ class MemoryDBParameterGroups(Terminator):
     def terminate(self):
         self.client.delete_parameter_group(ParameterGroupName=self.name)
 
+
 class MemoryDBSubnetGroups(Terminator):
     @staticmethod
     def create(credentials):
@@ -283,6 +287,7 @@ class MemoryDBSubnetGroups(Terminator):
 
     def terminate(self):
         self.client.delete_subnet_group(SubnetGroupName=self.name)
+
 
 class MemoryDBUsers(Terminator):
     @staticmethod
