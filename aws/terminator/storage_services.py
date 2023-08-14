@@ -304,3 +304,19 @@ class MemoryDBUsers(Terminator):
 
     def terminate(self):
         self.client.delete_user(UserName=self.name)
+
+class MemoryDBSnapshots(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBSnapshots, 'memorydb', lambda client: client.describe_snapshots()['Snapshots'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    def terminate(self):
+        self.client.delete_snapshot(SnapshotName=self.name)

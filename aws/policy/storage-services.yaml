@@ -81,4 +81,5 @@ Statement:
       - memorydb:CreateSubnetGroup
       - memorydb:CreateUser
       - memorydb:CreateACL
+      - memorydb:CreateSnapshot
     Resource: "*"
