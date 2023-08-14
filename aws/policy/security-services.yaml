@@ -33,6 +33,9 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
           - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
           - 'arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup'
+          - 'arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores'
+          - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
+          - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
