@@ -305,6 +305,7 @@ class MemoryDBUsers(Terminator):
     def terminate(self):
         self.client.delete_user(UserName=self.name)
 
+
 class MemoryDBSnapshots(Terminator):
     @staticmethod
     def create(credentials):
