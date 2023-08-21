@@ -64,7 +64,11 @@ Statement:
       - memorydb:DeleteUser
       - memorydb:DeleteACL
       - memorydb:List*
-      - memorydb:TagResource
+      - memorydb:Describe*
+      - memorydb:CreateParameterGroup
+      - memorydb:CreateSubnetGroup
+      - memorydb:CreateUser
+      - memorydb:CreateACL
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
@@ -77,9 +81,20 @@ Statement:
     Effect: Allow
     Action:
       - memorydb:CreateCluster
-      - memorydb:CreateParameterGroup
-      - memorydb:CreateSubnetGroup
-      - memorydb:CreateUser
-      - memorydb:CreateACL
       - memorydb:CreateSnapshot
-    Resource: "*"
+    Resource:
+      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
+      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:snapshot/*'
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - memorydb:DeleteACL
+      - memorydb:DeleteCluster
+      - memorydb:DeleteParameterGroup
+      - memorydb:DeleleSnapshot
+      - memorydb:DeleteSubnetGroup
+      - memorydb:DeleteUser
+      - memorydb:TagResource
+    Resource:
+      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:*

@@ -1,7 +1,7 @@
 import botocore
 import botocore.exceptions
 
-from . import Terminator, get_account_id
+from . import DbTerminator, Terminator, get_account_id
 
 
 class S3Bucket(Terminator):
@@ -234,11 +234,15 @@ class MemoryDBClusters(Terminator):
     def name(self):
         return self.instance["Name"]
 
+    @property
+    def created_time(self):
+        return self.instance["CreationTime"]
+
     def terminate(self):
         self.client.delete_cluster(ClusterName=self.name)
 
 
-class MemoryDBACLs(Terminator):
+class MemoryDBACLs(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, MemoryDBACLs, 'memorydb', lambda client: client.describe_acls()['ACLs'])
@@ -251,11 +255,15 @@ class MemoryDBACLs(Terminator):
     def name(self):
         return self.instance["Name"]
 
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
     def terminate(self):
         self.client.delete_acl(ACLName=self.name)
 
 
-class MemoryDBParameterGroups(Terminator):
+class MemoryDBParameterGroups(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, MemoryDBParameterGroups, 'memorydb', lambda client: client.describe_parameter_groups()['ParameterGroups'])
@@ -268,11 +276,15 @@ class MemoryDBParameterGroups(Terminator):
     def name(self):
         return self.instance["Name"]
 
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
     def terminate(self):
         self.client.delete_parameter_group(ParameterGroupName=self.name)
 
 
-class MemoryDBSubnetGroups(Terminator):
+class MemoryDBSubnetGroups(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, MemoryDBSubnetGroups, 'memorydb', lambda client: client.describe_subnet_groups()['SubnetGroups'])
@@ -285,11 +297,15 @@ class MemoryDBSubnetGroups(Terminator):
     def name(self):
         return self.instance["Name"]
 
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
     def terminate(self):
         self.client.delete_subnet_group(SubnetGroupName=self.name)
 
 
-class MemoryDBUsers(Terminator):
+class MemoryDBUsers(DbTerminator):
     @staticmethod
     def create(credentials):
         return Terminator._create(credentials, MemoryDBUsers, 'memorydb', lambda client: client.describe_users()['Users'])
@@ -301,6 +317,10 @@ class MemoryDBUsers(Terminator):
     @property
     def name(self):
         return self.instance["Name"]
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
 
     def terminate(self):
         self.client.delete_user(UserName=self.name)
@@ -318,6 +338,10 @@ class MemoryDBSnapshots(Terminator):
     @property
     def name(self):
         return self.instance["Name"]
+
+    @property
+    def created_time(self):
+        return self.instance['ClusterConfiguration']['Shards']['SnapshotCreationTime']
 
     def terminate(self):
         self.client.delete_snapshot(SnapshotName=self.name)
