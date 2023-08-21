@@ -97,4 +97,4 @@ Statement:
       - memorydb:DeleteUser
       - memorydb:TagResource
     Resource:
-      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:*
+      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:*'
