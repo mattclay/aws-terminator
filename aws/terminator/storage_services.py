@@ -224,7 +224,12 @@ class BackupSelection(Terminator):
 class MemoryDBClusters(Terminator):
     @staticmethod
     def create(credentials):
-        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', lambda client: client.describe_clusters()['Clusters'])
+        def get_available_clusters(client):
+            # describe_clusters does not have a parameter to filter results
+            ignore_states = ('creating', 'deleting', 'updating')
+            clusters = client.describe_clusters()['Clusters']
+            return [cluster for cluster in clusters if cluster['Status'] not in ignore_states]
+        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', get_available_clusters) 
 
     @property
     def id(self):
@@ -259,6 +264,10 @@ class MemoryDBACLs(DbTerminator):
     def ignore(self):
         return self.name.startswith('default')
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
     def terminate(self):
         self.client.delete_acl(ACLName=self.name)
 
@@ -279,6 +288,10 @@ class MemoryDBParameterGroups(DbTerminator):
     @property
     def ignore(self):
         return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
 
     def terminate(self):
         self.client.delete_parameter_group(ParameterGroupName=self.name)
@@ -301,6 +314,10 @@ class MemoryDBSubnetGroups(DbTerminator):
     def ignore(self):
         return self.name.startswith('default')
 
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
+
     def terminate(self):
         self.client.delete_subnet_group(SubnetGroupName=self.name)
 
@@ -321,6 +338,10 @@ class MemoryDBUsers(DbTerminator):
     @property
     def ignore(self):
         return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=60)
 
     def terminate(self):
         self.client.delete_user(UserName=self.name)

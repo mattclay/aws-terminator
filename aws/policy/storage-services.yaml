@@ -58,13 +58,7 @@ Statement:
       - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
       - memorydb:Describe*
-      - memorydb:DeleteCluster
-      - memorydb:DeleteParameterGroup
-      - memorydb:DeleteSubnetGroup
-      - memorydb:DeleteUser
-      - memorydb:DeleteACL
       - memorydb:List*
-      - memorydb:Describe*
       - memorydb:CreateParameterGroup
       - memorydb:CreateSubnetGroup
       - memorydb:CreateUser
@@ -85,6 +79,10 @@ Statement:
     Resource:
       - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:snapshot/*'
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - '{{ aws_region }}'
 
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
