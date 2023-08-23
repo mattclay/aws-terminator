@@ -1,3 +1,5 @@
+import datetime
+
 import botocore
 import botocore.exceptions
 
@@ -229,7 +231,7 @@ class MemoryDBClusters(Terminator):
             ignore_states = ('creating', 'deleting', 'updating')
             clusters = client.describe_clusters()['Clusters']
             return [cluster for cluster in clusters if cluster['Status'] not in ignore_states]
-        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', get_available_clusters) 
+        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', get_available_clusters)
 
     @property
     def id(self):

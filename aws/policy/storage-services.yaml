@@ -59,10 +59,6 @@ Statement:
       - backup-storage:MountCapsule
       - memorydb:Describe*
       - memorydb:List*
-      - memorydb:CreateParameterGroup
-      - memorydb:CreateSubnetGroup
-      - memorydb:CreateUser
-      - memorydb:CreateACL
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
@@ -76,9 +72,7 @@ Statement:
     Action:
       - memorydb:CreateCluster
       - memorydb:CreateSnapshot
-    Resource:
-      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
-      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:snapshot/*'
+    Resource: "*"
     Condition:
       StringEquals:
         aws:RequestedRegion:
@@ -87,6 +81,10 @@ Statement:
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - memorydb:CreateParameterGroup
+      - memorydb:CreateSubnetGroup
+      - memorydb:CreateUser
+      - memorydb:CreateACL
       - memorydb:DeleteACL
       - memorydb:DeleteCluster
       - memorydb:DeleteParameterGroup
