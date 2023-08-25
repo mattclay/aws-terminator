@@ -268,7 +268,7 @@ class MemoryDBACLs(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=60)
+        return datetime.timedelta(minutes=40)
 
     def terminate(self):
         self.client.delete_acl(ACLName=self.name)
@@ -293,7 +293,7 @@ class MemoryDBParameterGroups(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=60)
+        return datetime.timedelta(minutes=40)
 
     def terminate(self):
         self.client.delete_parameter_group(ParameterGroupName=self.name)
@@ -318,7 +318,7 @@ class MemoryDBSubnetGroups(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=60)
+        return datetime.timedelta(minutes=40)
 
     def terminate(self):
         self.client.delete_subnet_group(SubnetGroupName=self.name)
@@ -343,7 +343,7 @@ class MemoryDBUsers(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=60)
+        return datetime.timedelta(minutes=40)
 
     def terminate(self):
         self.client.delete_user(UserName=self.name)
