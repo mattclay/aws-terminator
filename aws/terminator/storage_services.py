@@ -1,7 +1,9 @@
+import datetime
+
 import botocore
 import botocore.exceptions
 
-from . import Terminator, get_account_id
+from . import DbTerminator, Terminator, get_account_id
 
 
 class S3Bucket(Terminator):
@@ -219,3 +221,150 @@ class BackupSelection(Terminator):
 
     def terminate(self):
         self.client.delete_backup_selection(BackupPlanId=self.plan_id, SelectionId=self.id)
+
+
+class MemoryDBClusters(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_available_clusters(client):
+            # describe_clusters does not have a parameter to filter results
+            ignore_states = ('creating', 'deleting', 'updating')
+            clusters = client.describe_clusters()['Clusters']
+            return [cluster for cluster in clusters if cluster['Status'] not in ignore_states]
+        return Terminator._create(credentials, MemoryDBClusters, 'memorydb', get_available_clusters)
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def created_time(self):
+        return self.instance["CreationTime"]
+
+    def terminate(self):
+        self.client.delete_cluster(ClusterName=self.name)
+
+
+class MemoryDBACLs(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBACLs, 'memorydb', lambda client: client.describe_acls()['ACLs'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=40)
+
+    def terminate(self):
+        self.client.delete_acl(ACLName=self.name)
+
+
+class MemoryDBParameterGroups(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBParameterGroups, 'memorydb', lambda client: client.describe_parameter_groups()['ParameterGroups'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=40)
+
+    def terminate(self):
+        self.client.delete_parameter_group(ParameterGroupName=self.name)
+
+
+class MemoryDBSubnetGroups(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBSubnetGroups, 'memorydb', lambda client: client.describe_subnet_groups()['SubnetGroups'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=40)
+
+    def terminate(self):
+        self.client.delete_subnet_group(SubnetGroupName=self.name)
+
+
+class MemoryDBUsers(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBUsers, 'memorydb', lambda client: client.describe_users()['Users'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def ignore(self):
+        return self.name.startswith('default')
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=40)
+
+    def terminate(self):
+        self.client.delete_user(UserName=self.name)
+
+
+class MemoryDBSnapshots(Terminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, MemoryDBSnapshots, 'memorydb', lambda client: client.describe_snapshots()['Snapshots'])
+
+    @property
+    def id(self):
+        return self.instance["ARN"]
+
+    @property
+    def name(self):
+        return self.instance["Name"]
+
+    @property
+    def created_time(self):
+        return self.instance['ClusterConfiguration']['Shards']['SnapshotCreationTime']
+
+    def terminate(self):
+        self.client.delete_snapshot(SnapshotName=self.name)

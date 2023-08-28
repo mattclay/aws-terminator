@@ -57,6 +57,8 @@ Statement:
       - backup:UntagResource
       - backup:UpdateBackupPlan
       - backup-storage:MountCapsule
+      - memorydb:Describe*
+      - memorydb:List*
     Resource: "*"
 
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
@@ -64,3 +66,31 @@ Statement:
     Action:
       - s3:PutMetricsConfiguration
     Resource: "*"
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - memorydb:CreateCluster
+      - memorydb:CreateSnapshot
+    Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - '{{ aws_region }}'
+
+  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - memorydb:CreateParameterGroup
+      - memorydb:CreateSubnetGroup
+      - memorydb:CreateUser
+      - memorydb:CreateACL
+      - memorydb:DeleteACL
+      - memorydb:DeleteCluster
+      - memorydb:DeleteParameterGroup
+      - memorydb:DeleleSnapshot
+      - memorydb:DeleteSubnetGroup
+      - memorydb:DeleteUser
+      - memorydb:TagResource
+    Resource:
+      - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:*'
