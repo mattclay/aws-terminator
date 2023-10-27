@@ -37,6 +37,7 @@ Statement:
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:key-pair/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:network-interface/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:placement-group/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:security-group/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
