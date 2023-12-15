@@ -70,6 +70,7 @@ Statement:
       - ec2:ImportKeyPair
       - ec2:ModifyImageAttribute
       - ec2:ModifyInstanceAttribute
+      - ec2:ModifyInstanceMetadataOptions
       - ec2:ModifyLaunchTemplate
       - ec2:ModifySnapshotAttribute
       - ec2:ModifyVolume
