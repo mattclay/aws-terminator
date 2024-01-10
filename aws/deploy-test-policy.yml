@@ -58,6 +58,7 @@
         state: present
         managed_policies: "{{ managed_policies }}"
         create_instance_profile: no
+        max_session_duration: 7200
         assume_role_policy_document:
           Version: '2012-10-17'
           Statement:
