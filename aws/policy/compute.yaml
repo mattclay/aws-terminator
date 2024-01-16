@@ -155,6 +155,7 @@ Statement:
       - autoscaling:TerminateInstanceInAutoScalingGroup
       - ec2:DeleteVolume
       - elasticloadbalancing:AddTags
+      - elasticloadbalancing:AddListenerCertificates
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
       - elasticloadbalancing:AttachLoadBalancerToSubnets
       - elasticloadbalancing:RemoveTags
