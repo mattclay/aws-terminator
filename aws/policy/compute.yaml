@@ -188,3 +188,4 @@ Statement:
       - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:loadbalancer/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:listener/*'
