@@ -143,6 +143,60 @@ class CloudFrontOriginAccessIdentity(DbTerminator):
         self.client.delete_cloud_front_origin_access_identity(Id=self.name, IfMatch=self.id)
 
 
+class CloudFrontCachePolicy(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def list_cloud_front_cache_policies(client):
+            identities = []
+            result = client.get_paginator('list_cache_policies').paginate(
+                # Only retrieve the custom policies
+                'Type': 'custom'
+            ).build_full_result()
+            for identity in result.get('CachePolicyList', {}).get('Items', []):
+                identities.append(client.get_cache_policy(Id=identity['Id']))
+            return identities
+
+        return Terminator._create(credentials, CloudFrontCachePolicy, 'cloudfront', list_cloud_front_cache_policies)
+
+    @property
+    def id(self):
+        return self.instance['ETag']
+
+    @property
+    def name(self):
+        return self.instance['CachePolicy']['Id']
+
+    def terminate(self):
+        self.client.delete_cache_policy(Id=self.name, IfMatch=self.id)
+
+
+class CloudFrontOriginRequestPolicy(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def list_cloud_front_origin_request_policies(client):
+            identities = []
+            result = client.get_paginator('list_origin_request_policies').paginate(
+                # Only retrieve the custom policies
+                'Type': 'custom'
+            ).build_full_result()
+            for identity in result.get('OriginRequestPolicyList', {}).get('Items', []):
+                identities.append(client.get_origin_request_policy(Id=identity['Id']))
+            return identities
+
+        return Terminator._create(credentials, CloudFrontOriginRequestPolicy, 'cloudfront', list_cloud_front_origin_request_policies)
+
+    @property
+    def id(self):
+        return self.instance['ETag']
+
+    @property
+    def name(self):
+        return self.instance['OriginRequestPolicy']['Id']
+
+    def terminate(self):
+        self.client.delete_origin_request_policy(Id=self.name, IfMatch=self.id)
+
+
 class Ecs(DbTerminator):
     @property
     def age_limit(self):
