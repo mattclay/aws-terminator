@@ -150,7 +150,7 @@ class CloudFrontCachePolicy(DbTerminator):
             identities = []
             result = client.get_paginator('list_cache_policies').paginate(
                 # Only retrieve the custom policies
-                'Type': 'custom'
+                Type='custom'
             ).build_full_result()
             for identity in result.get('CachePolicyList', {}).get('Items', []):
                 identities.append(client.get_cache_policy(Id=identity['Id']))
@@ -177,7 +177,7 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
             identities = []
             result = client.get_paginator('list_origin_request_policies').paginate(
                 # Only retrieve the custom policies
-                'Type': 'custom'
+                Type='custom'
             ).build_full_result()
             for identity in result.get('OriginRequestPolicyList', {}).get('Items', []):
                 identities.append(client.get_origin_request_policy(Id=identity['Id']))
