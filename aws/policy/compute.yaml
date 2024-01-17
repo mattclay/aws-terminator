@@ -154,11 +154,10 @@ Statement:
       - autoscaling:StartInstanceRefresh
       - autoscaling:TerminateInstanceInAutoScalingGroup
       - ec2:DeleteVolume
-      - elasticloadbalancing:AddTags
       - elasticloadbalancing:AddListenerCertificates
+      - elasticloadbalancing:AddTags
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
       - elasticloadbalancing:AttachLoadBalancerToSubnets
-      - elasticloadbalancing:RemoveTags
       - elasticloadbalancing:ConfigureHealthCheck
       - elasticloadbalancing:CreateAppCookieStickinessPolicy
       - elasticloadbalancing:CreateLBCookieStickinessPolicy
@@ -175,6 +174,7 @@ Statement:
       - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer
       - elasticloadbalancing:ModifyLoadBalancerAttributes
+      - elasticloadbalancing:RemoveTags
       - elasticloadbalancing:RegisterInstancesWithLoadBalancer
       - elasticloadbalancing:RegisterTargets
       - elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer
