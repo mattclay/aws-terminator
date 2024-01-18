@@ -148,10 +148,10 @@ class CloudFrontCachePolicy(DbTerminator):
     def create(credentials):
         def list_cloud_front_cache_policies(client):
             identities = []
-            result = client.get_paginator('list_cache_policies').paginate(
+            result = client.list_cache_policies(
                 # Only retrieve the custom policies
                 Type='custom'
-            ).build_full_result()
+            )
             for identity in result.get('CachePolicyList', {}).get('Items', []):
                 identities.append(client.get_cache_policy(Id=identity['Id']))
             return identities
@@ -166,6 +166,10 @@ class CloudFrontCachePolicy(DbTerminator):
     def name(self):
         return self.instance['CachePolicy']['Id']
 
+    @property 
+    def age_limit(self): 
+        return datetime.timedelta(minutes=30) 
+
     def terminate(self):
         self.client.delete_cache_policy(Id=self.name, IfMatch=self.id)
 
@@ -175,10 +179,10 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
     def create(credentials):
         def list_cloud_front_origin_request_policies(client):
             identities = []
-            result = client.get_paginator('list_origin_request_policies').paginate(
+            result = client.list_origin_request_policies(
                 # Only retrieve the custom policies
                 Type='custom'
-            ).build_full_result()
+            )
             for identity in result.get('OriginRequestPolicyList', {}).get('Items', []):
                 identities.append(client.get_origin_request_policy(Id=identity['Id']))
             return identities
@@ -192,6 +196,10 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
     @property
     def name(self):
         return self.instance['OriginRequestPolicy']['Id']
+    
+    @property 
+    def age_limit(self): 
+        return datetime.timedelta(minutes=30) 
 
     def terminate(self):
         self.client.delete_origin_request_policy(Id=self.name, IfMatch=self.id)
