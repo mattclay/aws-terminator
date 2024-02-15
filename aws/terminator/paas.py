@@ -153,7 +153,7 @@ class CloudFrontCachePolicy(DbTerminator):
                 Type='custom'
             )
             for identity in result.get('CachePolicyList', {}).get('Items', []):
-                identities.append(client.get_cache_policy(Id=identity['Id']))
+                identities.append(client.get_cache_policy(Id=identity['CachePolicy']['Id']))
             return identities
 
         return Terminator._create(credentials, CloudFrontCachePolicy, 'cloudfront', list_cloud_front_cache_policies)
