@@ -35,8 +35,10 @@ Statement:
       - cloudfront:DeleteStreamingDistribution
       - cloudfront:TagResource
       - cloudfront:UntagResource
+      - cloudfront:UpdateCachePolicy
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
       - cloudfront:UpdateDistribution
+      - cloudfront:UpdateOriginRequestPolicy
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy

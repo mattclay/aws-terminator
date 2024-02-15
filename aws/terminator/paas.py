@@ -168,7 +168,7 @@ class CloudFrontCachePolicy(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=30)
+        return timedelta(minutes=30)
 
     def terminate(self):
         self.client.delete_cache_policy(Id=self.name, IfMatch=self.id)
@@ -184,7 +184,7 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
                 Type='custom'
             )
             for identity in result.get('OriginRequestPolicyList', {}).get('Items', []):
-                identities.append(client.get_origin_request_policy(Id=identity['Id']))
+                identities.append(client.get_origin_request_policy(Id=identity['OriginRequestPolicy']['Id']))
             return identities
 
         return Terminator._create(credentials, CloudFrontOriginRequestPolicy, 'cloudfront', list_cloud_front_origin_request_policies)
@@ -199,7 +199,7 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=30)
+        return timedelta(minutes=30)
 
     def terminate(self):
         self.client.delete_origin_request_policy(Id=self.name, IfMatch=self.id)
