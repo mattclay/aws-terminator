@@ -117,6 +117,7 @@ Statement:
       - elasticloadbalancing:ModifyTargetGroupAttributes
       - elasticloadbalancing:ModifyRule
       - elasticloadbalancing:SetIpAddressType
+      - elasticloadbalancing:SetRulePriorities
     Resource:
       - "*"
 
