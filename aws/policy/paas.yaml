@@ -25,14 +25,20 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
+      - cloudfront:CreateOriginRequestPolicy
       - cloudfront:DeleteCloudFrontOriginAccessIdentity
+      - cloudfront:DeleteCachePolicy
       - cloudfront:DeleteDistribution
+      - cloudfront:DeleteOriginRequestPolicy
       - cloudfront:DeleteStreamingDistribution
       - cloudfront:TagResource
       - cloudfront:UntagResource
+      - cloudfront:UpdateCachePolicy
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
       - cloudfront:UpdateDistribution
+      - cloudfront:UpdateOriginRequestPolicy
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
@@ -94,8 +100,10 @@ Statement:
       - lightsail:DeleteInstanceSnapshot
       - lightsail:GetInstanceSnapshots
     Resource:
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-request-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:streaming-distribution/*'
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
