@@ -223,7 +223,7 @@ class BackupSelection(Terminator):
         self.client.delete_backup_selection(BackupPlanId=self.plan_id, SelectionId=self.id)
 
 
-class MemoryDBClusters(Terminator):
+class MemoryDBClusters(DbTerminator):
     @staticmethod
     def create(credentials):
         def get_available_clusters(client):
@@ -240,10 +240,6 @@ class MemoryDBClusters(Terminator):
     @property
     def name(self):
         return self.instance["Name"]
-
-    @property
-    def created_time(self):
-        return self.instance["CreationTime"]
 
     def terminate(self):
         self.client.delete_cluster(ClusterName=self.name)
@@ -264,7 +260,7 @@ class MemoryDBACLs(DbTerminator):
 
     @property
     def ignore(self):
-        return self.name.startswith('default')
+        return self.name == "open-access"
 
     @property
     def age_limit(self):
@@ -313,10 +309,6 @@ class MemoryDBSubnetGroups(DbTerminator):
         return self.instance["Name"]
 
     @property
-    def ignore(self):
-        return self.name.startswith('default')
-
-    @property
     def age_limit(self):
         return datetime.timedelta(minutes=40)
 
@@ -339,7 +331,7 @@ class MemoryDBUsers(DbTerminator):
 
     @property
     def ignore(self):
-        return self.name.startswith('default')
+        return self.name == "default"
 
     @property
     def age_limit(self):
