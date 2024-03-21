@@ -26,24 +26,30 @@ class S3Bucket(Terminator):
         return self.instance['CreationDate']
 
     def terminate(self):
-        def _paginated_list(bucket):
-            paginator = self.client.get_paginator('list_objects_v2')
+        def _paginated_versions_list(bucket):
+            paginator = self.client.get_paginator("list_object_versions")
             for page in paginator.paginate(Bucket=bucket):
-                yield [d['Key'] for d in page.get('Contents', [])]
+                # We have to merge the Versions and DeleteMarker lists here,
+                # as DeleteMarkers can still prevent a bucket deletion
+                yield [
+                    {"Key": data["Key"], "VersionId": data["VersionId"]} for data in (page.get("Versions", []) + page.get("DeleteMarkers", []))
+                ]
 
         try:
             self.client.delete_bucket(Bucket=self.name)
         except botocore.exceptions.ClientError as ex:
             if ex.response['Error']['Code'] == 'NoSuchBucket':
                 return
-            for keys in _paginated_list(self.name):
-                self.client.delete_objects(
-                    Bucket=self.name,
-                    Delete=dict(
-                        Objects=[{'Key': k} for k in keys],
-                        Quiet=True,
+            if ex.response['Error']['Code'] == 'BucketNotEmpty':
+                for object_versions in _paginated_versions_list(bucket=self.name):
+                    self.client.delete_objects(
+                        Bucket=self.name,
+                        Delete={
+                            "Objects": object_versions,
+                            "Quiet": True,
+                        }
                     )
-                )
+
             self.client.delete_bucket(Bucket=self.name)
 
 
