@@ -28,6 +28,7 @@ Statement:
       - s3:PutBucketTagging
       - s3:PutBucketVersioning
       - s3:PutEncryptionConfiguration
+      - s3:PutInventoryConfiguration
       - s3:PutLifecycleConfiguration
       - s3:PutObject
       - s3:PutObjectAcl
