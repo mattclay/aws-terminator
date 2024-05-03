@@ -17,6 +17,7 @@ Statement:
       - s3:HeadBucket
       - s3:HeadObject
       - s3:List*
+      - s3:PutAccelerateConfiguration
       - s3:PutBucketAcl
       - s3:PutBucketLogging
       - s3:PutBucketNotification
