@@ -106,6 +106,7 @@ Statement:
       - secretsmanager:PutResourcePolicy
       - secretsmanager:DeleteResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
+      - secretsmanager:GetRandomPassword
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
