@@ -73,8 +73,7 @@ Statement:
       - kms:CreateGrant
       - kms:DeleteAlias
       - kms:Describe*
-      - kms:DisableKey
-      - kms:DisableKeyRotation
+      - kms:Disable*
       - kms:EnableKey
       - kms:EnableKeyRotation
       - kms:Get*
