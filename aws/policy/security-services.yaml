@@ -87,8 +87,8 @@ Statement:
       - kms:UpdateKeyDescription
       - logs:List*
       - secretsmanager:Describe*
-      - secretsmanager:List*
       - secretsmanager:GetRandomPassword
+      - secretsmanager:List*
     Resource: "*"
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
