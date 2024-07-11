@@ -26,6 +26,7 @@ Statement:
           - t2.micro
           - t3.nano
           - t3.micro
+          - t3a.micro
           - m1.large  # lowest cost instance type with EBS optimization supported
 
   # Permit RunInstance to access any of the usual objects attached to an
@@ -101,6 +102,7 @@ Statement:
           - t2.micro
           - t3.nano
           - t3.micro
+          - t3a.micro
           - m1.large  # lowest cost instance type with EBS optimization supported
 
   # ASG and ELB don't like being region restricted.
