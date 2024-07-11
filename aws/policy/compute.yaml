@@ -142,13 +142,8 @@ Statement:
       - autoscaling:CancelInstanceRefresh
       - autoscaling:CompleteLifecycleAction
       - autoscaling:CreateOrUpdateTags
-      - autoscaling:DeleteAutoScalingGroup
-      - autoscaling:DeleteLaunchConfiguration
-      - autoscaling:DeletePolicy
-      - autoscaling:DeleteScheduledAction
-      - autoscaling:DeleteTags
+      - autoscaling:Delete*
       - autoscaling:DetachLoadBalancers
-      - autoscaling:DeleteLifecycleHook
       - autoscaling:DetachLoadBalancerTargetGroups
       - autoscaling:DisableMetricsCollection
       - autoscaling:PutScalingPolicy
