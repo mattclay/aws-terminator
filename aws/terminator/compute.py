@@ -123,7 +123,7 @@ class Ec2PlacementGroup(DbTerminator):
 
     @property
     def age_limit(self):
-        return datetime.timedelta(minutes=30)
+        return datetime.timedelta(minutes=50)
 
     @property
     def name(self):
