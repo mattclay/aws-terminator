@@ -116,6 +116,27 @@ class Ec2Image(Terminator):
         self.client.deregister_image(ImageId=self.id)
 
 
+class Ec2PlacementGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, Ec2PlacementGroup, 'ec2', lambda client: client.describe_placement_groups()['PlacementGroups'])
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=50)
+
+    @property
+    def name(self):
+        return self.instance['GroupName']
+
+    @property
+    def id(self):
+        return self.instance['GroupId']
+
+    def terminate(self):
+        self.client.delete_placement_group(GroupName=self.name)
+
+
 class Ec2Volume(Terminator):
     @staticmethod
     def create(credentials):
