@@ -144,10 +144,8 @@ Statement:
       - logs:DisassociateKmsKey
       - logs:PutMetricFilter
       - logs:PutRetentionPolicy
-      - logs:TagLogGroup
-      - logs:TagResource
-      - logs:UntagLogGroup
-      - logs:UntagResource
+      - logs:Tag*
+      - logs:Untag*
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
