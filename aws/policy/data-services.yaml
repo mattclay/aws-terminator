@@ -75,6 +75,7 @@ Statement:
       - rds:RestoreDBInstanceFromS3
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
+      - rds:CreateTenantDatabase
       - rds:ModifyDBInstance
       - rds:DeleteDBInstance
       - rds:StopDBCluster
