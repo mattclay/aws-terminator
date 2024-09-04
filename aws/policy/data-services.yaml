@@ -78,6 +78,7 @@ Statement:
       - rds:CreateTenantDatabase
       - rds:ModifyDBInstance
       - rds:DeleteDBInstance
+      - rds:DeleteTenantDatabase
       - rds:StopDBCluster
       - rds:StopDBInstance
       - rds:StartDBCluster
@@ -125,6 +126,7 @@ Statement:
       - 'arn:aws:dms:{{ aws_region }}:{{ aws_account_id }}:endpoint:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:snapshot:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-snapshot:*'
+      - ''arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:tenant-database:*'
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
