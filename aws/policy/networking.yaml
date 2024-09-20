@@ -86,6 +86,7 @@ Statement:
       - ec2:DisassociateRouteTable
       - ec2:DisassociateSubnetCidrBlock
       - ec2:DisassociateVpcCidrBlock
+      - ec2:ModifyAddressAttribute
       - ec2:ModifyNetworkInterfaceAttribute
       - ec2:ModifySubnetAttribute
       - ec2:ModifyTransitGatewayPeeringAttachment
