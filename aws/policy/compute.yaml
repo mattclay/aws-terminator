@@ -111,6 +111,8 @@ Statement:
     Effect: Allow
     Action:
       - autoscaling:Describe*
+      - autoscaling:ResumeProcesses
+      - autoscaling:SuspendProcesses
       - ec2:Describe*
       - elasticloadbalancing:DeleteRule
       - elasticloadbalancing:DeleteListener
