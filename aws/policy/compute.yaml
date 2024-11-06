@@ -131,7 +131,7 @@ Statement:
     Action:
       - autoscaling:EnableMetricsCollection
       - ec2:CreateVolume
-      - elasticloadbalancing:CreateLoadBalancer
+      - elasticloadbalancing:CreateLoadBalancer*
       - elasticloadbalancing:CreateRule
     Resource:
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
@@ -165,13 +165,8 @@ Statement:
       - elasticloadbalancing:CreateAppCookieStickinessPolicy
       - elasticloadbalancing:CreateLBCookieStickinessPolicy
       - elasticloadbalancing:CreateListener
-      - elasticloadbalancing:CreateLoadBalancerListeners
-      - elasticloadbalancing:CreateLoadBalancerPolicy
       - elasticloadbalancing:CreateTargetGroup
-      - elasticloadbalancing:DeleteLoadBalancer
-      - elasticloadbalancing:DeleteLoadBalancerListeners
-      - elasticloadbalancing:DeleteLoadBalancerPolicy
-      - elasticloadbalancing:DeleteTargetGroup
+      - elasticloadbalancing:Delete*
       - elasticloadbalancing:DeregisterInstancesFromLoadBalancer
       - elasticloadbalancing:DetachLoadBalancerFromSubnets
       - elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer
@@ -180,8 +175,7 @@ Statement:
       - elasticloadbalancing:RemoveTags
       - elasticloadbalancing:RegisterInstancesWithLoadBalancer
       - elasticloadbalancing:RegisterTargets
-      - elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer
-      - elasticloadbalancing:SetLoadBalancerPoliciesOfListener
+      - elasticloadbalancing:SetLoadBalancer*
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
     Resource:
