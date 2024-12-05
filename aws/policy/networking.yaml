@@ -3,16 +3,22 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - route53:ActivateKeySigningKey
       - route53:ChangeResourceRecordSets
       - route53:List*
       - route53:CreateHostedZone
+      - route53:CreateKeySigningKey
       - route53:Get*
       - route53:DeleteHostedZone
       - route53:UpdateHostedZoneComment
       - route53:AssociateVPCWithHostedZone
       - route53:ChangeTagsForResource
-      - route53:CreateHealthCheck
+      - route53:CreateHroute53ealthCheck
+      - route53:DeactivateKeySigningKey
       - route53:DeleteHealthCheck
+      - route53:DeleteKeySigningKey
+      - route53:DisableHostedZoneDNSSEC
+      - route53:EnableHostedZoneDNSSEC
       - route53:UpdateHealthCheck
       - network-firewall:List*
       - network-firewall:Describe*

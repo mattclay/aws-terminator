@@ -16,6 +16,15 @@ class Route53HostedZone(DbTerminator):
     def name(self):
         return self.instance['Name']
 
+    def _handle_dnssec(self, ksk_list):
+        for ksk in ksk_list:
+            # Deactivate the Key Signing Request
+            self.client.deactivate_key_signing_key(HostedZoneId=self.id, Name=ksk["Name"])
+
+            # Delete the Key Signing Request
+            self.client.delete_key_signing_key(HostedZoneId=self.id, Name=ksk["Name"])
+
+
     def terminate(self):
         # remove any record sets that the zone contains
         record_sets = self.client.list_resource_record_sets(HostedZoneId=self.id)['ResourceRecordSets']
@@ -32,6 +41,16 @@ class Route53HostedZone(DbTerminator):
                     } for record_set in remove_record_sets]
                 }
             )
+
+        dnssec = self.client.get_dnssec(HostedZoneId=self.id)
+
+        if dnssec["Status"]["KeySigningKeys"] != []:
+            if dnssec["Status"]["ServerSignature"] != "SIGNING":
+                # Disable DNSSEC for the hosted zone
+                self.client.disable_hosted_zone_dnssec(HostedZoneId=self.id)
+
+            self._handle_dnssec(dnssec["Status"]["KeySigningKeys"])
+
         self.client.delete_hosted_zone(Id=self.id)
 
 
