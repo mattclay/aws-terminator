@@ -74,8 +74,7 @@ Statement:
       - kms:DeleteAlias
       - kms:Describe*
       - kms:Disable*
-      - kms:EnableKey
-      - kms:EnableKeyRotation
+      - kms:EnableKey*
       - kms:Get*
       - kms:List*
       - kms:PutKeyPolicy
