@@ -13,7 +13,7 @@ Statement:
       - route53:UpdateHostedZoneComment
       - route53:AssociateVPCWithHostedZone
       - route53:ChangeTagsForResource
-      - route53:CreateHroute53ealthCheck
+      - route53:CreateHealthCheck
       - route53:DeactivateKeySigningKey
       - route53:DeleteHealthCheck
       - route53:DeleteKeySigningKey
