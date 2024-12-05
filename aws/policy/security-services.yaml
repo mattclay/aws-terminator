@@ -81,10 +81,12 @@ Statement:
       - kms:PutKeyPolicy
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
+      - kms:Sign
       - kms:TagResource
       - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
+      - kms:Verify
       - logs:List*
       - secretsmanager:Describe*
       - secretsmanager:GetRandomPassword
