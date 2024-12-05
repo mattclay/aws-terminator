@@ -46,12 +46,12 @@ class Route53HostedZone(DbTerminator):
             )
 
         dnssec = self.client.get_dnssec(HostedZoneId=self.id)
-        if dnssec["Status"]["KeySigningKeys"] != []:
-            if dnssec["Status"]["ServerSignature"] != "SIGNING":
+        if dnssec["KeySigningKeys"] != []:
+            if dnssec["ServeSignature"]["Status"] != "SIGNING":
                 # Disable DNSSEC for the hosted zone
                 self.client.disable_hosted_zone_dnssec(HostedZoneId=self.id)
 
-            self._handle_ksk(dnssec["Status"]["KeySigningKeys"])
+            self._handle_ksk(dnssec["KeySigningKeys"])
 
         self.client.delete_hosted_zone(Id=self.id)
 
