@@ -74,17 +74,18 @@ Statement:
       - kms:DeleteAlias
       - kms:Describe*
       - kms:Disable*
-      - kms:EnableKey
-      - kms:EnableKeyRotation
+      - kms:EnableKey*
       - kms:Get*
       - kms:List*
       - kms:PutKeyPolicy
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
+      - kms:Sign
       - kms:TagResource
       - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
+      - kms:Verify
       - logs:List*
       - secretsmanager:Describe*
       - secretsmanager:GetRandomPassword
