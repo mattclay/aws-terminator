@@ -45,13 +45,14 @@ class Route53HostedZone(DbTerminator):
                 }
             )
 
-        dnssec = self.client.get_dnssec(HostedZoneId=self.id)
-        if dnssec["KeySigningKeys"] != []:
-            if dnssec["Status"]["ServeSignature"] != "SIGNING":
-                # Disable DNSSEC for the hosted zone
-                self.client.disable_hosted_zone_dnssec(HostedZoneId=self.id)
+        if not self.instance['Config']['PrivateZone']:
+            dnssec = self.client.get_dnssec(HostedZoneId=self.id)
+            if dnssec["KeySigningKeys"] != []:
+                if dnssec["Status"]["ServeSignature"] != "SIGNING":
+                    # Disable DNSSEC for the hosted zone
+                    self.client.disable_hosted_zone_dnssec(HostedZoneId=self.id)
 
-            self._handle_ksk(dnssec["KeySigningKeys"])
+                self._handle_ksk(dnssec["KeySigningKeys"])
 
         self.client.delete_hosted_zone(Id=self.id)
 
