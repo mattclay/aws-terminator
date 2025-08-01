@@ -393,3 +393,34 @@ class KafkaCluster(Terminator):
 
     def terminate(self):
         self.client.delete_cluster(ClusterArn=self.id)
+
+
+class RdsGlobalCluster(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, RdsGlobalCluster, 'rds', lambda client: client.describe_global_clusters()['GlobalClusters'])
+
+    @property
+    def id(self):
+        return self.instance['GlobalClusterArn']
+
+    @property
+    def name(self):
+        return self.instance['GlobalClusterIdentifier']
+
+    @property
+    def age_limit(self):
+        # Use an age_limit slightly lower than RdsDbCluster so that global cluster members won't conflict with that class before they're detached
+        return datetime.timedelta(minutes=55)
+
+    @property
+    def members(self):
+        return self.instance['GlobalClusterMembers']
+
+    def terminate(self):
+        # The primary and secondary clusters must already be detached or destroyed first.
+        for db in self.members:
+            self.client.remove_from_global_cluster(GlobalClusterIdentifier=self.id, DbClusterIdentifier=[db['DBClusterArn']])
+
+        self.client.modify_global_cluster(GlobalClusterIdentifier=self.name, DeletionProtection=False)
+        self.client.delete_global_cluster(GlobalClusterIdentifier=self.name)
