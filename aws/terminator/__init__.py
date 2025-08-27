@@ -1,11 +1,9 @@
 import abc
 import datetime
 import inspect
-import json
 import logging
 import os
 import re
-import traceback
 import typing
 
 from boto3.dynamodb.conditions import Attr
@@ -20,15 +18,6 @@ logger = logging.getLogger('cleanup')
 AWS_REGION = 'us-east-1'
 
 T = typing.TypeVar('T')
-
-
-def log_exception(message: str, *args, level: int = logging.ERROR) -> None:
-    payload = dict(
-        message=(message % args).strip(),
-        traceback=traceback.format_exc().strip(),
-    )
-
-    logger.log(level, json.dumps(payload))
 
 
 def import_plugins() -> None:
@@ -92,7 +81,7 @@ def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, te
                 else:
                     logger.info('%s %s', status, instance)
         except Exception:  # pylint: disable=broad-except
-            log_exception('exception processing resource type: %s', terminator_type)
+            logger.exception('exception processing resource type: %s', terminator_type)
 
 
 def cleanup_database(check: bool, force: bool) -> None:
@@ -141,11 +130,11 @@ def terminate(instance: 'Terminator', check: bool) -> str:
         error_code = ex.response['Error']['Code']
 
         if error_code == 'TooManyRequestsException':
-            log_exception('error "%s" terminating %s', error_code, instance, level=logging.WARNING)
+            logger.warning('error "%s" terminating %s', error_code, instance, exc_info=True)
         else:
-            log_exception('error "%s" terminating %s', error_code, instance)
+            logger.exception('error "%s" terminating %s', error_code, instance)
     except Exception:  # pylint: disable=broad-except
-        log_exception('exception terminating %s', instance)
+        logger.exception('exception terminating %s', instance)
 
     return 'terminated'
 
@@ -238,7 +227,7 @@ class Terminator(abc.ABC):
 
             return f'{type(self).__name__}: name={self.name}, {extra}age={self.age}, stale={self.stale}'
         except Exception:  # pylint: disable=broad-except
-            log_exception('exception converting %s to string', type(self).__name__)
+            logger.exception('exception converting %s to string', type(self).__name__)
             return type(self).__name__
 
     @staticmethod
@@ -290,7 +279,7 @@ class DbTerminator(Terminator):
 
             self._created_time = datetime.datetime.strptime(self._kvs_value.replace('+00:00', ''), '%Y-%m-%dT%H:%M:%S').replace(tzinfo=dateutil.tz.tzutc())
         except Exception:  # pylint: disable=broad-except
-            log_exception('exception accessing key/value store: %s', self)
+            logger.exception('exception accessing key/value store: %s', self)
 
     @property
     @abc.abstractmethod

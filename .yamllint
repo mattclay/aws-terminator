@@ -46,3 +46,4 @@ rules:
   trailing-spaces: enable
 ignore: |
   .tox/
+  .venv/

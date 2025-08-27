@@ -111,6 +111,7 @@
           API_NAME: "{{ api_name }}"
         layers:
           - "{{ terminator_requirements_layer.layer.layer_version_arn }}"
+        log_format: JSON
       register: terminator_function
     - name: alias terminator functions
       tags: lambda

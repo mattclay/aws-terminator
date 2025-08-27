@@ -1,16 +1,16 @@
 import logging
 import os
 
-from terminator import (
+logging.captureWarnings(True)  # noqa  # capture warnings as early as possible
+
+from terminator import (  # pylint: disable=wrong-import-position
     cleanup,
-    logger,
 )
 
 
 # noinspection PyUnusedLocal
 def lambda_handler(event, context):
     # pylint: disable=unused-argument
-    logger.setLevel(logging.INFO)
 
     arn = context.invoked_function_arn.split(':')
 
