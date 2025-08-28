@@ -34,6 +34,8 @@ Statement:
       - events:PutTargets
       - events:RemoveTargets
       - glue:Get*
+      - medialive:Describe*
+      - medialive:List*
       - kinesis:Describe*
       - kinesis:List*
       - mq:Describe*
@@ -62,6 +64,7 @@ Statement:
       - sqs:TagQueue
       - sqs:UntagQueue
       - ssm:AddTagsToResource
+      - ssm:CreateActivation
       - ssm:Describe*
       - ssm:Get*
       - ssm:List*
@@ -117,6 +120,32 @@ Statement:
       - kinesis:RemoveTagsFromStream
       - kinesis:StartStreamEncryption
       - kinesis:StopStreamEncryption
+      - medialive:CreateChannel
+      - medialive:CreateChannelPlacementGroup
+      - medialive:CreateCluster
+      - medialive:CreateInput
+      - medialive:CreateInputSecurityGroup
+      - medialive:CreateNetwork
+      - medialive:CreateNode
+      - medialive:CreateNodeRegistrationScript
+      - medialive:CreateSdiSource
+      - medialive:CreateTags
+      - medialive:DeleteChannel
+      - medialive:DeleteChannelPlacementGroup
+      - medialive:DeleteCluster
+      - medialive:DeleteInput
+      - medialive:DeleteInputSecurityGroup
+      - medialive:DeleteNetwork
+      - medialive:DeleteNode
+      - medialive:DeleteSdiSource
+      - medialive:StartChannel
+      - medialive:StopChannel
+      - medialive:TagResource
+      - medialive:UntagResource
+      - medialive:UpdateChannel
+      - medialive:UpdateInput
+      - medialive:UpdateInputSecurityGroup
+      - medialive:UpdateSdiSource
       - mq:CreateTags
       - SNS:CreateTopic
       - SNS:DeleteTopic
@@ -141,6 +170,8 @@ Statement:
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:crawler/*'
       - 'arn:aws:glue:{{ aws_region }}:{{ aws_account_id }}:job/*'
       - 'arn:aws:kinesis:{{ aws_region }}:{{ aws_account_id }}:stream/*'
+      - 'arn:aws:medialive:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:medialive:{{ aws_region }}:{{ aws_account_id }}:input:*'
       - 'arn:aws:mq:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'

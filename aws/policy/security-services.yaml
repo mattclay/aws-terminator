@@ -14,11 +14,7 @@ Statement:
       ArnLike:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
-          - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
-          - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
-          - 'arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy'
-          - 'arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy'
-          - 'arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy'
+          - 'arn:aws:iam::aws:policy/AmazonEKS*'
           - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly'
           - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
           - 'arn:aws:iam::aws:policy/IAMReadOnlyAccess'
@@ -32,10 +28,11 @@ Statement:
           - 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole'
           - 'arn:aws:iam::aws:policy/service-role/AWSServiceRoleForVPCTransitGateway'
           - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
-          - 'arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup'
-          - 'arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores'
-          - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
-          - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
+          - 'arn:aws:iam::aws:policy/*BackupService*'
+          - 'arn:aws:iam::aws:policy/CloudWatchFullAccessV2'
+          - 'arn:aws:iam::aws:policy/AWSElementalMediaLiveFullAccess'
+          - 'arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role'
+          - 'arn:aws:iam::{{ aws_account_id }}:policy/ansible-test-*'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -65,10 +62,11 @@ Statement:
     Effect: Allow
     Action:
       - access-analyzer:ValidatePolicy
-      - iam:GetRole
+      - iam:Get*
       - iam:List*
       - iam:Tag*
       - iam:Untag*
+      - sts:GetCallerIdentity
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
@@ -124,14 +122,13 @@ Statement:
       - acm:RequestCertificate
       - iam:AddRoleToInstanceProfile
       - iam:CreateInstanceProfile
+      - iam:CreatePolicy
       - iam:CreateRole
       - iam:CreateSAMLProvider
       - iam:DeleteInstanceProfile
       - iam:DeleteRole
       - iam:DeleteSAMLProvider
-      - iam:GetInstanceProfile
-      - iam:GetSAMLProvider
-      - iam:GetServerCertificate
+      - iam:Get*
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
@@ -154,6 +151,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:policy/ansible-test-*'
       # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
