@@ -382,6 +382,13 @@ class Ec2VpnGateway(DbTerminator):
     def name(self):
         return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
 
+    @property
+    def ignore(self):
+        if self.instance.get('State') in ['deleted']:
+            return True
+
+        return False
+
     def terminate(self):
         vpc_attachments = [attachment['VpcId'] for attachment in self.instance.get('VpcAttachments', []) if attachment['State'].startswith('attach')]
         for vpc_attachment in vpc_attachments:
