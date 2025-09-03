@@ -112,6 +112,7 @@
         layers:
           - "{{ terminator_requirements_layer.layer.layer_version_arn }}"
         log_format: JSON
+        log_group: "/{{ api_name }}/aws/lambda/terminator"
       register: terminator_function
     - name: alias terminator functions
       tags: lambda
