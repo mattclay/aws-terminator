@@ -222,6 +222,11 @@ class RdsDbInstance(DbTerminator):
     def terminate(self):
         try:
             self.client.modify_db_instance(DBInstanceIdentifier=self.name, BackupRetentionPeriod=0, DeletionProtection=False)
+        except self.client.exceptions.InvalidDBInstanceStateFault:
+            # The instance is likely stopped and has to be started to modify it.
+            # This can take several minutes so we can't block on availability. We'll
+            # have to wait for another terminator run to finish deleting it.
+            self.client.start_db_instance(DBInstanceIdentifier=self.name)
         except botocore.exceptions.ClientError as ex:
             # The instance can't be modifed when it's part of a cluster
             if ex.response['Error']['Code'] != 'InvalidParameterCombination':
