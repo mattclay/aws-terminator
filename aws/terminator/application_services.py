@@ -419,3 +419,213 @@ class MqBroker(Terminator):
 
     def terminate(self):
         self.client.delete_broker(BrokerId=self.id)
+
+
+class MediaLiveChannel(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_channels(client):
+            channels = client.list_channels()['Channels']
+            return channels
+
+        return Terminator._create(credentials, MediaLiveChannel, 'medialive', get_medialive_channels)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    @property
+    def ignore(self):
+        return self.instance['State'] == 'DELETING'
+
+    def terminate(self):
+        # Stop the channel if it's running before deleting
+        if self.instance['State'] == 'RUNNING':
+            self.client.stop_channel(ChannelId=self.id)
+            # Wait for the channel to stop
+            waiter = self.client.get_waiter('channel_stopped')
+            waiter.wait(ChannelId=self.id)
+        self.client.delete_channel(ChannelId=self.id)
+
+
+class MediaLiveInput(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_inputs(client):
+            inputs = client.list_inputs()['Inputs']
+            return inputs
+
+        return Terminator._create(credentials, MediaLiveInput, 'medialive', get_medialive_inputs)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_input(InputId=self.id)
+
+
+class MediaLiveInputSecurityGroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_input_security_groups(client):
+            security_groups = client.list_input_security_groups()['InputSecurityGroups']
+            return security_groups
+
+        return Terminator._create(credentials, MediaLiveInputSecurityGroup, 'medialive', get_medialive_input_security_groups)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_input_security_group(InputSecurityGroupId=self.id)
+
+
+class MediaLiveChannelPlacementGroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_channel_placement_groups(client):
+            groups = client.list_channel_placement_groups()['ChannelPlacementGroups']
+            return groups
+
+        return Terminator._create(credentials, MediaLiveChannelPlacementGroup, 'medialive', get_medialive_channel_placement_groups)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_channel_placement_group(ChannelPlacementGroupId=self.id)
+
+
+class MediaLiveCluster(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_clusters(client):
+            clusters = client.list_clusters()['Clusters']
+            return clusters
+
+        return Terminator._create(credentials, MediaLiveCluster, 'medialive', get_medialive_clusters)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_cluster(ClusterId=self.id)
+
+
+class MediaLiveNetwork(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_networks(client):
+            networks = client.list_networks()['Networks']
+            return networks
+
+        return Terminator._create(credentials, MediaLiveNetwork, 'medialive', get_medialive_networks)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_network(NetworkId=self.id)
+
+
+class MediaLiveNode(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_nodes(client):
+            nodes = client.list_nodes()['Nodes']
+            return nodes
+
+        return Terminator._create(credentials, MediaLiveNode, 'medialive', get_medialive_nodes)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_node(NodeId=self.id)
+
+
+class MediaLiveSdiSource(Terminator):
+    @staticmethod
+    def create(credentials):
+        def get_medialive_sdi_sources(client):
+            sources = client.list_sdi_sources()['SdiSources']
+            return sources
+
+        return Terminator._create(credentials, MediaLiveSdiSource, 'medialive', get_medialive_sdi_sources)
+
+    @property
+    def created_time(self):
+        return self.instance['CreatedAt']
+
+    @property
+    def name(self):
+        return self.instance.get('Name', self.id)
+
+    @property
+    def id(self):
+        return self.instance['Id']
+
+    def terminate(self):
+        self.client.delete_sdi_source(SdiSourceId=self.id)
