@@ -7,6 +7,7 @@
     stage: "prod"
     terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
     packaging_dir: "{{ playbook_dir }}/../.cache/packaging"
+    python_version: python3.13
   tasks:
     - name: load config
       tags: always
@@ -46,40 +47,40 @@
         iam_name: "{{ api_name }}-terminator-{{ stage }}"
         policy_name: "{{ api_name }}-terminator-{{ stage }}"
         state: present
-        policy_json: "{{ terminator_policy | to_nice_json }}"
+        policy_json: "{{ terminator_policy }}"
     - name: create virtualenv with terminator requirements
       tags: lambda
       pip:
         requirements: "{{ playbook_dir }}/requirements.txt"
         virtualenv: "{{ packaging_dir }}/terminator-requirements/python"
-        virtualenv_python: python3.9
+        virtualenv_python: "{{ python_version }}"
     - name: package terminator requirements
       tags: lambda
       lambda_package:
         src: "{{ packaging_dir }}/terminator-requirements"
         dest: "{{ packaging_dir }}/terminator-requirements.zip"
         include:
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/*"
         exclude:
           # pre-compiled bytecode
           - "*.pyc"
           # packaging information not needed at runtime
           - "*.dist-info/*"
           # only used for botocore documentation generation
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/docutils/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/docutils/*"
           # installed during creation of the virtualenv
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/pip/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/wheel/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/setuptools/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/pkg_resources/*"
-          - "{{ packaging_dir }}/terminator-requirements/python/lib/python3.9/site-packages/easy_install.py"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/pip/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/wheel/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/setuptools/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/pkg_resources/*"
+          - "{{ packaging_dir }}/terminator-requirements/python/lib/{{ python_version }}/site-packages/easy_install.py"
     - name: publish terminator requirements layer
       tags: lambda
       lambda_layer:
         name: "{{ api_name }}-terminator-requirements"
         description: "Python requirements for {{ api_name }}-terminator"
         compatible_runtimes:
-          - python3.9
+          - "{{ python_version }}"
         path: "{{ packaging_dir }}/terminator-requirements.zip"
         license_info: GPL-3.0-only
         region: "{{ aws_region }}"
@@ -99,7 +100,7 @@
         region: "{{ aws_region }}"
         name: "{{ api_name }}-terminator"
         local_path: "{{ packaging_dir }}/terminator.zip"
-        runtime: python3.9
+        runtime: "{{ python_version }}"
         timeout: 120
         handler: terminator_lambda.lambda_handler
         memory_size: 256
