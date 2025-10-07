@@ -331,3 +331,129 @@ class EcsCluster(DbTerminator):
 
     def terminate(self):
         self.client.delete_cluster(cluster=self.name)
+
+
+class BedrockAgent(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_agents(client):
+            agents = client.get_paginator('list_agents').paginate().build_full_result()['agentSummaries']
+
+            return [] if not agents else agents
+
+        return Terminator._create(credentials, BedrockAgent, 'bedrock-agent', _paginate_list_agents)
+
+    @property
+    def created_time(self):
+        # Bedrock agent provides `updatedAt` field
+        return self.instance.get("updatedAt")
+
+    @property
+    def id(self):
+        return self.instance.get('agentId')
+
+    @property
+    def name(self):
+        return self.instance.get['agentName']
+
+    @property
+    def ignore(self) -> bool:
+        # Skip deletion attempts if agent is not in a stable state
+        return self.instance.get("agentStatus") in ("CREATING", "PREPARING", "UPDATING", "VERSIONING", "DELETING")
+
+    def terminate(self):
+        self.client.delete_agent(agentId=self.id)
+
+
+class BedrockAgentAlias(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_agents(client):
+            agents = client.get_paginator('list_agents').paginate().build_full_result()['agentSummaries']
+
+            return [] if not agents else agents
+
+        def _paginate_aliases(client):
+            agents = _paginate_list_agents(client)
+            all_aliases = []
+            for agent in agents:
+                aliases = client.list_agent_aliases(agentId=agent.get('agentId')).get('aliases', [])
+                aliases = client.get_paginator('list_agent_aliases').paginate(agentId=agent.get('agentId')).build_full_result()['agentAliasSummaries']
+                all_aliases.extend(aliases)
+
+            return all_aliases
+
+        return Terminator._create(credentials, BedrockAgentAlias, 'bedrock-agent', _paginate_aliases)
+
+    @property
+    def created_time(self):
+        return self.instance.get("createdAt")
+
+    @property
+    def id(self):
+        return self.instance.get('agentAliasId')
+
+    @property
+    def name(self):
+        return self.instance.get('agentAliasName')
+
+    def terminate(self):
+        self.client.delete_agent_alias(agentId=self.instance.get('agentAliasId'), aliasId=self.id)
+
+
+class BedrockAgentActionGroup(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_agents(client):
+            agents = client.get_paginator('list_agents').paginate().build_full_result()['agentSummaries']
+
+            return [] if not agents else agents
+
+        def list_action_groups(client):
+            agents = _paginate_list_agents(client)
+            all_groups = []
+            for agent in agents:
+                agent_info = client.get_agent(agentId=agent.get('agentId'))
+                groups = client.get_paginator('list_agent_action_groups').paginate(
+                    agentId=agent_info.get('agentId'),
+                    agentVersion=agent_info.get('agentVersion', 'DRAFT'),
+                ).build_full_result()['actionGroupSummaries']
+                all_groups.extend(groups)
+            return all_groups
+
+        return Terminator._create(credentials, BedrockAgentActionGroup, 'bedrock-agent', list_action_groups)
+
+    @property
+    def created_time(self):
+        # Bedrock agent action group provides `updatedAt` field
+        return self.instance.get("updatedAt")
+
+    @property
+    def id(self):
+        return self.instance.get('actionGroupId')
+
+    @property
+    def name(self):
+        return self.instance.get('actionGroupName')
+
+    def terminate(self):
+        # Disable first if enabled
+        if self.instance["actionGroupState"] == "ENABLED":
+            self.client.update_agent_action_group(
+                agentId=self.instance.get('agentId'),
+                agentVersion=self.instance.get('agentVersion', 'DRAFT'),
+                actionGroupId=self.id,
+                actionGroupName=self.name,
+                actionGroupState="DISABLED",
+
+            )
+
+        # Delete agent action group
+        try:
+            self.client.delete_agent_action_group(
+                agentId=self.instance.get('agentId'),
+                agentVersion=self.instance.get('agentVersion', 'DRAFT'),
+                actionGroupId=self.id
+            )
+        except self.client.exceptions.ConflictException:
+            pass

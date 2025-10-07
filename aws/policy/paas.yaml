@@ -4,6 +4,9 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurFees
     Effect: Allow
     Action:
+      - bedrock-runtime:InvokeAgent
+      - bedrock-runtime:InvokeModel
+      - bedrock-runtime:InvokeModelWithResponseStream
       - eks:CreateCluster
       - eks:CreateNodegroup
       - eks:UpdateNodegroupConfig
@@ -16,6 +19,8 @@ Statement:
       - ecr:PutImage
       - ecr:UploadLayerPart
     Resource:
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
+      - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
@@ -25,6 +30,21 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock:GetFoundationModel
+      - bedrock:ListFoundationModels
+      - bedrock-agent:CreateAgent
+      - bedrock-agent:CreateAgentActionGroup
+      - bedrock-agent:CreateAgentAlias
+      - bedrock-agent:DeleteAgent
+      - bedrock-agent:DeleteAgentActionGroup
+      - bedrock-agent:DeleteAgentAlias
+      - bedrock-agent:DisableAgentActionGroup
+      - bedrock-agent:GetAgent*
+      - bedrock-agent:ListAgent*
+      - bedrock-agent:PrepareAgent
+      - bedrock-agent:UpdateAgent
+      - bedrock-agent:UpdateAgentActionGroup
+      - bedrock-agent:UpdateAgentAlias
       - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
@@ -100,6 +120,10 @@ Statement:
       - lightsail:DeleteInstanceSnapshot
       - lightsail:GetInstanceSnapshots
     Resource:
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-action-group/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
