@@ -4,7 +4,7 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurFees
     Effect: Allow
     Action:
-      - bedrock-runtime:InvokeAgent
+      - bedrock-agent-runtime:InvokeAgent
       - bedrock-runtime:InvokeModel
       - eks:CreateCluster
       - eks:CreateNodegroup
@@ -18,7 +18,7 @@ Statement:
       - ecr:PutImage
       - ecr:UploadLayerPart
     Resource:
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
@@ -114,7 +114,6 @@ Statement:
       - lightsail:GetInstanceSnapshots
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-action-group/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
