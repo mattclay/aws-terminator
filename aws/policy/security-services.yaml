@@ -131,9 +131,6 @@ Statement:
       - iam:DeleteRole
       - iam:DeleteSAMLProvider
       - iam:Get*
-      #- iam:GetInstanceProfile
-      #- iam:GetSAMLProvider
-      #- iam:GetServerCertificate
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
