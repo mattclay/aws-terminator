@@ -362,10 +362,10 @@ class BedrockAgent(Terminator):
         return self.instance.get("agentStatus") in ("CREATING", "PREPARING", "UPDATING", "VERSIONING", "DELETING")
 
     def terminate(self):
-        def _paginate_aliases(self):
-           return self.client.get_paginator('list_agent_aliases').paginate(agentId=self.id).build_full_result()['agentAliasSummaries']
+        def _paginate_aliases():
+            return self.client.get_paginator('list_agent_aliases').paginate(agentId=self.id).build_full_result()['agentAliasSummaries']
 
-        def _paginate_action_groups(self):
+        def _paginate_action_groups():
             agent = self.client.get_agent(agentId=self.id)
             agent_info = agent.get("agent", {})
 
@@ -374,14 +374,14 @@ class BedrockAgent(Terminator):
 
             return self.client.get_paginator('list_agent_action_groups').paginate(
                     agentId=self.id,
-                    agentVersion=agent_info.get('agentVersion', 'DRAFT'),
-            ).build_full_result()['actionGroupSummaries']
+                    agentVersion=agent_info.get('agentVersion', 'DRAFT')
+                ).build_full_result()['actionGroupSummaries']
 
         # If there are aliases, delete them first
         aliases = _paginate_aliases()
         for each in aliases:
             self.client.delete_agent_alias(agentId=self.id, aliasId=each.get('agentAliasId'))
-        
+
         # If there are action groups, delete them first
         action_groups = _paginate_action_groups()
         for each in action_groups:
@@ -407,6 +407,6 @@ class BedrockAgent(Terminator):
                     agentVersion=agent_info.get('agentVersion', 'DRAFT'),
                     actionGroupId=each['actionGroupId']
                 )
-        
+
         # Delete agent
         self.client.delete_agent(agentId=self.id)
