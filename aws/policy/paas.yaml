@@ -4,8 +4,8 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurFees
     Effect: Allow
     Action:
-      - bedrock-agent-runtime:InvokeAgent
-      - bedrock-runtime:InvokeModel
+      - bedrock:InvokeAgent
+      - bedrock:InvokeModel
       - eks:CreateCluster
       - eks:CreateNodegroup
       - eks:UpdateNodegroupConfig
@@ -29,15 +29,13 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - bedrock:GetFoundationModel
-      - bedrock:ListFoundationModels
-      - bedrock-agent:CreateAgent*
-      - bedrock-agent:DeleteAgent*
-      - bedrock-agent:DisableAgentActionGroup
-      - bedrock-agent:GetAgent*
-      - bedrock-agent:ListAgent*
-      - bedrock-agent:PrepareAgent
-      - bedrock-agent:UpdateAgent*
+      - bedrock:CreateAgent*
+      - bedrock:DeleteAgent*
+      - bedrock:DisableAgentActionGroup
+      - bedrock:GetAgent*
+      - bedrock:ListAgent*
+      - bedrock:PrepareAgent
+      - bedrock:UpdateAgent*
       - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
@@ -115,7 +113,6 @@ Statement:
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
-      - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
@@ -142,6 +139,8 @@ Statement:
   - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock:ListFoundationModels
+      - bedrock:GetFoundationModel
       - cloudfront:CreateCloudFrontOriginAccessIdentity
       - cloudfront:Get*
       - cloudfront:List*
@@ -151,11 +150,7 @@ Statement:
       - ecr:List*
       - ecr:PutImageTagMutability
       - lambda:GetEventSourceMapping
-      - lambda:ListAliases
-      - lambda:ListEventSourceMappings
-      - lambda:ListFunctions
-      - lambda:ListLayers
-      - lambda:ListVersionsByFunction
+      - lambda:List*
     Resource:
       - "*"
 

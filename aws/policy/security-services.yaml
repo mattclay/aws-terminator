@@ -13,6 +13,7 @@ Statement:
     Condition:
       ArnLike:
         iam:PolicyArn:
+          - 'arn:aws:iam::aws:policy/AmazonBedrockFullAccess'
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
           - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
           - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
@@ -129,9 +130,10 @@ Statement:
       - iam:DeleteInstanceProfile
       - iam:DeleteRole
       - iam:DeleteSAMLProvider
-      - iam:GetInstanceProfile
-      - iam:GetSAMLProvider
-      - iam:GetServerCertificate
+      - iam:Get*
+      #- iam:GetInstanceProfile
+      #- iam:GetSAMLProvider
+      #- iam:GetServerCertificate
       - iam:PassRole
       - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
@@ -162,7 +164,7 @@ Statement:
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
 
-  # This allows AWS Services to autmatically create their Default Service Linked Roles
+  # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow
@@ -170,17 +172,19 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-nodegroup.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/memorydb.amazonaws.com/*'
+      # - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/memorydb.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'autoscaling.amazonaws.com'
+          - 'bedrock.amazonaws.com'
           - 'spot.amazonaws.com'
           - 'eks-fargate.amazonaws.com'
           - 'eks-nodegroup.amazonaws.com'
@@ -188,4 +192,4 @@ Statement:
           - 'network-firewall.amazonaws.com'
           - 'ecs.amazonaws.com'
           - 'ecs-test.amazonaws.com'
-          - 'memorydb.amazonaws.com'
+          # - 'memorydb.amazonaws.com'

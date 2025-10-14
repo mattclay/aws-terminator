@@ -377,36 +377,36 @@ class BedrockAgent(Terminator):
                     agentVersion=agent_info.get('agentVersion', 'DRAFT')
                 ).build_full_result()['actionGroupSummaries']
 
-        # If there are aliases, delete them first
+        # If there are Bedrock agent aliases, delete them first
         aliases = _paginate_aliases()
         for each in aliases:
-            self.client.delete_agent_alias(agentId=self.id, aliasId=each.get('agentAliasId'))
+            if each['agentAliasId'] == "TSTALIASID":
+                print(f"Skipping reserved Bedrock agent alias: {each['agentAliasId']}")
+                continue
+            self.client.delete_agent_alias(agentId=self.id, agentAliasId=each['agentAliasId'])
 
-        # If there are action groups, delete them first
+        # If there are Bedrock agent action groups, delete them first
         action_groups = _paginate_action_groups()
         for each in action_groups:
-            self.client.delete_agent_alias(agentId=self.id, aliasId=each.get('agentAliasId'))
-
             agent = self.client.get_agent(agentId=self.id)
             agent_info = agent.get("agent", {})
             if agent_info:
-                # Disable first if enabled
+                # Disable Bedrock agent action group first if enabled
                 if each["actionGroupState"] == "ENABLED":
                     self.client.update_agent_action_group(
                         agentId=self.id,
                         agentVersion=agent_info.get('agentVersion', 'DRAFT'),
-                        actionGroupId=self.id,
+                        actionGroupId=each["actionGroupId"],
                         actionGroupName=each['actionGroupName'],
                         actionGroupState="DISABLED",
-
                     )
 
-                # Delete action group
+                # Delete Bedrock agent action group
                 self.client.delete_agent_action_group(
                     agentId=self.id,
                     agentVersion=agent_info.get('agentVersion', 'DRAFT'),
                     actionGroupId=each['actionGroupId']
                 )
 
-        # Delete agent
+        # Delete Bedrock agent
         self.client.delete_agent(agentId=self.id)
