@@ -1,7 +1,7 @@
 Version: '2012-10-17'
 Statement:
 
-  - Sid: AllowAssumeRoleTestsAttachAndDetachPolicy
+  - Sid: AssumeRoleTestsAttachAndDetachPolicy
     Effect: Allow
     Action:
       - iam:AttachRolePolicy
@@ -38,7 +38,7 @@ Statement:
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
 
-  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
+  - Sid: RegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - iam:GetUser
@@ -49,7 +49,7 @@ Statement:
         aws:RequestedRegion:
           - '{{ aws_region }}'
 
-  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurFees
+  - Sid: RegionalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - kms:CancelKeyDeletion
@@ -62,7 +62,7 @@ Statement:
         aws:RequestedRegion:
           - '{{ aws_region }}'
 
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+  - Sid: GlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - access-analyzer:ValidatePolicy
@@ -93,7 +93,7 @@ Statement:
       - secretsmanager:List*
     Resource: "*"
 
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
+  - Sid: GlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - iam:DeleteServerCertificate
@@ -112,7 +112,7 @@ Statement:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
-  - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
+  - Sid: ResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - acm:AddTagsToCertificate
@@ -123,16 +123,14 @@ Statement:
       - acm:RemoveTagsFromCertificate
       - acm:RenewCertificate
       - acm:RequestCertificate
-      - iam:AddRoleToInstanceProfile
-      - iam:CreateInstanceProfile
       - iam:CreateRole
       - iam:CreateSAMLProvider
-      - iam:DeleteInstanceProfile
       - iam:DeleteRole
       - iam:DeleteSAMLProvider
-      - iam:Get*
+      - iam:*InstanceProfile
+      - iam:GetSAMLProvider
+      - iam:GetServerCertificate
       - iam:PassRole
-      - iam:RemoveRoleFromInstanceProfile
       - iam:UpdateSAMLProvider
       - iam:UpdateServerCertificate
       - kms:Decrypt
@@ -163,7 +161,7 @@ Statement:
 
   # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
-  - Sid: AllowServiceLinkedRoleCreation
+  - Sid: ServiceLinkedRoleCreation
     Effect: Allow
     Action:
       - iam:CreateServiceLinkedRole
