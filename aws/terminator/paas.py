@@ -381,7 +381,6 @@ class BedrockAgent(Terminator):
         aliases = _paginate_aliases()
         for each in aliases:
             if each['agentAliasId'] == "TSTALIASID":
-                print(f"Skipping reserved Bedrock agent alias: {each['agentAliasId']}")
                 continue
             self.client.delete_agent_alias(agentId=self.id, agentAliasId=each['agentAliasId'])
 
