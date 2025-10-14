@@ -331,3 +331,81 @@ class EcsCluster(DbTerminator):
 
     def terminate(self):
         self.client.delete_cluster(cluster=self.name)
+
+
+class BedrockAgent(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_agents(client):
+            agents = client.get_paginator('list_agents').paginate().build_full_result()['agentSummaries']
+
+            return [] if not agents else agents
+
+        return Terminator._create(credentials, BedrockAgent, 'bedrock-agent', _paginate_list_agents)
+
+    @property
+    def created_time(self):
+        # Bedrock agent provides `updatedAt` field
+        return self.instance.get("updatedAt")
+
+    @property
+    def id(self):
+        return self.instance.get('agentId')
+
+    @property
+    def name(self):
+        return self.instance.get['agentName']
+
+    @property
+    def ignore(self) -> bool:
+        # Skip deletion attempts if agent is not in a stable state
+        return self.instance.get("agentStatus") in ("CREATING", "PREPARING", "UPDATING", "VERSIONING", "DELETING")
+
+    def terminate(self):
+        def _paginate_aliases():
+            return self.client.get_paginator('list_agent_aliases').paginate(agentId=self.id).build_full_result()['agentAliasSummaries']
+
+        def _paginate_action_groups():
+            agent = self.client.get_agent(agentId=self.id)
+            agent_info = agent.get("agent", {})
+
+            if not agent_info:
+                return []
+
+            return self.client.get_paginator('list_agent_action_groups').paginate(
+                    agentId=self.id,
+                    agentVersion=agent_info.get('agentVersion', 'DRAFT')
+                ).build_full_result()['actionGroupSummaries']
+
+        # If there are Bedrock agent aliases, delete them first
+        aliases = _paginate_aliases()
+        for each in aliases:
+            if each['agentAliasId'] == "TSTALIASID":
+                continue
+            self.client.delete_agent_alias(agentId=self.id, agentAliasId=each['agentAliasId'])
+
+        # If there are Bedrock agent action groups, delete them first
+        action_groups = _paginate_action_groups()
+        for each in action_groups:
+            agent = self.client.get_agent(agentId=self.id)
+            agent_info = agent.get("agent", {})
+            if agent_info:
+                # Disable Bedrock agent action group first if enabled
+                if each["actionGroupState"] == "ENABLED":
+                    self.client.update_agent_action_group(
+                        agentId=self.id,
+                        agentVersion=agent_info.get('agentVersion', 'DRAFT'),
+                        actionGroupId=each["actionGroupId"],
+                        actionGroupName=each['actionGroupName'],
+                        actionGroupState="DISABLED",
+                    )
+
+                # Delete Bedrock agent action group
+                self.client.delete_agent_action_group(
+                    agentId=self.id,
+                    agentVersion=agent_info.get('agentVersion', 'DRAFT'),
+                    actionGroupId=each['actionGroupId']
+                )
+
+        # Delete Bedrock agent
+        self.client.delete_agent(agentId=self.id)
