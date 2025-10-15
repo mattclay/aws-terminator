@@ -9,6 +9,7 @@ Statement:
       - dynamodb:Get*
       - dynamodb:Describe*
       - dynamodb:List*
+      - dynamodb:Query
       - dynamodb:Scan
       - elasticache:Describe*
       - elasticache:List*
