@@ -27,6 +27,11 @@
       tags: always
       ansible.builtin.assert:
         that: "aws_account_id == test_account_id"
+    - name: verify region is correct
+      ansible.builtin.assert:
+        that: "{{ lookup('aws_region') == aws_region }}"
+        fail_msg: "The current AWS profile must be configured to use the {{ aws_region }} region, not {{ lookup('aws_region') }}."
+      tags: always
     - name: Create a list of policy file names without the path or extension
       tags: iam
       ansible.builtin.set_fact:

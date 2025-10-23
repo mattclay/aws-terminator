@@ -116,7 +116,6 @@ Deploying to AWS is done using an Ansible playbook, which can be easily run with
 
 The playbook requires the following environment variables to be set:
 
-- `AWS_REGION` - The recommended region is `us-east-1` as that is where Shippable instances run.
 - `STAGE` - This must be either `dev` or `prod`.
 
 ## Deployment Process
