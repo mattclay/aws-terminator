@@ -1,51 +1,49 @@
 - hosts: localhost
-  collections:
-    - mattclay.aws
   gather_facts: False
   vars:
     stage: "{{ lookup('env', 'STAGE') }}"
   tasks:
     - name: load config
       tags: always
-      include_vars:
+      ansible.builtin.include_vars:
         file: config.yml
     - name: check config
       tags: always
-      assert:
+      ansible.builtin.assert:
         that: 'test_account_id != lambda_account_id'
     - name: check required variables
       tags: always
-      fail: "msg='Environment variable {{ item | upper}} must be set.'"
+      ansible.builtin.fail: "msg='Environment variable {{ item | upper}} must be set.'"
       when: not lookup('vars', item)
       with_items:
         - stage
     - name: get aws account facts
       tags: always
-      aws_account_facts:
+      mattclay.aws.aws_account_facts:
     - name: show configuration
       tags: always
-      debug: msg="stage={{ stage }}, aws_account_id={{ aws_account_id }}"
+      ansible.builtin.debug: msg="stage={{ stage }}, aws_account_id={{ aws_account_id }}"
     - name: verify aws_account_id matches test_account_id
       tags: always
-      assert:
+      ansible.builtin.assert:
         that: "aws_account_id == test_account_id"
     - name: Create a list of policy file names without the path or extension
       tags: iam
-      set_fact:
+      ansible.builtin.set_fact:
         policies: '{{ lookup("fileglob", "policy/*.yaml", wantlist=True) | map("basename") | map("regex_findall", "^(.*?)\.yaml") | list | flatten }}'
     - name: Check policies do not exceed AWS size limits
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ lookup('template', 'policy/' + item + '.yaml') | from_yaml | to_json |length < 6144 }}"
         fail_msg: "{{ 'policy/' + item  + '.yaml'}} exceeds the 6144 max character count for AWS managed policies"
       loop: "{{ policies }}"
     - name: Create a list of managed policies
       tags: iam
-      set_fact:
+      ansible.builtin.set_fact:
         managed_policies: '{{ policies | map("regex_replace", "^(.*)$", api_name + "-test" + "-\1-" + stage) | list }}'
     - name: create iam managed policy for test permission groups
       tags: iam
-      iam_managed_policy:
+      amazon.aws.iam_managed_policy:
         policy_name: "{{ api_name }}-test-{{ item }}-{{ stage }}"
         state: present
         policy_description: "{{ api_name }}-{{ stage }} {{ item }} policy for CI tests"
@@ -53,7 +51,7 @@
       loop: "{{ policies }}"
     - name: create iam role for running integration tests
       tags: iam
-      iam_role:
+      amazon.aws.iam_role:
         name: "{{ api_name }}-test-{{ stage }}"
         state: present
         managed_policies: "{{ managed_policies }}"
@@ -68,7 +66,7 @@
                 AWS: 'arn:aws:iam::{{ lambda_account_id }}:root'
     - name: create iam role for lambda functions created by integration tests
       tags: iam
-      iam_role:
+      amazon.aws.iam_role:
         name: "ansible_lambda_role"
         state: present
         create_instance_profile: no
