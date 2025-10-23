@@ -1,7 +1,6 @@
 - hosts: localhost
   gather_facts: False
   vars:
-    aws_region: "us-east-1"
     stage: "prod"
     terminator_policy: "{{ lookup('template', 'terminator-policy.json') }}"
     packaging_dir: "{{ playbook_dir }}/../.cache/packaging"
@@ -25,6 +24,11 @@
       tags: always
       ansible.builtin.assert:
         that: "aws_account_id == lambda_account_id"
+    - name: verify region is correct
+      ansible.builtin.assert:
+        that: "{{ lookup('aws_region') == aws_region }}"
+        fail_msg: "The current AWS profile must be configured to use the {{ aws_region }} region, not {{ lookup('aws_region') }}."
+      tags: always
     - name: create iam role for terminator functions
       tags: iam
       amazon.aws.iam_role:
@@ -81,7 +85,6 @@
           - "{{ python_version }}"
         path: "{{ packaging_dir }}/terminator-requirements.zip"
         license_info: GPL-3.0-only
-        region: "{{ aws_region }}"
         state: present
       register: terminator_requirements_layer
     - name: create terminator package
@@ -95,7 +98,6 @@
     - name: deploy terminator package
       tags: lambda
       mattclay.aws.lambda:
-        region: "{{ aws_region }}"
         name: "{{ api_name }}-terminator"
         local_path: "{{ packaging_dir }}/terminator.zip"
         runtime: "{{ python_version }}"
@@ -116,7 +118,6 @@
     - name: alias terminator functions
       tags: lambda
       mattclay.aws.lambda_alias:
-        region: "{{ aws_region }}"
         state: present
         name: "{{ stage }}"
         description: "{{ stage }} alias"
@@ -125,7 +126,6 @@
     - name: schedule terminator event
       tags: schedule
       mattclay.aws.cloudwatch_event:
-        region: "{{ aws_region }}"
         rule_name: "{{ api_name }}-terminator-{{ stage }}"
         schedule_expression: rate(5 minutes)
         function_name: "{{ api_name }}-terminator:{{ stage }}"
@@ -133,7 +133,6 @@
     - name: schedule terminator event permissions
       tags: schedule
       mattclay.aws.lambda_policy:
-        region: "{{ aws_region }}"
         function_name: "{{ api_name }}-terminator:{{ stage }}"
         source_arn: "arn:aws:events:{{ aws_region }}:{{ aws_account_id }}:rule/{{ api_name }}-terminator-{{ stage }}"
         principal_service: events.amazonaws.com
