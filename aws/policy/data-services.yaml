@@ -68,6 +68,7 @@ Statement:
       - rds:CreateDBClusterParameterGroup
       - rds:CreateDBSubnetGroup
       - rds:DeleteDBCluster
+      - rds:DeleteGlobalCluster
       - rds:DeleteDBParameterGroup
       - rds:DeleteDBClusterParameterGroup
       - rds:DeleteDBSubnetGroup
@@ -77,6 +78,7 @@ Statement:
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBInstance
       - rds:ModifyDBInstance
+      - rds:ModifyGlobalCluster
       - rds:DeleteDBInstance
       - rds:StopDBCluster
       - rds:StopDBInstance
@@ -118,6 +120,8 @@ Statement:
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
+      # RDS Global Cluster Resources do not have a region
+      - 'arn:aws:rds::{{ aws_account_id }}:global-cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-pg:*'
@@ -129,11 +133,14 @@ Statement:
     Effect: Allow
     Action:
       - rds:CreateDBCluster
+      - rds:CreateGlobalCluster
       - elasticache:CreateCacheCluster
       - redshift:CreateCluster
     Resource:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
+      # RDS Global Cluster Resources do not have a region
+      - 'arn:aws:rds::{{ aws_account_id }}:global-cluster:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:parametergroup:*'
