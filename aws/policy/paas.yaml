@@ -70,6 +70,11 @@ Statement:
       - eks:DescribeNodegroup
       - eks:UpdateNodegroupVersion
       - eks:DeleteNodegroup
+      - eks:DeletePodIdentityAssociation
+      - eks:ListPodIdentityAssociations
+      - eks:DescribePodIdentityAssociation
+      - eks:UpdatePodIdentityAssociation
+      - eks:CreatePodIdentityAssociation
       - elasticbeanstalk:CreateApplication
       - elasticbeanstalk:DeleteApplication
       - elasticbeanstalk:Describe*
@@ -122,6 +127,7 @@ Statement:
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:fargateprofile/*/*/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
+      - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:podidentityassociation/*/*'
       - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
