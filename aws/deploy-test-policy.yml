@@ -68,7 +68,11 @@
             - Action: sts:AssumeRole
               Effect: Allow
               Principal:
-                AWS: 'arn:aws:iam::{{ lambda_account_id }}:root'
+                AWS: [
+                  # Temporary hard-coded ARNs to simplify account migration.
+                  "arn:aws:iam::900854079004:root",
+                  "arn:aws:iam::160936122096:root"
+                ]
     - name: create iam role for lambda functions created by integration tests
       tags: iam
       amazon.aws.iam_role:
