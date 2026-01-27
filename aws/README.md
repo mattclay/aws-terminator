@@ -122,6 +122,12 @@ The playbook requires the following environment variables to be set:
 
 Initial setup can be handled by an administrator, with further updates to the deployment by a power user.
 
+### Authentication
+
+For deployment to the default Ansible accounts, users must use Red Hat SSO.
+
+Using [rh-aws-saml-login](https://github.com/app-sre/rh-aws-saml-login) is recommended.
+
 ### Administrator
 
 An administrator can deploy the IAM roles and policies with `make terminator`.
@@ -137,18 +143,14 @@ This user should have the following AWS Managed Policies applied:
 
 ### Steps to update permissions and terminator for AWS pull requests
 
-Use Python 2 (Python 3 not fully supported yet)
-
 Modify IAM permissions:
   - update the appropriate test policy in the policy directory (policy groups are defined below)
-  - export AWS_PROFILE=youraworksuser
-  - assume arn:aws:iam::966509639900:role/administrator
-  - export the sts credentials and unset AWS_PROFILE
+  - authenticate to the test account
   - deploy permissions to dev running `make test_policy STAGE=dev`
 
 Check the permissions by running the integration tests:
   - make sure there is no test/integration/cloud-config-aws.yml (will override CI credentials)
-  - make sure CI key is in ~/.ansible-core-ci.key
+  - make sure CI key is in ~/.ansible-core-ci.auth
   - run tests with `ansible-test integration [module] --remote-stage dev --docker default -v`
 
 If tests create a resource:
@@ -160,7 +162,9 @@ If tests create a resource:
 Make a pull request to CI
 
 If tests pass and CI PR is ready to merge:
+  - authenticate to the test account
   - deploy to prod with `make test_policy STAGE=prod`
 
 If there are modifications to the terminator:
-  - after deploying to dev and prod run `make terminator_lambda` using aworks user credentials
+  - authenticate to the lambda account
+  - run `make terminator_lambda`

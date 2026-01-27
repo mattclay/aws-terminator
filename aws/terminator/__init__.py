@@ -28,7 +28,7 @@ def import_plugins() -> None:
 
 
 def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
-    kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '_', f'{api_name}-resources-{stage}')
+    kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '-', f'{api_name}-resources-{stage}')
     kvs.initialize()
 
     cleanup_test_account(stage, check, force, api_name, test_account_id, targets)

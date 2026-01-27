@@ -1,0 +1,6 @@
+# Deploy this policy with the following command:
+# aws logs put-account-policy --cli-input-yaml file://cloudwatch-transformer.yml --policy-document file://cloudwatch-transformer-policy.json
+policyName: ansible-core-ci
+policyType: TRANSFORMER_POLICY
+scope: ALL
+selectionCriteria: LogGroupNamePrefix = "/ansible-core-ci/"
