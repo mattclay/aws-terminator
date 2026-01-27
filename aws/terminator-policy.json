@@ -12,7 +12,7 @@
                 "dynamodb:Scan",
                 "dynamodb:BatchWriteItem"
             ],
-            "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ api_name.replace('-', '_') }}_resources_{{ stage }}"
+            "Resource": "arn:aws:dynamodb:*:{{ aws_account_id }}:table/{{ api_name }}-resources-{{ stage }}"
         },
         {
             "Effect": "Allow",

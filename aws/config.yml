@@ -1,6 +1,11 @@
 # This is the account in which the lambda functions are run.
 # It must be different from the account which runs the integration tests.
-lambda_account_id: '900854079004'
+lambda_account_id: '461313337962'
+
+# This is the account which grants access to the integration test environment.
+# It must be different from the account which runs the integration tests.
+# It may be the same as the account which runs the lambda functions.
+access_account_id: '160936122096'
 
 # This is the account in which the integration tests are run.
 # It must be different from the account which runs the lambda functions.

@@ -1,0 +1,6 @@
+# Deploy this policy with the following command:
+# aws logs put-account-policy --cli-input-yaml file://cloudwatch-index.yml --policy-document file://cloudwatch-index-policy.json
+policyName: ansible-core-ci
+policyType: FIELD_INDEX_POLICY
+scope: ALL
+selectionCriteria: LogGroupNamePrefix = "/ansible-core-ci/"

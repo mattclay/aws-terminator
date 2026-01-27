@@ -71,7 +71,8 @@
                 AWS: [
                   # Temporary hard-coded ARNs to simplify account migration.
                   "arn:aws:iam::900854079004:root",
-                  "arn:aws:iam::160936122096:root"
+                  "arn:aws:iam::{{ lambda_account_id }}:root",
+                  "arn:aws:iam::{{ access_account_id }}:root"
                 ]
     - name: create iam role for lambda functions created by integration tests
       tags: iam

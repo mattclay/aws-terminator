@@ -1,0 +1,32 @@
+[
+  {
+    "parseJSON": {}
+  },
+  {
+    "addKeys": {
+      "entries": [
+        {
+          "key": "log_level",
+          "value": "INFO"
+        }
+      ]
+    }
+  },
+  {
+    "copyValue": {
+      "entries": [
+        {
+          "source": "log_level",
+          "target": "level"
+        }
+      ]
+    }
+  },
+  {
+    "deleteKeys": {
+      "withKeys": [
+        "log_level"
+      ]
+    }
+  }
+]
