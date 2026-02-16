@@ -69,8 +69,6 @@
               Effect: Allow
               Principal:
                 AWS: [
-                  # Temporary hard-coded ARNs to simplify account migration.
-                  "arn:aws:iam::900854079004:root",
                   "arn:aws:iam::{{ lambda_account_id }}:root",
                   "arn:aws:iam::{{ access_account_id }}:root"
                 ]
