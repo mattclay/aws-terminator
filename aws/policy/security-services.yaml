@@ -91,6 +91,7 @@ Statement:
       - secretsmanager:Describe*
       - secretsmanager:GetRandomPassword
       - secretsmanager:List*
+      - cloudtrail:LookupEvents
     Resource: "*"
 
   - Sid: GlobalRestrictedResourceActionsWhichIncurFees
