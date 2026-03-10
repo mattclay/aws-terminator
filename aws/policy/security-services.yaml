@@ -66,6 +66,7 @@ Statement:
     Effect: Allow
     Action:
       - access-analyzer:ValidatePolicy
+      - cloudtrail:LookupEvents
       - iam:GetRole
       - iam:List*
       - iam:Tag*
@@ -91,7 +92,6 @@ Statement:
       - secretsmanager:Describe*
       - secretsmanager:GetRandomPassword
       - secretsmanager:List*
-      - cloudtrail:LookupEvents
     Resource: "*"
 
   - Sid: GlobalRestrictedResourceActionsWhichIncurFees
@@ -100,14 +100,13 @@ Statement:
       - iam:DeleteServerCertificate
       - iam:UploadServerCertificate
       - secretsmanager:CreateSecret
-      - secretsmanager:DeleteSecret
+      - secretsmanager:Delete*
       - secretsmanager:Get*
       - secretsmanager:RotateSecret
       - secretsmanager:TagResource
       - secretsmanager:UntagResource
       - secretsmanager:UpdateSecret
       - secretsmanager:PutResourcePolicy
-      - secretsmanager:DeleteResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
