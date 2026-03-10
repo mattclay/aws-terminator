@@ -82,6 +82,7 @@ Statement:
       - SNS:List*
       - states:Describe*
       - states:List*
+      - cloudtrail:LookupEvents
     Resource: "*"
 
   - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
@@ -131,6 +132,7 @@ Statement:
       - states:DeleteStateMachine
       - states:TagResource
       - states:UntagResource
+      - cloudtrail:LookupEvents
     Resource:
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:document/*'
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
@@ -146,6 +148,7 @@ Statement:
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
       - 'arn:aws:ssm:{{ aws_region }}::parameter/aws/service/*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:cloudtrail:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
