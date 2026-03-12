@@ -37,18 +37,23 @@ Statement:
       - bedrock:PrepareAgent
       - bedrock:UpdateAgent*
       - cloudfront:CreateCachePolicy
+      - cloudfront:CreateFunction
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
       - cloudfront:DeleteCloudFrontOriginAccessIdentity
       - cloudfront:DeleteCachePolicy
       - cloudfront:DeleteDistribution
+      - cloudfront:DeleteFunction
       - cloudfront:DeleteOriginRequestPolicy
       - cloudfront:DeleteStreamingDistribution
+      - cloudfront:DescribeFunction
+      - cloudfront:PublishFunction
       - cloudfront:TagResource
       - cloudfront:UntagResource
       - cloudfront:UpdateCachePolicy
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
       - cloudfront:UpdateDistribution
+      - cloudfront:UpdateFunction
       - cloudfront:UpdateOriginRequestPolicy
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
@@ -115,6 +120,7 @@ Statement:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
+      - 'arn:aws:cloudfront::{{ aws_account_id }}:function/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-request-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:streaming-distribution/*'
