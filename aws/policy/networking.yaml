@@ -136,11 +136,22 @@ Statement:
       - network-firewall:UpdateLoggingConfiguration
       - network-firewall:UpdateRuleGroup
       - network-firewall:UpdateSubnetChangeProtection
+      - servicediscovery:CreateHttpNamespace
+      - servicediscovery:CreatePublicDnsNamespace
+      - servicediscovery:CreatePrivateDnsNamespace
+      - servicediscovery:ListNamespaces
+      - servicediscovery:DeleteNamespace
+      - servicediscovery:GetNamespace
+      - servicediscovery:GetOperation
+      - servicediscovery:ListServices
+      - servicediscovery:DeleteService
+      - servicediscovery:TagResource
     Resource:
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall-policy/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateful-rulegroup/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateless-rulegroup/AnsibleTest-*'
+      - 'arn:aws:servicediscovery:{{ aws_region }}:{{ aws_account_id }}:*/*'
 
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
     Effect: Allow

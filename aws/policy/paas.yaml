@@ -39,17 +39,11 @@ Statement:
       - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
-      - cloudfront:DeleteCloudFrontOriginAccessIdentity
-      - cloudfront:DeleteCachePolicy
-      - cloudfront:DeleteDistribution
-      - cloudfront:DeleteOriginRequestPolicy
-      - cloudfront:DeleteStreamingDistribution
+      - cloudfront:Delete*
       - cloudfront:TagResource
       - cloudfront:UntagResource
       - cloudfront:UpdateCachePolicy
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
-      - cloudfront:UpdateDistribution
-      - cloudfront:UpdateOriginRequestPolicy
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
@@ -183,6 +177,7 @@ Statement:
       - ecs:PutAccountSetting
       - ecs:RegisterTaskDefinition
       - ecs:DeregisterTaskDefinition
+      - ecs:DeleteTaskDefinitions
     Resource:
       - "*"
 
@@ -201,3 +196,17 @@ Statement:
       - ecs:PutClusterCapacityProviders
     Resource:
       - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
+
+  # This allows AWS Services to automatically create their Default Service Linked Roles
+  # These have fixed policies and can only be assumed by the service itself.
+
+  - Sid: AllowServiceLinkedRoleCreation
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing'
+    Condition:
+      ForAnyValue:StringEquals:
+        iam:AWSServiceName:
+          - 'elasticloadbalancing.amazonaws.com'
