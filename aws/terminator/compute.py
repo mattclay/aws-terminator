@@ -449,6 +449,45 @@ class EksNodegroup(Terminator):
                 raise
 
 
+class EksPodIdentityAssociation(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _build_eks_pod_identity_associations(client):
+            results = []
+            for cluster in client.get_paginator('list_clusters').paginate().build_full_result()['clusters']:
+                for association in client.get_paginator('list_pod_identity_associations').paginate(clusterName=cluster).build_full_result()['associations']:
+                    results.append(client.describe_pod_identity_association(clusterName=cluster, associationId=association['associationId'])['association'])
+            return results
+        return Terminator._create(credentials, EksPodIdentityAssociation, 'eks', _build_eks_pod_identity_associations)
+
+    @property
+    def name(self):
+        return self.instance['associationArn']
+
+    @property
+    def id(self):
+        return self.instance['associationId']
+
+    @property
+    def age_limit(self):
+        return datetime.timedelta(minutes=15)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def cluster_name(self):
+        return self.instance['clusterName']
+
+    def terminate(self):
+        try:
+            self.client.delete_pod_identity_association(clusterName=self.cluster_name, associationId=self.id)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUseException':
+                raise
+
+
 class ElasticLoadBalancing(Terminator):
     @staticmethod
     def create(credentials):
