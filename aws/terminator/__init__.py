@@ -15,7 +15,8 @@ import dateutil.tz
 
 logger = logging.getLogger('cleanup')
 
-AWS_REGION = 'us-east-1'
+AWS_REGION = os.environ.get('TEST_REGION', 'us-east-1')
+SSM_BUCKET_NAME = os.environ.get('SSM_BUCKET_NAME', 'ssm-encrypted-test-bucket')
 
 T = typing.TypeVar('T')
 
@@ -27,11 +28,14 @@ def import_plugins() -> None:
         __import__(f'terminator.{import_name}')
 
 
-def cleanup(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
+def cleanup(
+    stage: str, check: bool, force: bool, api_name: str, test_account_id: str, *,
+    targets: typing.Optional[typing.List[str]] = None
+) -> None:
     kvs.domain_name = re.sub(r'[^a-zA-Z0-9]+', '-', f'{api_name}-resources-{stage}')
     kvs.initialize()
 
-    cleanup_test_account(stage, check, force, api_name, test_account_id, targets)
+    cleanup_test_account(stage, check, force, api_name, test_account_id, targets=targets)
 
     if not targets or 'Database' in targets:
         cleanup_database(check, force)
@@ -61,7 +65,10 @@ def process_instance(instance: 'Terminator', check: bool, force: bool = False) -
     return status
 
 
-def cleanup_test_account(stage: str, check: bool, force: bool, api_name: str, test_account_id: str, targets: typing.Optional[typing.List[str]] = None) -> None:
+def cleanup_test_account(
+    stage: str, check: bool, force: bool, api_name: str, test_account_id: str, *,
+    targets: typing.Optional[typing.List[str]] = None
+) -> None:
     role = f'arn:aws:iam::{test_account_id}:role/{api_name}-test-{stage}'
     credentials = assume_session(role, 'cleanup')
 
@@ -232,8 +239,9 @@ class Terminator(abc.ABC):
 
     @staticmethod
     def _create(session: boto3.Session, instance_type: typing.Type['Terminator'], client_name: str,
-                describe_lambda: typing.Callable[[botocore.client.BaseClient], typing.List[typing.Dict[str, typing.Any]]]) -> typing.List['Terminator']:
-        client = session.client(client_name, region_name=AWS_REGION)
+                describe_lambda: typing.Callable[[botocore.client.BaseClient], typing.List[typing.Dict[str, typing.Any]]],
+                region_name: typing.Optional[str] = None) -> typing.List['Terminator']:
+        client = session.client(client_name, region_name=region_name or AWS_REGION)
         instances = describe_lambda(client)
         terminators = [instance_type(client, instance) for instance in instances]
         logger.debug('located %s: count=%d', instance_type.__name__, len(terminators))

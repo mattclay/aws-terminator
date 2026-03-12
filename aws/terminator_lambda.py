@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         arn.append('prod')  # hack to set the stage for testing in the lambda console
 
     if len(arn) != 8 or arn[5] != 'function' or arn[6] != context.function_name:
-        raise Exception(f'error: unexpected arn: {arn}')
+        raise ValueError(f'error: unexpected arn: {arn}')
 
     stage = arn[7]
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ansible.plugins.lookup import LookupBase
+from ansible.plugins.lookup import LookupBase  # pylint: disable=import-error
 
 
 class LookupModule(LookupBase):

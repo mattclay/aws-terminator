@@ -21,21 +21,36 @@ Statement:
       - wafv2:DeleteFirewallManagerRuleGroups
       - wafv2:DisassociateFirewallManager
       - wafv2:UpdateIPSet
+      - wafv2:Describe*
+      - wafv2:TagResource
+      - wafv2:UntagResource
     Resource:
-      - 'arn:aws:wafv2:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:wafv2:{{ aws_region }}:{{ aws_account_id }}:regional/*'
+      - 'arn:aws:wafv2:us-east-1:{{ aws_account_id }}:global/*'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - inspector:List*
+      - inspector:Describe*
       - inspector:CreateResourceGroup
       - inspector:CreateAssessmentTarget
-      - inspector:Describe*
       - inspector:UpdateAssessmentTarget
       - inspector:DeleteAssessmentTarget
       - inspector:CreateAssessmentTemplate
       - inspector:DeleteAssessmentTemplate
       - inspector:SetTagsForResource
+    Resource: "*"
+    Condition:
+      StringEquals:
+        aws:RequestedRegion:
+          - '{{ aws_region }}'
+
+  - Sid: AllowWafUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - wafv2:Get*
+      - wafv2:List*
       - waf:CreateByteMatchSet
       - waf:CreateGeoMatchSet
       - waf:CreateIPSet
@@ -75,13 +90,4 @@ Statement:
       - waf:UpdateSqlInjectionMatchSet
       - waf:UpdateWebACL
       - waf:UpdateXssMatchSet
-      - wafv2:Describe*
-      - wafv2:Get*
-      - wafv2:List*
-      - wafv2:TagResource
-      - wafv2:UntagResource
     Resource: "*"
-    Condition:
-      StringEquals:
-        aws:RequestedRegion:
-          - '{{ aws_region }}'

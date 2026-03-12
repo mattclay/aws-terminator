@@ -71,11 +71,15 @@ It is safest to use `cleanup.py` in an empty/dev account.
 
 To start using `cleanup.py` you will need to:
 * Use Python 3.13
+* Install `PyYAML` and `Jinja2` (these are not included in requirements.txt since the Lambda function does not need them):
+
+      pip install PyYAML Jinja2
+
 * Modify config.yml to use your own accounts. These can be the same account if you're just using `cleanup.py`.
   If you use two separate accounts, `lambda_account_id` is the account of the profile that will assume the IAM role in the `test_account_id`. The `test_account_id` is where the terminator class(es) will locate/remove resources.
 * Create a role called `ansible-core-ci-test-dev` that your AWS profile can assume. Give this role the permissions required by the terminator class you are testing.
 * Set the environment variable `AWS_PROFILE` with the profile you want to use.
-* Run `cleanup.py` using the class name as the target to locate the resources in us-east-1:
+* Run `cleanup.py` using the class name as the target to locate resources in the region configured in config.yml:
 
       python cleanup.py --stage dev --target Ec2Instance -v -c
       cleanup     : DEBUG    located Ec2Instance: count=2
