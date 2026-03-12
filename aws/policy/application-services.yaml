@@ -38,19 +38,31 @@ Statement:
       - kinesis:List*
       - mq:Describe*
       - mq:List*
+      - ses:CreateConfigurationSet
+      - ses:CreateConfigurationSetEventDestination
       - ses:CreateReceiptRuleSet
+      - ses:DeleteConfigurationSet
+      - ses:DeleteConfigurationSetEventDestination
       - ses:DeleteIdentity
       - ses:DeleteIdentityPolicy
       - ses:DeleteReceiptRuleSet
       - ses:Describe*
       - ses:Get*
       - ses:List*
+      - ses:PutConfigurationSetArchivingOptions
+      - ses:PutConfigurationSetDeliveryOptions
+      - ses:PutConfigurationSetReputationOptions
+      - ses:PutConfigurationSetSendingOptions
+      - ses:PutConfigurationSetSuppressionOptions
+      - ses:PutConfigurationSetTrackingOptions
+      - ses:PutConfigurationSetVdmOptions
       - ses:PutIdentityPolicy
       - ses:SetActiveReceiptRuleSet
       - ses:SetIdentityDkimEnabled
       - ses:SetIdentityFeedbackForwardingEnabled
       - ses:SetIdentityHeadersInNotificationsEnabled
       - ses:SetIdentityNotificationTopic
+      - ses:UpdateConfigurationSetEventDestination
       - ses:VerifyDomainDkim
       - ses:VerifyDomainIdentity
       - ses:VerifyEmailIdentity
