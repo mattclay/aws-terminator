@@ -163,3 +163,13 @@ Statement:
     Resource:
       - 'arn:aws:apigateway:{{ aws_region }}::/restapis*'
       - 'arn:aws:apigateway:{{ aws_region }}::/tags/*'
+
+  - Sid: AllowNATGatewayServiceLinkedRole
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::*:role/aws-service-role/natgateway.amazonaws.com/*'
+    Condition:
+      StringEquals:
+        iam:AWSServiceName: natgateway.amazonaws.com
