@@ -20,7 +20,7 @@ Statement:
       - s3:List*
       - s3:PutAccelerateConfiguration
       - s3:PutBucketAcl
-      - S3:PutBucketCors
+      - s3:PutBucketCors
       - s3:PutBucketLogging
       - s3:PutBucketNotification
       - s3:PutBucketObjectLockConfiguration
