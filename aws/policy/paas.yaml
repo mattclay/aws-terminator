@@ -110,6 +110,10 @@ Statement:
       - lightsail:GetInstanceSnapshot
       - lightsail:DeleteInstanceSnapshot
       - lightsail:GetInstanceSnapshots
+      - sagemaker:CreateCodeRepository
+      - sagemaker:DeleteCodeRepository
+      - sagemaker:DescribeCodeRepository
+      - sagemaker:UpdateCodeRepository
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
@@ -126,6 +130,7 @@ Statement:
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
 
   - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -151,6 +156,7 @@ Statement:
       - ecr:PutImageTagMutability
       - lambda:GetEventSourceMapping
       - lambda:List*
+      - sagemaker:ListCodeRepositories
     Resource:
       - "*"
 

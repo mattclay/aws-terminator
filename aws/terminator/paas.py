@@ -409,3 +409,36 @@ class BedrockAgent(Terminator):
 
         # Delete Bedrock agent
         self.client.delete_agent(agentId=self.id)
+
+
+class SageMakerCodeRepository(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_code_repositories(client):
+            repositories = []
+            paginator = client.get_paginator('list_code_repositories')
+            for page in paginator.paginate():
+                for repo_summary in page.get('CodeRepositorySummaryList', []):
+                    # Get full details for each repository
+                    repo_details = client.describe_code_repository(
+                        CodeRepositoryName=repo_summary['CodeRepositoryName']
+                    )
+                    repositories.append(repo_details)
+            return repositories
+
+        return Terminator._create(credentials, SageMakerCodeRepository, 'sagemaker', _paginate_list_code_repositories)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['CodeRepositoryArn']
+
+    @property
+    def name(self):
+        return self.instance['CodeRepositoryName']
+
+    def terminate(self):
+        self.client.delete_code_repository(CodeRepositoryName=self.name)
