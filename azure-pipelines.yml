@@ -10,8 +10,8 @@ pool:
 steps:
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '3.9'
-    displayName: Install Python 3.9
+      versionSpec: '3.11'
+    displayName: Install Python 3.11
   - script: pip install --user tox
     displayName: Install tox
   - script: tox --notest
