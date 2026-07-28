@@ -416,15 +416,9 @@ class SageMakerCodeRepository(Terminator):
     def create(credentials):
         def _paginate_list_code_repositories(client):
             repositories = []
-            paginator = client.get_paginator('list_code_repositories')
-            for page in paginator.paginate():
-                for repo_summary in page.get('CodeRepositorySummaryList', []):
-                    # Get full details for each repository
-                    repo_details = client.describe_code_repository(
-                        CodeRepositoryName=repo_summary['CodeRepositoryName']
-                    )
-                    repositories.append(repo_details)
-            return repositories
+            repositories = client.get_paginator('list_code_repositories').paginate().build_full_result()['CodeRepositorySummaryList']
+
+            return [] if not repositories else repositories
 
         return Terminator._create(credentials, SageMakerCodeRepository, 'sagemaker', _paginate_list_code_repositories)
 
