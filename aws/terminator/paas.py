@@ -248,15 +248,6 @@ class Ecs(DbTerminator):
 
             return [] if not names else names
 
-        def _paginate_task_definition_results():
-            names = self.client.get_paginator('list_task_definitions').paginate(
-                PaginationConfig={
-                    'PageSize': 100,
-                }
-            ).build_full_result()['taskDefinitionArns']
-
-            return [] if not names else names
-
         def _paginate_container_instance_results():
             names = self.client.get_paginator('list_container_instances').paginate(
                 cluster=self.name,
@@ -286,11 +277,6 @@ class Ecs(DbTerminator):
         container_instances = _paginate_container_instance_results()
         for each in container_instances:
             self.client.deregister_container_instance(containerInstance=each['containerInstanceArn'], force=True)
-
-        # Deregister task definitions
-        task_definitions = _paginate_task_definition_results()
-        for each in task_definitions:
-            self.client.deregister_task_definition(taskDefinition=each)
 
         # Stop all the tasks
         tasks = _paginate_task_results()
@@ -331,6 +317,33 @@ class EcsCluster(DbTerminator):
 
     def terminate(self):
         self.client.delete_cluster(cluster=self.name)
+
+
+class EcsTaskDefinition(DbTerminator):
+    @property
+    def age_limit(self):
+        return timedelta(minutes=20)
+
+    @property
+    def name(self):
+        return self.instance['taskDefinitionArn']
+
+    @staticmethod
+    def create(credentials):
+        def _paginate_task_definition_results(client):
+            arns = client.get_paginator('list_task_definitions').paginate(
+                PaginationConfig={
+                    'PageSize': 100,
+                }
+            ).build_full_result()['taskDefinitionArns']
+
+            return [{'taskDefinitionArn': arn} for arn in arns]
+
+        return Terminator._create(credentials, EcsTaskDefinition, 'ecs', _paginate_task_definition_results)
+
+    def terminate(self):
+        self.client.deregister_task_definition(taskDefinition=self.name)
+        self.client.delete_task_definitions(taskDefinitions=[self.name])
 
 
 class BedrockAgent(Terminator):
