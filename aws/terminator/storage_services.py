@@ -3,6 +3,8 @@ import datetime
 import botocore
 import botocore.exceptions
 
+import terminator
+
 from . import DbTerminator, Terminator, get_account_id
 
 
@@ -19,7 +21,7 @@ class S3Bucket(Terminator):
     def ignore(self):
         # Bucket encryption takes up to 24 hours to be enabled, so we use a persistent bucket
         # We'll empty the bucket contents in SSMBucketObjects
-        return self.instance['Name'] == 'ssm-encrypted-test-bucket'
+        return self.instance['Name'] == terminator.SSM_BUCKET_NAME
 
     @property
     def created_time(self):
@@ -59,11 +61,13 @@ class SSMBucketObjects(Terminator):
     @staticmethod
     def create(credentials):
         def paginate_objects(client):
-            list_bucket_objects_result = client.get_paginator('list_objects_v2').paginate(Bucket='ssm-encrypted-test-bucket').build_full_result()
-            bucket_contents = {}
-            if list_bucket_objects_result.get('Contents'):
-                bucket_contents = list_bucket_objects_result['Contents']
-            return bucket_contents
+            try:
+                list_bucket_objects_result = client.get_paginator('list_objects_v2').paginate(Bucket=terminator.SSM_BUCKET_NAME).build_full_result()
+            except botocore.exceptions.ClientError as ex:
+                if ex.response['Error']['Code'] in ('NoSuchBucket', 'AccessDenied'):
+                    return []
+                raise
+            return list_bucket_objects_result.get('Contents', [])
 
         return Terminator._create(credentials, SSMBucketObjects, 's3', paginate_objects)
 
@@ -76,7 +80,7 @@ class SSMBucketObjects(Terminator):
         return self.instance['Key']
 
     def terminate(self):
-        self.client.delete_object(Bucket='ssm-encrypted-test-bucket', Key=self.name)
+        self.client.delete_object(Bucket=terminator.SSM_BUCKET_NAME, Key=self.name)
 
 
 class S3AccessPoint(Terminator):
@@ -93,8 +97,8 @@ class S3AccessPoint(Terminator):
                 results.append(client.get_access_point(AccountId=account, Name=ap['Name']))
             return results
         terminators = Terminator._create(credentials, S3AccessPoint, 's3control', list_access_points)
-        for terminator in terminators:
-            terminator._account_id = account
+        for item in terminators:
+            item._account_id = account
         return terminators
 
     @property
@@ -123,8 +127,8 @@ class S3AccessPointForObjectLambda(Terminator):
                 results.append(client.get_access_point_for_object_lambda(AccountId=account, Name=ap['Name']))
             return results
         terminators = Terminator._create(credentials, S3AccessPointForObjectLambda, 's3control', list_access_points)
-        for terminator in terminators:
-            terminator._account_id = account
+        for item in terminators:
+            item._account_id = account
         return terminators
 
     @property

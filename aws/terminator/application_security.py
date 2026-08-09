@@ -231,7 +231,11 @@ class RegionalWafV2IpSet(WafV2):
 class CloudfrontWafV2IpSet(WafV2):
     @staticmethod
     def create(credentials):
-        return DbTerminator._create(credentials, CloudfrontWafV2IpSet, 'wafv2', lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'])
+        return DbTerminator._create(
+            credentials, CloudfrontWafV2IpSet, 'wafv2',
+            lambda client: client.list_ip_sets(Scope='CLOUDFRONT')['IPSets'],
+            region_name='us-east-1'
+        )
 
     def terminate(self):
         self.client.delete_ip_set(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
@@ -249,7 +253,11 @@ class RegionalWafV2RuleGroup(WafV2):
 class CloudfrontWafV2RuleGroup(WafV2):
     @staticmethod
     def create(credentials):
-        return DbTerminator._create(credentials, CloudfrontWafV2RuleGroup, 'wafv2', lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'])
+        return DbTerminator._create(
+            credentials, CloudfrontWafV2RuleGroup, 'wafv2',
+            lambda client: client.list_rule_groups(Scope='CLOUDFRONT')['RuleGroups'],
+            region_name='us-east-1'
+        )
 
     def terminate(self):
         self.client.delete_rule_group(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')
@@ -267,7 +275,11 @@ class RegionalWafV2WebAcl(WafV2):
 class CloudfrontWafV2WebAcl(WafV2):
     @staticmethod
     def create(credentials):
-        return DbTerminator._create(credentials, CloudfrontWafV2WebAcl, 'wafv2', lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'])
+        return DbTerminator._create(
+            credentials, CloudfrontWafV2WebAcl, 'wafv2',
+            lambda client: client.list_web_acls(Scope='CLOUDFRONT')['WebACLs'],
+            region_name='us-east-1'
+        )
 
     def terminate(self):
         self.client.delete_web_acl(Id=self.id, Name=self.name, LockToken=self.lock_token, Scope='CLOUDFRONT')

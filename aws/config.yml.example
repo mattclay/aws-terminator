@@ -1,18 +1,21 @@
 # This is the account in which the lambda functions are run.
 # It must be different from the account which runs the integration tests.
-lambda_account_id: '461313337962'
+lambda_account_id: '123456789012'
 
 # This is the account which grants access to the integration test environment.
 # It must be different from the account which runs the integration tests.
 # It may be the same as the account which runs the lambda functions.
-access_account_id: '160936122096'
+access_account_id: '234567890123'
 
 # This is the account in which the integration tests are run.
 # It must be different from the account which runs the lambda functions.
-test_account_id: '966509639900'
+test_account_id: '345678901234'
 
 # The API name is used to tag and prefix aws resources.
 api_name: 'ansible-core-ci'
 
 # The AWS Region that tests will be run in
 aws_region: 'us-east-1'
+
+# The S3 bucket used for SSM connection plugin encrypted storage tests
+ssm_bucket_name: 'ssm-encrypted-test-bucket-{{ test_account_id }}'

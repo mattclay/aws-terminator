@@ -6,21 +6,39 @@ import argparse
 import logging
 import os
 import sys
-import yaml
 
 import boto3
+import jinja2
+import yaml
 
 try:
     import argcomplete
 except ImportError:
     argcomplete = None
 
+import terminator
 from terminator import (
     cleanup,
     get_concrete_subclasses,
     logger,
     Terminator,
 )
+
+
+def load_config(config_path):
+    """Load and render a YAML config file, resolving Jinja2 templates."""
+    def default_ctor(_dummy, tag_suffix, node):
+        return tag_suffix + ' ' + node.value
+
+    yaml.add_multi_constructor('', default_ctor)
+
+    with open(config_path, encoding="utf-8") as config_fd:
+        raw_config = config_fd.read()
+
+    # First pass to get base values, then render Jinja2 templates
+    config = yaml.load(raw_config, Loader=yaml.BaseLoader)
+    rendered_config = jinja2.Environment().from_string(raw_config).render(config)
+    return yaml.load(rendered_config, Loader=yaml.BaseLoader)
 
 
 def main():
@@ -45,16 +63,13 @@ def main():
         config_path = os.path.join(base_path, 'config.yml')
     logger.debug('Config path: %s', config_path)
 
-    def default_ctor(_dummy, tag_suffix, node):
-        return tag_suffix + ' ' + node.value
-
-    yaml.add_multi_constructor('', default_ctor)
-
-    with open(config_path, encoding="utf-8") as config_fd:
-        config = yaml.load(config_fd, Loader=yaml.BaseLoader)
+    config = load_config(config_path)
 
     test_account_id = config['test_account_id']
     api_name = config['api_name']
+
+    if config.get('ssm_bucket_name'):
+        terminator.SSM_BUCKET_NAME = config['ssm_bucket_name']
 
     account_id = boto3.client('sts').get_caller_identity().get('Account')
 

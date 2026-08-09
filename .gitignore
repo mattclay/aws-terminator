@@ -3,3 +3,5 @@
 *.retry
 *.pyc
 .tox
+.envrc
+aws/config.yml
