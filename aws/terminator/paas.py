@@ -205,6 +205,36 @@ class CloudFrontOriginRequestPolicy(DbTerminator):
         self.client.delete_origin_request_policy(Id=self.name, IfMatch=self.id)
 
 
+class CloudFrontFunction(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        def list_cloud_front_functions(client):
+            functions = []
+            result = client.list_functions()
+            for function_summary in result.get('FunctionList', {}).get('Items', []):
+                # Get the full function details including ETag
+                function_details = client.describe_function(Name=function_summary['Name'])
+                functions.append(function_details)
+            return functions
+
+        return Terminator._create(credentials, CloudFrontFunction, 'cloudfront', list_cloud_front_functions)
+
+    @property
+    def id(self):
+        return self.instance['ETag']
+
+    @property
+    def name(self):
+        return self.instance['FunctionSummary']['Name']
+
+    @property
+    def age_limit(self):
+        return timedelta(minutes=30)
+
+    def terminate(self):
+        self.client.delete_function(Name=self.name, IfMatch=self.id)
+
+
 class Ecs(DbTerminator):
     @property
     def age_limit(self):
