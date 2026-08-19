@@ -89,6 +89,10 @@ Statement:
       - sagemaker:DeleteCodeRepository
       - sagemaker:DescribeCodeRepository
       - sagemaker:UpdateCodeRepository
+      - sagemaker:CreateImage
+      - sagemaker:DeleteImage
+      - sagemaker:DescribeImage
+      - sagemaker:UpdateImage
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
@@ -105,6 +109,7 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
 
   - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
@@ -125,6 +130,10 @@ Statement:
       - lambda:GetEventSourceMapping
       - lambda:List*
       - sagemaker:ListCodeRepositories
+      - sagemaker:ListImages
+      - sagemaker:AddTags
+      - sagemaker:DeleteTags
+      - sagemaker:ListTags
     Resource:
       - "*"
 

@@ -435,3 +435,29 @@ class SageMakerCodeRepository(Terminator):
 
     def terminate(self):
         self.client.delete_code_repository(CodeRepositoryName=self.name)
+
+
+class SageMakerImage(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_images(client):
+            images = client.get_paginator('list_images').paginate().build_full_result()['Images']
+
+            return [] if not images else images
+
+        return Terminator._create(credentials, SageMakerImage, 'sagemaker', _paginate_list_images)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['ImageArn']
+
+    @property
+    def name(self):
+        return self.instance['ImageName']
+
+    def terminate(self):
+        self.client.delete_image(ImageName=self.name)

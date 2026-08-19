@@ -14,6 +14,7 @@ Statement:
       ArnLike:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AmazonBedrockFullAccess'
+          - 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess'
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
           - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
           - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
