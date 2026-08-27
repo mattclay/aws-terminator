@@ -15,3 +15,9 @@ You can run one specific test with a `-e foo` parameter. Use `tox -av` to list t
 ```console
 $ tox -e pylint
 ```
+
+## Policy Guidelines
+
+The `aws/policy/` directory contains IAM policy files that define permissions for
+the test account. See [Policy Guidelines](aws/policy/POLICY-GUIDELINES.md) for
+rules on categorizing, naming, and adding IAM policy statements.

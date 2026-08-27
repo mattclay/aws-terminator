@@ -38,16 +38,18 @@ Every policy statement is classified along three dimensions:
 
 | Value | Meaning | How It Works |
 |-------|---------|--------------|
-| **Global** | No region restriction needed, or enforced via a global condition | Used for services that are global (IAM, Route 53) or when a `Resource: "*"` statement uses a condition like `aws:RequestedRegion` |
-| **Regional** | Restricted to a specific AWS region | Used when a `Resource: "*"` statement uses `ec2:Region` or `aws:RequestedRegion` condition |
-| *(omitted)* | Region is implicit in the resource ARN | Used for resource-restricted statements where the ARN pattern includes `{{ aws_region }}` |
+| **Global** | No explicit region condition | Used for statements without `aws:RequestedRegion` or `ec2:Region` conditions -- including resource-restricted statements where the region is embedded in the ARN |
+| **Regional** | Restricted to a specific AWS region via an explicit condition | Used when a statement has `ec2:Region` or `aws:RequestedRegion` condition |
 
 ### 2.2 Resource Restriction
 
 | Value | Meaning | `Resource` Field |
 |-------|---------|------------------|
-| **ResourceRestricted** | Actions are scoped to specific ARN patterns | Specific ARN list (e.g., `arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*`) |
+| **RestrictedResource** | Actions are scoped to specific ARN patterns | Specific ARN list (e.g., `arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*`) |
 | **UnrestrictedResource** | Actions apply to all resources | `"*"` |
+
+The word order `RestrictedResource` mirrors `UnrestrictedResource` -- the adjective
+always comes before "Resource".
 
 ### 2.3 Cost
 
@@ -71,20 +73,24 @@ Allow{Scope}{Resource}Actions{Cost}
 
 | Component | Values |
 |-----------|--------|
-| `{Scope}` | `Global` \| `Regional` \| *(empty)* |
-| `{Resource}` | `UnrestrictedResource` \| `ResourceRestricted` |
+| `{Scope}` | `Global` \| `Regional` (always present) |
+| `{Resource}` | `UnrestrictedResource` \| `RestrictedResource` |
 | `{Cost}` | `WhichIncurFees` \| `WhichIncurNoFees` |
 
 Examples:
 
 ```
 AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees    Resource: "*"
-AllowRegionalResourceRestrictedActionsWhichIncurFees      Resource: specific ARNs
-AllowResourceRestrictedActionsWhichIncurNoFees            Resource: specific ARNs
+AllowGlobalRestrictedResourceActionsWhichIncurFees        Resource: specific ARNs
+AllowGlobalRestrictedResourceActionsWhichIncurNoFees      Resource: specific ARNs
+AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees  Resource: "*" + region condition
+AllowRegionalRestrictedResourceActionsWhichIncurFees      Resource: specific ARNs
 ```
 
 Special-purpose statements (service-linked roles, conditional attach/detach,
 third-party access) may use descriptive Sids but should still start with `Allow`.
+Examples: `AllowServiceLinkedRoleCreation`, `AllowKafkaActions`,
+`AllowLambdaEventSourceMappings`, `PermitReadOnlyThirdParty`.
 
 ---
 
@@ -313,7 +319,7 @@ Consider adding:
 
 ### Read-only actions (unrestricted)
 ```yaml
-- Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
+- Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
   Effect: Allow
   Action:
     - newservice:Describe*
@@ -324,14 +330,13 @@ Consider adding:
 
 ### Write actions (resource-restricted, no fees)
 ```yaml
-- Sid: AllowResourceRestrictedActionsWhichIncurNoFees
+- Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
   Effect: Allow
   Action:
     - newservice:AddTags
     - newservice:CreateThing
     - newservice:DeleteTags
     - newservice:DeleteThing
-    - newservice:ListTags
     - newservice:UpdateThing
   Resource:
     - 'arn:aws:newservice:{{ aws_region }}:{{ aws_account_id }}:thing/*'
@@ -339,7 +344,7 @@ Consider adding:
 
 ### Write actions (resource-restricted, with fees)
 ```yaml
-- Sid: AllowResourceRestrictedActionsWhichIncurFees
+- Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
   Effect: Allow
   Action:
     - newservice:RunThing
@@ -350,7 +355,7 @@ Consider adding:
 ### Enumeration-only writes (unrestricted, no choice)
 ```yaml
 # Only when the API genuinely doesn't take a resource ARN
-- Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
+- Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
   Effect: Allow
   Action:
     - newservice:CreateThing   # Creates new, no ARN input

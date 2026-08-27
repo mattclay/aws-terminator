@@ -127,8 +127,8 @@ Statement:
       - network-firewall:DeleteResourcePolicy
       - network-firewall:DeleteRuleGroup
       - network-firewall:PutResourcePolicy
-      - network-firewall:TagResource
-      - network-firewall:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - network-firewall:*TagResource
       - network-firewall:UpdateFirewallDeleteProtection
       - network-firewall:UpdateFirewallDescription
       - network-firewall:UpdateFirewallPolicy
@@ -152,7 +152,7 @@ Statement:
     Resource:
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
 
-  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - apigateway:DELETE

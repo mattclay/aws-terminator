@@ -22,34 +22,35 @@ Statement:
       - rds:List*
       - redshift:Describe*
     Resource: "*"
-  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - dms:AddTagsToResource
-      - dms:CreateReplicationSubnetGroup
       - dms:DeleteEndpoint
-      - dms:DeleteReplicationSubnetGroup
       - dms:ModifyEndpoint
-      - dms:ModifyReplicationSubnetGroup
+      # Matches Create/Delete/ModifyReplicationSubnetGroup; DescribeReplicationSubnetGroups
+      # does not match (ends in "Groups") (IAM action matching is case-insensitive)
+      - dms:*ReplicationSubnetGroup
       - dms:RemoveTagsFromResource
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
       - dynamodb:PutItem
-      - dynamodb:TagResource
-      - dynamodb:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - dynamodb:*TagResource
       - dynamodb:UpdateContinuousBackups
       - dynamodb:UpdateItem
       - dynamodb:UpdateTable
       - elasticache:AddTagsToResource
       - elasticache:CreateCacheSecurityGroup
-      - elasticache:CreateCacheSubnetGroup
+      # Matches Create/Delete/ModifyCacheSubnetGroup; DescribeCacheSubnetGroups
+      # does not match (ends in "Groups") (IAM action matching is case-insensitive)
+      - elasticache:*CacheSubnetGroup
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
-      - elasticache:DeleteCacheSubnetGroup
       - elasticache:ModifyCacheCluster
       - elasticache:ModifyCacheParameterGroup
-      - elasticache:ModifyCacheSubnetGroup
       - elasticache:RemoveTagsFromResource
       - glacier:AddTagsToVault
       - glacier:CreateVault
@@ -57,51 +58,49 @@ Statement:
       - glacier:RemoveTagsFromVault
       - rds:AddTagsToResource
       - rds:CancelExportTask
-      - rds:CopyDBClusterSnapshot
-      - rds:CopyDBSnapshot
+      # Matches Copy/Create/DeleteDBClusterSnapshot; DescribeDBClusterSnapshots
+      # does not match (ends in "Snapshots") (IAM action matching is case-insensitive)
+      - rds:*DBClusterSnapshot
+      # Matches Copy/Create/DeleteDBSnapshot; DescribeDBSnapshots does not match
+      # (ends in "Snapshots"). RestoreDBInstanceFromDBSnapshot also matches but is
+      # already granted via RestoreDBInstance* (IAM action matching is case-insensitive)
+      - rds:*DBSnapshot
       - rds:CreateDBClusterParameterGroup
-      - rds:CreateDBClusterSnapshot
-      - rds:CreateDBInstance
+      # Matches Create/Delete/Modify/Reboot/Start/StopDBInstance; DescribeDBInstances
+      # does not match (ends in "Instances"). RestoreDBInstance* actions end in other suffixes
+      - rds:*DBInstance
       - rds:CreateDBInstanceReadReplica
       - rds:CreateDBParameterGroup
-      - rds:CreateDBSnapshot
-      - rds:CreateDBSubnetGroup
+      # Matches Create/Delete/ModifyDBSubnetGroup; DescribeDBSubnetGroups does not match
+      # (ends in "Groups") (IAM action matching is case-insensitive)
+      - rds:*DBSubnetGroup
       - rds:CreateOptionGroup
-      - rds:DeleteDBCluster
+      # Matches Create/Delete/Failover/Modify/Promote*/Reboot/Start/StopDBCluster;
+      # also matches PromoteReadReplicaDBCluster. DescribeDBClusters does not match
+      # (ends in "Clusters"). RestoreDBCluster* actions end in other suffixes.
+      # FailoverDBCluster is additionally granted but is safe in test context.
+      # CreateDBCluster is already granted in the IncurFees section.
+      - rds:*DBCluster
       - rds:DeleteDBClusterParameterGroup
-      - rds:DeleteDBClusterSnapshot
-      - rds:DeleteDBInstance
       - rds:DeleteDBParameterGroup
-      - rds:DeleteDBSnapshot
-      - rds:DeleteDBSubnetGroup
       - rds:DeleteOptionGroup
-      - rds:ModifyDBCluster
       - rds:ModifyDBClusterParameterGroup
-      - rds:ModifyDBInstance
       - rds:ModifyDBParameterGroup
-      - rds:ModifyDBSubnetGroup
       - rds:ModifyOptionGroup
       - rds:PromoteReadReplica
-      - rds:PromoteReadReplicaDBCluster
-      - rds:RebootDBCluster
-      - rds:RebootDBInstance
       - rds:RemoveTagsFromResource
-      - rds:RestoreDBClusterFromS3
-      - rds:RestoreDBClusterFromSnapshot
-      - rds:RestoreDBClusterToPointInTime
-      - rds:RestoreDBInstanceFromDBSnapshot
-      - rds:RestoreDBInstanceFromS3
-      - rds:RestoreDBInstanceToPointInTime
-      - rds:StartDBCluster
-      - rds:StartDBInstance
+      # Matches RestoreDBClusterFromS3/FromSnapshot/ToPointInTime; no other
+      # RestoreDBCluster* actions exist (IAM action matching is case-insensitive)
+      - rds:RestoreDBCluster*
+      # Matches RestoreDBInstanceFromDBSnapshot/FromS3/ToPointInTime; no other
+      # RestoreDBInstance* actions exist (IAM action matching is case-insensitive)
+      - rds:RestoreDBInstance*
       - rds:StartExportTask
-      - rds:StopDBCluster
-      - rds:StopDBInstance
       - redshift:CreateClusterSubnetGroup
-      - redshift:CreateTags
+      # Matches CreateTags and DeleteTags
+      - redshift:*Tags
       - redshift:DeleteCluster
       - redshift:DeleteClusterSubnetGroup
-      - redshift:DeleteTags
       - redshift:ModifyCluster
       - redshift:ModifyClusterSubnetGroup
       - redshift:RebootCluster
@@ -124,6 +123,7 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
+
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
@@ -138,7 +138,8 @@ Statement:
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:subgrp:*'
       - 'arn:aws:redshift:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
-  # This allows AWS Services to autmatically create their Default Service Linked Roles
+
+  # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
   - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow
@@ -152,7 +153,8 @@ Statement:
         iam:AWSServiceName:
           - 'elasticache.amazonaws.com'
           - 'kafka.amazonaws.com'
-  - Sid: KafkaCluster
+
+  - Sid: AllowKafkaActions
     Effect: Allow
     Action:
       - kafka:CreateCluster
@@ -163,8 +165,8 @@ Statement:
       - kafka:Get*
       - kafka:List*
       - kafka:RebootBroker
-      - kafka:TagResource
-      - kafka:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - kafka:*TagResource
       - kafka:UpdateBrokerCount
       - kafka:UpdateBrokerStorage
       - kafka:UpdateBrokerType

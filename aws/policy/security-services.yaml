@@ -39,7 +39,10 @@ Statement:
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
 
-  - Sid: RegionalUnrestrictedResourceActionsWhichIncurNoFees
+  # Merged from AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees and
+  # AllowRegionalUnrestrictedResourceActionsWhichIncurFees to save policy size.
+  # Only kms:CreateKey and kms:GenerateDataKey incur fees.
+  - Sid: AllowRegionalUnrestrictedResourceActions
     Effect: Allow
     Action:
       - acm:List*
@@ -63,15 +66,15 @@ Statement:
         aws:RequestedRegion:
           - '{{ aws_region }}'
 
-  - Sid: GlobalUnrestrictedResourceActionsWhichIncurNoFees
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - access-analyzer:ValidatePolicy
       - cloudtrail:LookupEvents
       - iam:GetRole
       - iam:List*
-      - iam:Tag*
-      - iam:Untag*
+      # Matches Tag* and Untag* (IAM action matching is case-insensitive)
+      - iam:*Tag*
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
@@ -84,8 +87,8 @@ Statement:
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
       - kms:Sign
-      - kms:TagResource
-      - kms:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - kms:*TagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
       - kms:Verify
@@ -94,7 +97,7 @@ Statement:
       - secretsmanager:List*
     Resource: "*"
 
-  - Sid: GlobalRestrictedResourceActionsWhichIncurFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - iam:DeleteServerCertificate
@@ -105,14 +108,14 @@ Statement:
       - secretsmanager:PutResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
       - secretsmanager:RotateSecret
-      - secretsmanager:TagResource
-      - secretsmanager:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - secretsmanager:*TagResource
       - secretsmanager:UpdateSecret
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
-  - Sid: ResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - acm:AddTagsToCertificate
@@ -124,14 +127,12 @@ Statement:
       - acm:RenewCertificate
       - acm:RequestCertificate
       - iam:*InstanceProfile
+      # Matches Create/Delete/Get/UpdateSAMLProvider (IAM action matching is case-insensitive)
+      - iam:*SAMLProvider
       - iam:CreateRole
-      - iam:CreateSAMLProvider
       - iam:DeleteRole
-      - iam:DeleteSAMLProvider
-      - iam:GetSAMLProvider
       - iam:GetServerCertificate
       - iam:PassRole
-      - iam:UpdateSAMLProvider
       - iam:UpdateServerCertificate
       - kms:Decrypt
       - sts:AssumeRole
@@ -149,7 +150,7 @@ Statement:
 
   # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
-  - Sid: ServiceLinkedRoleCreation
+  - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow
     Action:
       - iam:CreateServiceLinkedRole

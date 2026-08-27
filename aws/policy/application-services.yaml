@@ -62,8 +62,8 @@ Statement:
       - sqs:Get*
       - sqs:List*
       - sqs:SetQueueAttributes
-      - sqs:TagQueue
-      - sqs:UntagQueue
+      # Matches TagQueue and UntagQueue (IAM action matching is case-insensitive)
+      - sqs:*TagQueue
       - ssm:AddTagsToResource
       - ssm:Describe*
       - ssm:Get*
@@ -85,7 +85,7 @@ Statement:
       - states:List*
     Resource: "*"
 
-  - Sid: AllowGlobalResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - cloudformation:CreateChangeSet
@@ -108,42 +108,43 @@ Statement:
       - codepipeline:UpdatePipeline
       - glue:DeleteCrawler
       - glue:DeleteJob
-      - glue:TagResource
-      - glue:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - glue:*TagResource
       - glue:UpdateCrawler
       - glue:UpdateJob
       - kinesis:AddTagsToStream
       - kinesis:RemoveTagsFromStream
-      - kinesis:StartStreamEncryption
-      - kinesis:StopStreamEncryption
+      # Matches Start/StopStreamEncryption; no other actions match (IAM action matching is case-insensitive)
+      - kinesis:*StreamEncryption
       # logs permissions were moved to security-services.yaml in a0ab01a to free
       # space here, and moved back to free space there (see PR #343 discussion).
-      - logs:AssociateKmsKey
+      # Matches Associate/DisassociateKmsKey; no other actions match (IAM action matching is case-insensitive)
+      - logs:*KmsKey
       - logs:CreateLogGroup
       - logs:DeleteLogGroup
       - logs:DeleteMetricFilter
       - logs:Describe*
-      - logs:DisassociateKmsKey
       - logs:PutMetricFilter
       - logs:PutRetentionPolicy
       - logs:Tag*
       - logs:Untag*
       - mq:CreateTags
-      - SNS:CreateTopic
-      - SNS:DeleteTopic
+      # Matches CreateTopic and DeleteTopic; ListTopics does not match (ends in "Topics"),
+      # GetTopicAttributes/SetTopicAttributes end in "Attributes" — no match
+      - SNS:*Topic
       - SNS:SetSubscriptionAttributes
       - SNS:SetTopicAttributes
       - SNS:Subscribe
-      - SNS:TagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - SNS:*TagResource
       - SNS:Unsubscribe
-      - SNS:UntagResource
       - ssm:CreateDocument
       - ssm:DeleteDocument
       - ssm:DeleteParameter
       - ssm:PutParameter
       - states:DeleteStateMachine
-      - states:TagResource
-      - states:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - states:*TagResource
     Resource:
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
       - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'

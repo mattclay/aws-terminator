@@ -1,10 +1,56 @@
 Version: '2012-10-17'
 Statement:
 
-  - Sid: AllowResourceRestrictedActionsWhichIncurFees
+  # Merged AllowUnrestrictedResourceActionsWhichIncurFees into this section
+  # to save policy size.
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - cloudfront:CreateDistribution
+      - cloudfront:CreateStreamingDistribution*
+      - ecs:CreateCluster
+    Resource:
+      - "*"
+
+  # Merged AllowUnrestrictedResourceActionsWhichIncurNoFees into this section
+  # to save policy size.
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+    Effect: Allow
+    Action:
+      - bedrock:Get*
+      - bedrock:List*
+      - cloudfront:CreateCloudFrontOriginAccessIdentity
+      - cloudfront:Get*
+      - cloudfront:List*
+      - ecs:DeregisterTaskDefinition
+      - ecs:Describe*
+      - ecs:List*
+      - ecs:PutAccountSetting
+      - ecs:RegisterTaskDefinition
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - ecs:*TagResource
+      - lambda:GetEventSourceMapping
+      - lambda:List*
+      - sagemaker:Describe*
+      - sagemaker:List*
+    Resource:
+      - "*"
+
+  # Merged AllowGlobalRestrictedResourceActionsWhichIncurFees (ECS) into this
+  # section to save policy size.
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - bedrock:Invoke*
+      - ecs:*CapacityProvider*
+      - ecs:CreateService
+      - ecs:DeleteCluster
+      - ecs:DeleteService
+      - ecs:RunTask
+      - ecs:StartTask
+      - ecs:StopTask
+      - ecs:UpdateCluster
+      - ecs:UpdateService
       - eks:CreateCluster
       - eks:CreateNodegroup
       - eks:UpdateNodegroupConfig
@@ -15,12 +61,13 @@ Statement:
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
+      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
 
-  - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - bedrock:CreateAgent*
@@ -28,51 +75,49 @@ Statement:
       - bedrock:DisableAgentActionGroup
       - bedrock:PrepareAgent
       - bedrock:UpdateAgent*
-      - cloudfront:CreateCachePolicy
+      # Matches Create/Delete/UpdateCachePolicy; GetCachePolicy is already
+      # covered by cloudfront:Get* in unrestricted (IAM action matching is case-insensitive)
+      - cloudfront:*CachePolicy
       - cloudfront:CreateInvalidation
-      - cloudfront:CreateOriginRequestPolicy
-      - cloudfront:DeleteCachePolicy
+      # Matches Create/Delete/UpdateOriginRequestPolicy; GetOriginRequestPolicy is already
+      # covered by cloudfront:Get* in unrestricted (IAM action matching is case-insensitive)
+      - cloudfront:*OriginRequestPolicy
       - cloudfront:DeleteCloudFrontOriginAccessIdentity
       - cloudfront:DeleteDistribution
-      - cloudfront:DeleteOriginRequestPolicy
       - cloudfront:DeleteStreamingDistribution
-      - cloudfront:TagResource
-      - cloudfront:UntagResource
-      - cloudfront:UpdateCachePolicy
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - cloudfront:*TagResource
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
       - cloudfront:UpdateDistribution
-      - cloudfront:UpdateOriginRequestPolicy
-      - eks:CreateFargateProfile
+      # Matches Create/DeleteFargateProfile; DescribeFargateProfile is covered
+      # by eks:Describe*. ListFargateProfiles does not match (ends in "Profiles")
+      - eks:*FargateProfile
       - eks:DeleteCluster
-      - eks:DeleteFargateProfile
       - eks:DeleteNodegroup
       - eks:Describe*
       - eks:List*
-      - eks:TagResource
-      - eks:UntagResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - eks:*TagResource
       - eks:UpdateNodegroupVersion
-      - elasticbeanstalk:CreateApplication
-      - elasticbeanstalk:DeleteApplication
+      # Matches Create/Delete/UpdateApplication; DescribeApplications does not match
+      # (ends in "Applications"). *ApplicationVersion actions end in "Version"
+      - elasticbeanstalk:*Application
       - elasticbeanstalk:Describe*
-      - elasticbeanstalk:UpdateApplication
       - lambda:AddPermission
-      - lambda:CreateAlias
+      # Matches Create/Delete/Get/UpdateAlias; ListAliases does not match
+      # because it ends in "Aliases" not "Alias" (IAM action matching is case-insensitive)
+      - lambda:*Alias
       - lambda:CreateFunction
-      - lambda:DeleteAlias
       - lambda:DeleteFunction
       - lambda:DeleteLayerVersion
-      - lambda:GetAlias
       - lambda:GetFunction
       - lambda:GetFunctionConfiguration
       - lambda:GetLayerVersion
       - lambda:GetPolicy
-      - lambda:ListLayerVersions
-      - lambda:ListTags
       - lambda:PublishLayerVersion
       - lambda:RemovePermission
-      - lambda:TagResource
-      - lambda:UntagResource
-      - lambda:UpdateAlias
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - lambda:*TagResource
       - lambda:UpdateFunctionCode
       - lambda:UpdateFunctionConfiguration
       - lightsail:AllocateStaticIp
@@ -85,20 +130,22 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:ReleaseStaticIp
       - lightsail:StopInstance
-      - sagemaker:AddTags
-      - sagemaker:CreateCodeRepository
-      - sagemaker:CreateImage
-      - sagemaker:CreateModel
-      - sagemaker:DeleteCodeRepository
-      - sagemaker:DeleteImage
-      - sagemaker:DeleteModel
-      - sagemaker:DeleteTags
-      - sagemaker:ListTags
-      - sagemaker:UpdateCodeRepository
-      - sagemaker:UpdateImage
+      # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
+      # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
+      - sagemaker:*CodeRepository
+      # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
+      # ListImages does not match (ends in "Images"). *ImageVersion actions end in "Version"
+      - sagemaker:*Image
+      # Matches Create/DeleteModel; DescribeModel is covered by sagemaker:Describe*.
+      # ListModels does not match (ends in "Models")
+      - sagemaker:*Model
+      # Matches AddTags and DeleteTags; ListTags also matches but is already
+      # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
+      - sagemaker:*Tags
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      # CloudFront is a global service (no region in ARNs)
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
@@ -115,29 +162,6 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
 
-  - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - cloudfront:CreateDistribution
-      - cloudfront:CreateStreamingDistribution*
-    Resource:
-      - "*"
-
-  - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
-    Effect: Allow
-    Action:
-      - bedrock:Get*
-      - bedrock:List*
-      - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - cloudfront:Get*
-      - cloudfront:List*
-      - lambda:GetEventSourceMapping
-      - lambda:List*
-      - sagemaker:Describe*
-      - sagemaker:List*
-    Resource:
-      - "*"
-
   - Sid: AllowLambdaEventSourceMappings
     Effect: Allow
     Action:
@@ -151,36 +175,12 @@ Statement:
         lambda:FunctionArn:
           - arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*
 
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurFees
+  # Used to test some of the cross-account features
+  - Sid: PermitReadOnlyThirdParty
     Effect: Allow
     Action:
-      - ecs:CreateCluster
-    Resource: "*"
-
-  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
-    Effect: Allow
-    Action:
-      - ecs:DeregisterTaskDefinition
-      - ecs:Describe*
-      - ecs:List*
-      - ecs:PutAccountSetting
-      - ecs:RegisterTaskDefinition
-      - ecs:TagResource
-      - ecs:UntagResource
+      - SNS:Subscribe
+      - SNS:Unsubscribe
     Resource:
-      - "*"
-
-  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - ecs:*CapacityProvider*
-      - ecs:CreateService
-      - ecs:DeleteCluster
-      - ecs:DeleteService
-      - ecs:RunTask
-      - ecs:StartTask
-      - ecs:StopTask
-      - ecs:UpdateCluster
-      - ecs:UpdateService
-    Resource:
-      - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
+      # https://aws.amazon.com/blogs/aws/subscribe-to-aws-public-ip-address-changes-via-amazon-sns/
+      - 'arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged'
