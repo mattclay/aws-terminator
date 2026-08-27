@@ -22,13 +22,13 @@ Statement:
       - cloudfront:CreateCloudFrontOriginAccessIdentity
       - cloudfront:Get*
       - cloudfront:List*
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - ecs:*TagResource
       - ecs:DeregisterTaskDefinition
       - ecs:Describe*
       - ecs:List*
       - ecs:PutAccountSetting
       - ecs:RegisterTaskDefinition
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - ecs:*TagResource
       - lambda:GetEventSourceMapping
       - lambda:List*
       - sagemaker:Describe*
@@ -59,8 +59,8 @@ Statement:
       - lightsail:CreateInstanceSnapshot
       - lightsail:StartInstance
     Resource:
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
@@ -70,6 +70,9 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
+      # ListImages does not match (ends in "Images"). *ImageVersion actions end in "Version"
+      #- sagemaker:*Image
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
@@ -78,35 +81,37 @@ Statement:
       # Matches Create/Delete/UpdateCachePolicy; GetCachePolicy is already
       # covered by cloudfront:Get* in unrestricted (IAM action matching is case-insensitive)
       - cloudfront:*CachePolicy
-      - cloudfront:CreateInvalidation
       # Matches Create/Delete/UpdateOriginRequestPolicy; GetOriginRequestPolicy is already
       # covered by cloudfront:Get* in unrestricted (IAM action matching is case-insensitive)
       - cloudfront:*OriginRequestPolicy
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - cloudfront:*TagResource
+      - cloudfront:CreateInvalidation
       - cloudfront:DeleteCloudFrontOriginAccessIdentity
       - cloudfront:DeleteDistribution
       - cloudfront:DeleteStreamingDistribution
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - cloudfront:*TagResource
       - cloudfront:UpdateCloudFrontOriginAccessIdentity
       - cloudfront:UpdateDistribution
       # Matches Create/DeleteFargateProfile; DescribeFargateProfile is covered
       # by eks:Describe*. ListFargateProfiles does not match (ends in "Profiles")
       - eks:*FargateProfile
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - eks:*TagResource
       - eks:DeleteCluster
       - eks:DeleteNodegroup
       - eks:Describe*
       - eks:List*
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - eks:*TagResource
       - eks:UpdateNodegroupVersion
       # Matches Create/Delete/UpdateApplication; DescribeApplications does not match
       # (ends in "Applications"). *ApplicationVersion actions end in "Version"
       - elasticbeanstalk:*Application
       - elasticbeanstalk:Describe*
-      - lambda:AddPermission
       # Matches Create/Delete/Get/UpdateAlias; ListAliases does not match
       # because it ends in "Aliases" not "Alias" (IAM action matching is case-insensitive)
       - lambda:*Alias
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - lambda:*TagResource
+      - lambda:AddPermission
       - lambda:CreateFunction
       - lambda:DeleteFunction
       - lambda:DeleteLayerVersion
@@ -116,8 +121,6 @@ Statement:
       - lambda:GetPolicy
       - lambda:PublishLayerVersion
       - lambda:RemovePermission
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - lambda:*TagResource
       - lambda:UpdateFunctionCode
       - lambda:UpdateFunctionConfiguration
       - lightsail:AllocateStaticIp
@@ -143,8 +146,8 @@ Statement:
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
     Resource:
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       # CloudFront is a global service (no region in ARNs)
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
@@ -156,8 +159,8 @@ Statement:
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
       - 'arn:aws:elasticbeanstalk:{{ aws_region }}:{{ aws_account_id }}:application/*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
-      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
+      - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'

@@ -120,6 +120,8 @@ Statement:
   - Sid: AllowRegionalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - network-firewall:*TagResource
       - network-firewall:AssociateFirewallPolicy
       - network-firewall:CreateFirewallPolicy
       - network-firewall:CreateRuleGroup
@@ -127,8 +129,6 @@ Statement:
       - network-firewall:DeleteResourcePolicy
       - network-firewall:DeleteRuleGroup
       - network-firewall:PutResourcePolicy
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - network-firewall:*TagResource
       - network-firewall:UpdateFirewallDeleteProtection
       - network-firewall:UpdateFirewallDescription
       - network-firewall:UpdateFirewallPolicy
@@ -137,8 +137,8 @@ Statement:
       - network-firewall:UpdateRuleGroup
       - network-firewall:UpdateSubnetChangeProtection
     Resource:
-      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall-policy/AnsibleTest-*'
+      - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:firewall/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateful-rulegroup/AnsibleTest-*'
       - 'arn:aws:network-firewall:{{ aws_region }}:{{ aws_account_id }}:stateless-rulegroup/AnsibleTest-*'
 

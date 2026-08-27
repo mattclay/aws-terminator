@@ -57,13 +57,13 @@ Statement:
       - ses:VerifyEmailIdentity
       - SNS:Get*
       - SNS:List*
+      # Matches TagQueue and UntagQueue (IAM action matching is case-insensitive)
+      - sqs:*TagQueue
       - sqs:CreateQueue
       - sqs:DeleteQueue
       - sqs:Get*
       - sqs:List*
       - sqs:SetQueueAttributes
-      # Matches TagQueue and UntagQueue (IAM action matching is case-insensitive)
-      - sqs:*TagQueue
       - ssm:AddTagsToResource
       - ssm:Describe*
       - ssm:Get*
@@ -106,16 +106,16 @@ Statement:
       - codepipeline:CreatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:UpdatePipeline
-      - glue:DeleteCrawler
-      - glue:DeleteJob
       # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
       - glue:*TagResource
+      - glue:DeleteCrawler
+      - glue:DeleteJob
       - glue:UpdateCrawler
       - glue:UpdateJob
-      - kinesis:AddTagsToStream
-      - kinesis:RemoveTagsFromStream
       # Matches Start/StopStreamEncryption; no other actions match (IAM action matching is case-insensitive)
       - kinesis:*StreamEncryption
+      - kinesis:AddTagsToStream
+      - kinesis:RemoveTagsFromStream
       # logs permissions were moved to security-services.yaml in a0ab01a to free
       # space here, and moved back to free space there (see PR #343 discussion).
       # Matches Associate/DisassociateKmsKey; no other actions match (IAM action matching is case-insensitive)
@@ -129,22 +129,22 @@ Statement:
       - logs:Tag*
       - logs:Untag*
       - mq:CreateTags
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - SNS:*TagResource
       # Matches CreateTopic and DeleteTopic; ListTopics does not match (ends in "Topics"),
       # GetTopicAttributes/SetTopicAttributes end in "Attributes" — no match
       - SNS:*Topic
       - SNS:SetSubscriptionAttributes
       - SNS:SetTopicAttributes
       - SNS:Subscribe
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - SNS:*TagResource
       - SNS:Unsubscribe
       - ssm:CreateDocument
       - ssm:DeleteDocument
       - ssm:DeleteParameter
       - ssm:PutParameter
-      - states:DeleteStateMachine
       # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
       - states:*TagResource
+      - states:DeleteStateMachine
     Resource:
       - 'arn:aws:cloudformation:{{ aws_region }}:{{ aws_account_id }}:stack/*'
       - 'arn:aws:cloudwatch:{{ aws_region }}:{{ aws_account_id }}:alarm:*'
@@ -158,9 +158,9 @@ Statement:
       - 'arn:aws:logs:{{ aws_region }}:{{ aws_account_id }}:log-group:ansible-test*'
       - 'arn:aws:mq:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sns:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:ssm:{{ aws_region }}::parameter/aws/service/*'
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:document/*'
       - 'arn:aws:ssm:{{ aws_region }}:{{ aws_account_id }}:parameter/*'
-      - 'arn:aws:ssm:{{ aws_region }}::parameter/aws/service/*'
       - 'arn:aws:states:{{ aws_region }}:{{ aws_account_id }}:*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees

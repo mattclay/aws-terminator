@@ -19,5 +19,5 @@ $ tox -e pylint
 ## Policy Guidelines
 
 The `aws/policy/` directory contains IAM policy files that define permissions for
-the test account. See [Policy Guidelines](aws/policy/POLICY-GUIDELINES.md) for
+the test account. See [Policy Guidelines](aws/POLICY-GUIDELINES.md) for
 rules on categorizing, naming, and adding IAM policy statements.

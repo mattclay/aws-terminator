@@ -14,10 +14,10 @@ Statement:
       - ec2:RunInstances
       - ec2:StartInstances
     Resource:
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:image/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:instance/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:launch-template/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:snapshot/*'
     Condition:
@@ -37,36 +37,36 @@ Statement:
     Action:
       - ec2:RunInstances
     Resource:
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
+      - 'arn:aws:ec2:{{ aws_region }}::image/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:key-pair/*'
+      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:launch-template/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:network-interface/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:placement-group/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:security-group/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:subnet/*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
-      - 'arn:aws:ec2:{{ aws_region }}::image/*'
-      - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:launch-template/*'
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
 
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - ec2:AttachVolume
-      - ec2:CancelSpotInstanceRequests
-      - ec2:CreateImage
       # Matches Create/Delete/ImportKeyPair; DescribeKeyPairs does not match
       # (ends in "KeyPairs") (IAM action matching is case-insensitive)
       - ec2:*KeyPair
       # Matches Create/Delete/ModifyLaunchTemplate; CreateLaunchTemplateVersion ends in
       # "Version", DeleteLaunchTemplateVersions ends in "Versions" — no match
       - ec2:*LaunchTemplate
-      - ec2:CreateLaunchTemplateVersion
       # Matches Create/DeletePlacementGroup; DescribePlacementGroups does not match
       # (ends in "Groups") (IAM action matching is case-insensitive)
       - ec2:*PlacementGroup
-      - ec2:CreateSnapshot
       # Matches CreateTags and DeleteTags; DescribeTags is covered
       # by ec2:Describe* in unrestricted (IAM action matching is case-insensitive)
       - ec2:*Tags
+      - ec2:AttachVolume
+      - ec2:CancelSpotInstanceRequests
+      - ec2:CreateImage
+      - ec2:CreateLaunchTemplateVersion
+      - ec2:CreateSnapshot
       - ec2:DeleteLaunchTemplateVersions
       - ec2:DeleteSnapshot
       - ec2:DeregisterImage
@@ -136,9 +136,9 @@ Statement:
       - elasticloadbalancing:CreateLoadBalancer*
       - elasticloadbalancing:CreateRule
     Resource:
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -159,10 +159,10 @@ Statement:
       - autoscaling:StartInstanceRefresh
       - autoscaling:TerminateInstanceInAutoScalingGroup
       - ec2:DeleteVolume
-      - elasticloadbalancing:AddListenerCertificates
       # Matches AddTags and RemoveTags; DescribeTags is covered
       # by elasticloadbalancing:Describe* in unrestricted (IAM action matching is case-insensitive)
       - elasticloadbalancing:*Tags
+      - elasticloadbalancing:AddListenerCertificates
       - elasticloadbalancing:ApplySecurityGroupsToLoadBalancer
       - elasticloadbalancing:AttachLoadBalancerToSubnets
       - elasticloadbalancing:ConfigureHealthCheck
@@ -182,10 +182,10 @@ Statement:
       - elasticloadbalancing:SetSecurityGroups
       - elasticloadbalancing:SetWebACL
     Resource:
-      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:autoScalingGroup:*'
+      - 'arn:aws:autoscaling:{{ aws_region }}:{{ aws_account_id }}:launchConfiguration:*'
       - 'arn:aws:ec2:{{ aws_region }}:{{ aws_account_id }}:volume/*'
       - 'arn:aws:elasticfilesystem:{{ aws_region }}:{{ aws_account_id }}:file-system/*'
-      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'
-      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:loadbalancer/*'
       - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:listener/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:loadbalancer/*'
+      - 'arn:aws:elasticloadbalancing:{{ aws_region }}:{{ aws_account_id }}:targetgroup/*'

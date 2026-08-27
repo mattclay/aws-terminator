@@ -14,7 +14,6 @@ Statement:
       ArnLike:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AmazonBedrockFullAccess'
-          - 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess'
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
           - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
           - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
@@ -71,10 +70,12 @@ Statement:
     Action:
       - access-analyzer:ValidatePolicy
       - cloudtrail:LookupEvents
-      - iam:GetRole
-      - iam:List*
       # Matches Tag* and Untag* (IAM action matching is case-insensitive)
       - iam:*Tag*
+      - iam:GetRole
+      - iam:List*
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - kms:*TagResource
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
@@ -87,8 +88,6 @@ Statement:
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
       - kms:Sign
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - kms:*TagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
       - kms:Verify
@@ -102,14 +101,14 @@ Statement:
     Action:
       - iam:DeleteServerCertificate
       - iam:UploadServerCertificate
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - secretsmanager:*TagResource
       - secretsmanager:CreateSecret
       - secretsmanager:Delete*
       - secretsmanager:Get*
       - secretsmanager:PutResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
       - secretsmanager:RotateSecret
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - secretsmanager:*TagResource
       - secretsmanager:UpdateSecret
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
@@ -139,14 +138,14 @@ Statement:
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
       # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
+      - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:kms:{{ aws_region }}:{{ aws_account_id }}:key/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
 
   # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
@@ -157,13 +156,13 @@ Statement:
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-nodegroup.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/memorydb.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:

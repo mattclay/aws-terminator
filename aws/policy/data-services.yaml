@@ -26,27 +26,27 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - dms:AddTagsToResource
-      - dms:DeleteEndpoint
-      - dms:ModifyEndpoint
       # Matches Create/Delete/ModifyReplicationSubnetGroup; DescribeReplicationSubnetGroups
       # does not match (ends in "Groups") (IAM action matching is case-insensitive)
       - dms:*ReplicationSubnetGroup
+      - dms:AddTagsToResource
+      - dms:DeleteEndpoint
+      - dms:ModifyEndpoint
       - dms:RemoveTagsFromResource
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - dynamodb:*TagResource
       - dynamodb:CreateTable
       - dynamodb:DeleteItem
       - dynamodb:DeleteTable
       - dynamodb:PutItem
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - dynamodb:*TagResource
       - dynamodb:UpdateContinuousBackups
       - dynamodb:UpdateItem
       - dynamodb:UpdateTable
-      - elasticache:AddTagsToResource
-      - elasticache:CreateCacheSecurityGroup
       # Matches Create/Delete/ModifyCacheSubnetGroup; DescribeCacheSubnetGroups
       # does not match (ends in "Groups") (IAM action matching is case-insensitive)
       - elasticache:*CacheSubnetGroup
+      - elasticache:AddTagsToResource
+      - elasticache:CreateCacheSecurityGroup
       - elasticache:DeleteCacheCluster
       - elasticache:DeleteCacheSecurityGroup
       - elasticache:ModifyCacheCluster
@@ -56,31 +56,31 @@ Statement:
       - glacier:CreateVault
       - glacier:DeleteVault
       - glacier:RemoveTagsFromVault
-      - rds:AddTagsToResource
-      - rds:CancelExportTask
-      # Matches Copy/Create/DeleteDBClusterSnapshot; DescribeDBClusterSnapshots
-      # does not match (ends in "Snapshots") (IAM action matching is case-insensitive)
-      - rds:*DBClusterSnapshot
-      # Matches Copy/Create/DeleteDBSnapshot; DescribeDBSnapshots does not match
-      # (ends in "Snapshots"). RestoreDBInstanceFromDBSnapshot also matches but is
-      # already granted via RestoreDBInstance* (IAM action matching is case-insensitive)
-      - rds:*DBSnapshot
-      - rds:CreateDBClusterParameterGroup
-      # Matches Create/Delete/Modify/Reboot/Start/StopDBInstance; DescribeDBInstances
-      # does not match (ends in "Instances"). RestoreDBInstance* actions end in other suffixes
-      - rds:*DBInstance
-      - rds:CreateDBInstanceReadReplica
-      - rds:CreateDBParameterGroup
-      # Matches Create/Delete/ModifyDBSubnetGroup; DescribeDBSubnetGroups does not match
-      # (ends in "Groups") (IAM action matching is case-insensitive)
-      - rds:*DBSubnetGroup
-      - rds:CreateOptionGroup
       # Matches Create/Delete/Failover/Modify/Promote*/Reboot/Start/StopDBCluster;
       # also matches PromoteReadReplicaDBCluster. DescribeDBClusters does not match
       # (ends in "Clusters"). RestoreDBCluster* actions end in other suffixes.
       # FailoverDBCluster is additionally granted but is safe in test context.
       # CreateDBCluster is already granted in the IncurFees section.
       - rds:*DBCluster
+      # Matches Copy/Create/DeleteDBClusterSnapshot; DescribeDBClusterSnapshots
+      # does not match (ends in "Snapshots") (IAM action matching is case-insensitive)
+      - rds:*DBClusterSnapshot
+      # Matches Create/Delete/Modify/Reboot/Start/StopDBInstance; DescribeDBInstances
+      # does not match (ends in "Instances"). RestoreDBInstance* actions end in other suffixes
+      - rds:*DBInstance
+      # Matches Copy/Create/DeleteDBSnapshot; DescribeDBSnapshots does not match
+      # (ends in "Snapshots"). RestoreDBInstanceFromDBSnapshot also matches but is
+      # already granted via RestoreDBInstance* (IAM action matching is case-insensitive)
+      - rds:*DBSnapshot
+      # Matches Create/Delete/ModifyDBSubnetGroup; DescribeDBSubnetGroups does not match
+      # (ends in "Groups") (IAM action matching is case-insensitive)
+      - rds:*DBSubnetGroup
+      - rds:AddTagsToResource
+      - rds:CancelExportTask
+      - rds:CreateDBClusterParameterGroup
+      - rds:CreateDBInstanceReadReplica
+      - rds:CreateDBParameterGroup
+      - rds:CreateOptionGroup
       - rds:DeleteDBClusterParameterGroup
       - rds:DeleteDBParameterGroup
       - rds:DeleteOptionGroup
@@ -96,9 +96,9 @@ Statement:
       # RestoreDBInstance* actions exist (IAM action matching is case-insensitive)
       - rds:RestoreDBInstance*
       - rds:StartExportTask
-      - redshift:CreateClusterSubnetGroup
       # Matches CreateTags and DeleteTags
       - redshift:*Tags
+      - redshift:CreateClusterSubnetGroup
       - redshift:DeleteCluster
       - redshift:DeleteClusterSubnetGroup
       - redshift:ModifyCluster
@@ -113,9 +113,9 @@ Statement:
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:securitygroup:*'
       - 'arn:aws:elasticache:{{ aws_region }}:{{ aws_account_id }}:subnetgroup:*'
       - 'arn:aws:glacier:{{ aws_region }}:{{ aws_account_id }}:vaults/*'
-      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-pg:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster-snapshot:*'
+      - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:cluster:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:db:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:og:*'
       - 'arn:aws:rds:{{ aws_region }}:{{ aws_account_id }}:pg:*'
@@ -157,6 +157,8 @@ Statement:
   - Sid: AllowKafkaActions
     Effect: Allow
     Action:
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - kafka:*TagResource
       - kafka:CreateCluster
       - kafka:CreateConfiguration
       - kafka:DeleteCluster
@@ -165,8 +167,6 @@ Statement:
       - kafka:Get*
       - kafka:List*
       - kafka:RebootBroker
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - kafka:*TagResource
       - kafka:UpdateBrokerCount
       - kafka:UpdateBrokerStorage
       - kafka:UpdateBrokerType

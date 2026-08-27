@@ -4,9 +4,6 @@ This document defines how IAM policy statements are organized across the
 aws-terminator policy files. Follow these rules when adding, modifying, or
 reviewing permissions.
 
-For the full audit of current inconsistencies and the implementation plan to
-resolve them, see [POLICY-CATEGORIZATION-PLAN.md](POLICY-CATEGORIZATION-PLAN.md).
-
 ---
 
 ## 1. Policy File Structure
