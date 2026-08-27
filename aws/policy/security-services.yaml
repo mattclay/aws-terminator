@@ -38,23 +38,15 @@ Statement:
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
 
-  # Merged from AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees and
-  # AllowRegionalUnrestrictedResourceActionsWhichIncurFees to save policy size.
-  # Only kms:CreateKey and kms:GenerateDataKey incur fees.
+  # Merged AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees and
+  # RegionalUnrestrictedResourceActionsWhichIncurFees to save policy size.
   - Sid: AllowRegionalUnrestrictedResourceActions
     Effect: Allow
     Action:
       - acm:List*
       - iam:GetUser
-    Resource: "*"
-    Condition:
-      StringEquals:
-        aws:RequestedRegion:
-          - '{{ aws_region }}'
-
-  - Sid: RegionalUnrestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
+      # From RegionalUnrestrictedResourceActionsWhichIncurFees;
+      # only kms:CreateKey and kms:GenerateDataKey incur fees.
       - kms:CancelKeyDeletion
       - kms:CreateKey
       - kms:GenerateDataKey
