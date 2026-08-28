@@ -460,4 +460,8 @@ class SageMakerImage(Terminator):
         return self.instance['ImageName']
 
     def terminate(self):
+    try:
         self.client.delete_image(ImageName=self.name)
+    except botocore.exceptions.ClientError as ex:
+        if not ex.response['Error']['Code'] == 'ResourceInUse':
+            raise

@@ -85,13 +85,14 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:ReleaseStaticIp
       - lightsail:StopInstance
+      - sagemaker:AddTags
       - sagemaker:CreateCodeRepository
-      - sagemaker:DeleteCodeRepository
-      - sagemaker:DescribeCodeRepository
-      - sagemaker:UpdateCodeRepository
       - sagemaker:CreateImage
+      - sagemaker:DeleteCodeRepository
       - sagemaker:DeleteImage
-      - sagemaker:DescribeImage
+      - sagemaker:DeleteTags
+      - sagemaker:ListTags
+      - sagemaker:UpdateCodeRepository
       - sagemaker:UpdateImage
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
@@ -129,11 +130,8 @@ Statement:
       - cloudfront:List*
       - lambda:GetEventSourceMapping
       - lambda:List*
-      - sagemaker:ListCodeRepositories
-      - sagemaker:ListImages
-      - sagemaker:AddTags
-      - sagemaker:DeleteTags
-      - sagemaker:ListTags
+      - sagemaker:List*
+      - sagemaker:Describe*
     Resource:
       - "*"
 
