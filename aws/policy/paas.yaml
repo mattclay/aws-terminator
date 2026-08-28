@@ -28,6 +28,9 @@ Statement:
       - bedrock:DisableAgentActionGroup
       - bedrock:PrepareAgent
       - bedrock:UpdateAgent*
+      - bedrock-agentcore:CreateAgent*
+      - bedrock-agentcore:DeleteAgent*
+      - bedrock-agentcore:UpdateAgent*
       - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
@@ -97,6 +100,7 @@ Statement:
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
@@ -125,6 +129,8 @@ Statement:
     Action:
       - bedrock:Get*
       - bedrock:List*
+      - bedrock-agentcore:List*
+      - bedrock-agentcore:Get*
       - cloudfront:CreateCloudFrontOriginAccessIdentity
       - cloudfront:Get*
       - cloudfront:List*
