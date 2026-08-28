@@ -114,7 +114,6 @@ burden without meaningful security benefit.
 |--------|--------|
 | `secretsmanager:GetSecretValue` | Exposes secret contents |
 | `kms:Decrypt` | Decrypts arbitrary data (cryptographic operation, not a pure read) |
-| `kms:GetPublicKey` | Exports key material |
 | `iam:GetCredentialReport` | Exposes credential metadata for all IAM users |
 | `iam:GetAccountAuthorizationDetails` | Dumps all IAM policies, roles, users, groups |
 | `iam:GetAccessKeyLastUsed` | Reveals access key usage patterns |
@@ -214,7 +213,7 @@ use `service:Get*` in an unrestricted (`Resource: "*"`) section.
 | **`iam`** | `GetCredentialReport`, `GetAccountAuthorizationDetails`, `GetAccessKeyLastUsed`, `GetLoginProfile` (26 total Get actions) | Exposes account-wide IAM configuration and credential metadata |
 | **`ssm`** | `GetParameter`, `GetParameters`, `GetParametersByPath` (27 total Get actions) | SSM parameters often store secrets (DB passwords, API keys) |
 | **`secretsmanager`** | `GetSecretValue` (3 total Get actions) | Directly exposes secret contents |
-| **`kms`** | `GetPublicKey`, `GetParametersForImport` (4 total Get actions) | Exports key material. Borderline for a test account but would not be acceptable in production. |
+| **`kms`** | `GetParametersForImport` (4 total Get actions) | Exports key import parameters. `GetPublicKey` is safe (public keys are inherently shareable). Borderline for a test account but would not be acceptable in production. |
 
 Safe individual actions to use instead:
 
@@ -223,7 +222,7 @@ Safe individual actions to use instead:
 | `iam` | `iam:GetRole`, `iam:GetUser`, `iam:GetInstanceProfile`, `iam:GetSAMLProvider`, `iam:GetServerCertificate` |
 | `ssm` | `ssm:GetDocument`, `ssm:GetCommandInvocation`, `ssm:GetConnectionStatus`, `ssm:GetInventory`, `ssm:GetInventorySchema`, `ssm:GetMaintenanceWindow*`, `ssm:GetServiceSetting` |
 | `secretsmanager` | `secretsmanager:GetRandomPassword`, `secretsmanager:GetResourcePolicy` |
-| `kms` | `kms:GetKeyPolicy`, `kms:GetKeyRotationStatus` |
+| `kms` | `kms:GetKeyPolicy`, `kms:GetKeyRotationStatus`, `kms:GetPublicKey` |
 
 ### 5.3 Services Where `Get*` IS Safe in Unrestricted Sections
 
