@@ -23,14 +23,14 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock-agentcore:CreateAgent*
+      - bedrock-agentcore:DeleteAgent*
+      - bedrock-agentcore:UpdateAgent*
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
       - bedrock:PrepareAgent
       - bedrock:UpdateAgent*
-      - bedrock-agentcore:CreateAgent*
-      - bedrock-agentcore:DeleteAgent*
-      - bedrock-agentcore:UpdateAgent*
       - cloudfront:CreateCachePolicy
       - cloudfront:CreateInvalidation
       - cloudfront:CreateOriginRequestPolicy
@@ -127,10 +127,10 @@ Statement:
   - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock-agentcore:Get*
+      - bedrock-agentcore:List*
       - bedrock:Get*
       - bedrock:List*
-      - bedrock-agentcore:List*
-      - bedrock-agentcore:Get*
       - cloudfront:CreateCloudFrontOriginAccessIdentity
       - cloudfront:Get*
       - cloudfront:List*

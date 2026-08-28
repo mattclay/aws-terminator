@@ -426,7 +426,7 @@ class BedrockAgentCoreRuntime(Terminator):
     @property
     def created_time(self):
         return self.instance.get("lastUpdatedAt")
-    
+
     @property
     def id(self):
         return self.instance.get('agentRuntimeId')
