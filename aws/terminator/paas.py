@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+import botocore.exceptions
+
 from . import DbTerminator, Terminator
 
 
@@ -459,9 +461,13 @@ class SageMakerImage(Terminator):
     def name(self):
         return self.instance['ImageName']
 
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('ImageStatus') in ('CREATING', 'UPDATING', 'DELETING')
+
     def terminate(self):
-    try:
-        self.client.delete_image(ImageName=self.name)
-    except botocore.exceptions.ClientError as ex:
-        if not ex.response['Error']['Code'] == 'ResourceInUse':
-            raise
+        try:
+            self.client.delete_image(ImageName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if not ex.response['Error']['Code'] == 'ResourceInUse':
+                raise

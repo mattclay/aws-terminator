@@ -130,8 +130,8 @@ Statement:
       - cloudfront:List*
       - lambda:GetEventSourceMapping
       - lambda:List*
-      - sagemaker:List*
       - sagemaker:Describe*
+      - sagemaker:List*
     Resource:
       - "*"
 
