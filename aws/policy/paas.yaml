@@ -88,8 +88,10 @@ Statement:
       - sagemaker:AddTags
       - sagemaker:CreateCodeRepository
       - sagemaker:CreateImage
+      - sagemaker:CreateModel
       - sagemaker:DeleteCodeRepository
       - sagemaker:DeleteImage
+      - sagemaker:DeleteModel
       - sagemaker:DeleteTags
       - sagemaker:ListTags
       - sagemaker:UpdateCodeRepository
@@ -111,6 +113,7 @@ Statement:
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
 
   - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
