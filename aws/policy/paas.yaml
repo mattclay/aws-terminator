@@ -87,8 +87,10 @@ Statement:
       - lightsail:StopInstance
       - sagemaker:AddTags
       - sagemaker:CreateCodeRepository
+      - sagemaker:CreateEndpointConfig
       - sagemaker:CreateImage
       - sagemaker:DeleteCodeRepository
+      - sagemaker:DeleteEndpointConfig
       - sagemaker:DeleteImage
       - sagemaker:DeleteTags
       - sagemaker:ListTags
@@ -110,6 +112,7 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
 
   - Sid: AllowUnrestrictedResourceActionsWhichIncurFees

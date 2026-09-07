@@ -471,3 +471,29 @@ class SageMakerImage(Terminator):
         except botocore.exceptions.ClientError as ex:
             if not ex.response['Error']['Code'] == 'ResourceInUse':
                 raise
+
+
+class SageMakerEndpointConfig(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_endpoint_configs(client):
+            endpoint_configs = client.get_paginator('list_endpoint_configs').paginate().build_full_result()['EndpointConfigs']
+
+            return [] if not endpoint_configs else endpoint_configs
+
+        return Terminator._create(credentials, SageMakerEndpointConfig, 'sagemaker', _paginate_list_endpoint_configs)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['EndpointConfigArn']
+
+    @property
+    def name(self):
+        return self.instance['EndpointConfigName']
+
+    def terminate(self):
+        self.client.delete_endpoint_config(EndpointConfigName=self.name)
