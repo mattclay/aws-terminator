@@ -119,6 +119,7 @@ burden without meaningful security benefit.
 | `iam:GetAccessKeyLastUsed` | Reveals access key usage patterns |
 | `iam:GetLoginProfile` | Reveals whether console login exists |
 | `ssm:GetParameter` / `GetParameters` / `GetParametersByPath` | Can expose secrets stored in SSM Parameter Store |
+| `s3:GetObject` | Exposes actual object data contents |
 
 The test: "Could an unrestricted read of this type across the account expose
 sensitive data?" If yes, keep it resource-restricted.
@@ -214,6 +215,7 @@ use `service:Get*` in an unrestricted (`Resource: "*"`) section.
 | **`ssm`** | `GetParameter`, `GetParameters`, `GetParametersByPath` (27 total Get actions) | SSM parameters often store secrets (DB passwords, API keys) |
 | **`secretsmanager`** | `GetSecretValue` (3 total Get actions) | Directly exposes secret contents |
 | **`kms`** | `GetParametersForImport` (4 total Get actions) | Exports key import parameters. `GetPublicKey` is safe (public keys are inherently shareable). Borderline for a test account but would not be acceptable in production. |
+| **`s3`** | `GetObject`, `GetObjectVersion` | Exposes actual object data contents |
 
 Safe individual actions to use instead:
 
@@ -223,6 +225,7 @@ Safe individual actions to use instead:
 | `ssm` | `ssm:GetDocument`, `ssm:GetCommandInvocation`, `ssm:GetConnectionStatus`, `ssm:GetInventory`, `ssm:GetInventorySchema`, `ssm:GetMaintenanceWindow*`, `ssm:GetServiceSetting` |
 | `secretsmanager` | `secretsmanager:GetRandomPassword`, `secretsmanager:GetResourcePolicy` |
 | `kms` | `kms:GetKeyPolicy`, `kms:GetKeyRotationStatus`, `kms:GetPublicKey` |
+| `s3` | `s3:GetBucketLocation`, `s3:GetBucketTagging`, `s3:GetBucketVersioning`, `s3:GetBucketPolicy`, `s3:GetEncryptionConfiguration`, `s3:GetLifecycleConfiguration`, `s3:GetAccelerateConfiguration` |
 
 ### 5.3 Services Where `Get*` IS Safe in Unrestricted Sections
 
@@ -230,7 +233,6 @@ Safe individual actions to use instead:
 |---------|--------|
 | `lambda` | All 17 Get actions are read-only metadata. `GetFunction` includes a pre-signed code download URL but this is acceptable in a test account. |
 | `acm` | Only 2 Get actions: `GetAccountConfiguration`, `GetCertificate` (returns cert body but NOT the private key -- private keys never leave ACM). |
-| `s3` | `GetObject` returns object data but in a test account this is acceptable. |
 | `ec2` | All Get actions return instance/resource metadata. |
 | `eks`, `lightsail`, `cloudfront`, `rds`, `dynamodb`, `ecr`, `glue` | All Get actions return metadata only. |
 | `waf`, `wafv2`, `cloudformation`, `codecommit`, `codepipeline`, `ses`, `sqs`, `SNS` | All Get actions return configuration/metadata. |
