@@ -81,7 +81,7 @@ Statement:
       - s3:PutMetricsConfiguration
     Resource: "*"
 
-  - Sid: AllowRegionalRestrictedResourceActionsWhichIncurFees
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - memorydb:CreateCluster
@@ -109,7 +109,7 @@ Statement:
     Resource:
       - 'arn:aws:memorydb:{{ aws_region }}:{{ aws_account_id }}:*'
 
-  - Sid: AllowResourceRestrictedActionsWhichIncurFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - ecr:CompleteLayerUpload
@@ -119,7 +119,7 @@ Statement:
     Resource:
       - 'arn:aws:ecr:{{ aws_region }}:{{ aws_account_id }}:repository/*'
 
-  - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - ecr:BatchCheckLayerAvailability
