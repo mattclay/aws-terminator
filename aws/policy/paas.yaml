@@ -17,6 +17,8 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock-agentcore:Get*
+      - bedrock-agentcore:List*
       - bedrock:Get*
       - bedrock:List*
       - cloudfront:CreateCloudFrontOriginAccessIdentity
@@ -70,6 +72,14 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      # Matches Create/Delete/UpdateAgentRuntime
+      - bedrock-agentcore:*AgentRuntime
+      # Matches Create/Delete/UpdateAgentRuntimeEndpoint
+      - bedrock-agentcore:*AgentRuntimeEndpoint
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - bedrock-agentcore:*TagResource
+      # Matches Create/Delete/UpdateWorkloadIdentity
+      - bedrock-agentcore:*WorkloadIdentity
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
@@ -143,6 +153,8 @@ Statement:
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
     Resource:
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       # CloudFront is a global service (no region in ARNs)

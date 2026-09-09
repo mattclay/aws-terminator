@@ -413,6 +413,50 @@ class BedrockAgent(Terminator):
         self.client.delete_agent(agentId=self.id)
 
 
+class BedrockAgentCoreRuntime(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_agent_runtimes(client):
+            agentcore_runtimes = client.get_paginator('list_agent_runtimes').paginate().build_full_result()['agentRuntimes']
+
+            return [] if not agentcore_runtimes else agentcore_runtimes
+
+        return Terminator._create(credentials, BedrockAgentCoreRuntime, 'bedrock-agentcore-control', _paginate_list_agent_runtimes)
+
+    @property
+    def created_time(self):
+        return self.instance.get("lastUpdatedAt")
+
+    @property
+    def id(self):
+        return self.instance.get('agentRuntimeId')
+
+    @property
+    def name(self):
+        return self.instance.get('agentRuntimeName')
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get("status") in ("CREATING", "UPDATING", "DELETING")
+
+    def terminate(self):
+        def _paginate_runtime_endpoints():
+            runtime_endpoints = self.client.get_paginator('list_agent_runtime_endpoints').paginate(
+                agentRuntimeId=self.id).build_full_result()['runtimeEndpoints']
+
+            return [] if not runtime_endpoints else runtime_endpoints
+
+        # Delete all runtime endpoints associated with this agent runtime first
+        runtime_endpoints = _paginate_runtime_endpoints()
+        for endpoint in runtime_endpoints:
+            self.client.delete_agent_runtime_endpoint(
+                agentRuntimeId=self.id,
+                endpointName=endpoint['name']
+            )
+
+        self.client.delete_agent_runtime(agentRuntimeId=self.id)
+
+
 class SageMakerCodeRepository(Terminator):
     @staticmethod
     def create(credentials):
