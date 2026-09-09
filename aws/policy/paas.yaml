@@ -74,7 +74,8 @@ Statement:
     Action:
       - bedrock-agentcore:*AgentRuntime
       - bedrock-agentcore:*AgentRuntimeEndpoint
-      - bedrock-agentcore:*TagResource*
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - bedrock-agentcore:*TagResource
       - bedrock-agentcore:*WorkloadIdentity
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
