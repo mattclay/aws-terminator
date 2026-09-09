@@ -23,9 +23,11 @@ Statement:
   - Sid: AllowResourceRestrictedActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - bedrock-agentcore:CreateAgent*
-      - bedrock-agentcore:DeleteAgent*
-      - bedrock-agentcore:UpdateAgent*
+      - bedrock-agentcore:*AgentRuntime*
+      - bedrock-agentcore:*AgentRuntimeEndpoint
+      - bedrock-agentcore:*TagResource*
+      - bedrock-agentcore:*WorkloadIdentity
+      - bedrock:CreateAgent*
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
@@ -101,6 +103,7 @@ Statement:
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:origin-access-identity/*'
