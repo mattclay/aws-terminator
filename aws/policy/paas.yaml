@@ -72,10 +72,13 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      # Matches Create/Delete/UpdateAgentRuntime
       - bedrock-agentcore:*AgentRuntime
+      # Matches Create/Delete/UpdateAgentRuntimeEndpoint
       - bedrock-agentcore:*AgentRuntimeEndpoint
       # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
       - bedrock-agentcore:*TagResource
+      # Matches Create/Delete/UpdateWorkloadIdentity
       - bedrock-agentcore:*WorkloadIdentity
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
