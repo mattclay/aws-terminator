@@ -15,7 +15,6 @@ Statement:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AmazonBedrockFullAccess'
           - 'arn:aws:iam::aws:policy/BedrockAgentCoreFullAccess'
-          - 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess'
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
           - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
           - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
@@ -149,15 +148,14 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock-agentcore.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-nodegroup.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/memorydb.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
     Condition:

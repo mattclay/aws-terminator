@@ -75,7 +75,6 @@ Statement:
       - bedrock-agentcore:*TagResource*
       - bedrock-agentcore:*WorkloadIdentity
       - bedrock:CreateAgent*
-      - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
       - bedrock:PrepareAgent
@@ -148,9 +147,9 @@ Statement:
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
     Resource:
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
+      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       # CloudFront is a global service (no region in ARNs)
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
@@ -167,31 +166,6 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
-
-  - Sid: AllowUnrestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
-      - cloudfront:CreateDistribution
-      - cloudfront:CreateStreamingDistribution*
-    Resource:
-      - "*"
-
-  - Sid: AllowUnrestrictedResourceActionsWhichIncurNoFees
-    Effect: Allow
-    Action:
-      - bedrock-agentcore:Get*
-      - bedrock-agentcore:List*
-      - bedrock:Get*
-      - bedrock:List*
-      - cloudfront:CreateCloudFrontOriginAccessIdentity
-      - cloudfront:Get*
-      - cloudfront:List*
-      - lambda:GetEventSourceMapping
-      - lambda:List*
-      - sagemaker:Describe*
-      - sagemaker:List*
-    Resource:
-      - "*"
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
 
   - Sid: AllowLambdaEventSourceMappings
