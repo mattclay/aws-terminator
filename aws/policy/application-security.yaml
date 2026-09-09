@@ -85,3 +85,36 @@ Statement:
       StringEquals:
         aws:RequestedRegion:
           - '{{ aws_region }}'
+
+  - Sid: CognitoServicesWhichDoNotIncurFees
+    Effect: Allow
+    Action:
+      - cognito-idp:CreateManagedLoginBranding
+      - cognito-idp:CreateUserClient
+      - cognito-idp:CreateUserPool
+      - cognito-idp:CreateUserPoolClient
+      - cognito-idp:CreateUserPoolDomain
+      - cognito-idp:DeleteManagedLoginBranding
+      - cognito-idp:DeleteUserPool
+      - cognito-idp:DeleteUserPoolClient
+      - cognito-idp:DeleteUserPoolDomain
+      - cognito-idp:DescribeManagedLoginBranding
+      - cognito-idp:DescribeManagedLoginBrandingByClient
+      - cognito-idp:DescribeUserPool
+      - cognito-idp:DescribeUserPoolClient
+      - cognito-idp:ListUserPoolClients
+      - cognito-idp:TagResource
+      - cognito-idp:UntagResource
+      - cognito-idp:UpdateManagedLoginBranding
+      - cognito-idp:UpdateUserPool
+      - cognito-idp:UpdateUserPoolClient
+    Resource:
+      - 'arn:aws:cognito-idp:{{ aws_region }}:{{ aws_account_id }}:userpool/*'
+
+  - Sid: CognitoServicesWhichDoNotIncurFeesGlobal
+    Effect: Allow
+    Action:
+      - cognito-idp:ListUserPools
+      - cognito-idp:DescribeUserPoolDomain
+    Resource:
+      - '*'
