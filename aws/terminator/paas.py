@@ -515,3 +515,29 @@ class SageMakerImage(Terminator):
         except botocore.exceptions.ClientError as ex:
             if not ex.response['Error']['Code'] == 'ResourceInUse':
                 raise
+
+
+class SageMakerModel(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_models(client):
+            models = client.get_paginator('list_models').paginate().build_full_result()['Models']
+
+            return [] if not models else models
+
+        return Terminator._create(credentials, SageMakerModel, 'sagemaker', _paginate_list_models)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['ModelArn']
+
+    @property
+    def name(self):
+        return self.instance['ModelName']
+
+    def terminate(self):
+        self.client.delete_model(ModelName=self.name)
