@@ -70,7 +70,7 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - bedrock-agentcore:*AgentRuntime*
+      - bedrock-agentcore:*AgentRuntime
       - bedrock-agentcore:*AgentRuntimeEndpoint
       - bedrock-agentcore:*TagResource*
       - bedrock-agentcore:*WorkloadIdentity
