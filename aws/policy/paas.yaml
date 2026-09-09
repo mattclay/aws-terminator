@@ -17,6 +17,8 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
+      - bedrock-agentcore:Get*
+      - bedrock-agentcore:List*
       - bedrock:Get*
       - bedrock:List*
       - cloudfront:CreateCloudFrontOriginAccessIdentity
