@@ -14,7 +14,7 @@ Statement:
       ArnLike:
         iam:PolicyArn:
           - 'arn:aws:iam::aws:policy/AmazonBedrockFullAccess'
-          - 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess'
+          - 'arn:aws:iam::aws:policy/BedrockAgentCoreFullAccess'
           - 'arn:aws:iam::aws:policy/AWSDenyAll'
           - 'arn:aws:iam::aws:policy/AmazonEKSServicePolicy'
           - 'arn:aws:iam::aws:policy/AmazonEKSClusterPolicy'
@@ -39,20 +39,15 @@ Statement:
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup'
           - 'arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore'
 
-  - Sid: RegionalUnrestrictedResourceActionsWhichIncurNoFees
+  # Merged AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees and
+  # RegionalUnrestrictedResourceActionsWhichIncurFees to save policy size.
+  - Sid: AllowRegionalUnrestrictedResourceActions
     Effect: Allow
     Action:
       - acm:List*
       - iam:GetUser
-    Resource: "*"
-    Condition:
-      StringEquals:
-        aws:RequestedRegion:
-          - '{{ aws_region }}'
-
-  - Sid: RegionalUnrestrictedResourceActionsWhichIncurFees
-    Effect: Allow
-    Action:
+      # From RegionalUnrestrictedResourceActionsWhichIncurFees;
+      # only kms:CreateKey and kms:GenerateDataKey incur fees.
       - kms:CancelKeyDeletion
       - kms:CreateKey
       - kms:GenerateDataKey
@@ -63,15 +58,17 @@ Statement:
         aws:RequestedRegion:
           - '{{ aws_region }}'
 
-  - Sid: GlobalUnrestrictedResourceActionsWhichIncurNoFees
+  - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - access-analyzer:ValidatePolicy
       - cloudtrail:LookupEvents
+      # Matches Tag* and Untag* (IAM action matching is case-insensitive)
+      - iam:*Tag*
       - iam:GetRole
       - iam:List*
-      - iam:Tag*
-      - iam:Untag*
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - kms:*TagResource
       - kms:CreateAlias
       - kms:CreateGrant
       - kms:DeleteAlias
@@ -84,8 +81,6 @@ Statement:
       - kms:RetireGrant
       - kms:ScheduleKeyDeletion
       - kms:Sign
-      - kms:TagResource
-      - kms:UntagResource
       - kms:UpdateGrant
       - kms:UpdateKeyDescription
       - kms:Verify
@@ -94,25 +89,25 @@ Statement:
       - secretsmanager:List*
     Resource: "*"
 
-  - Sid: GlobalRestrictedResourceActionsWhichIncurFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
       - iam:DeleteServerCertificate
       - iam:UploadServerCertificate
+      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
+      - secretsmanager:*TagResource
       - secretsmanager:CreateSecret
       - secretsmanager:Delete*
       - secretsmanager:Get*
       - secretsmanager:PutResourcePolicy
       - secretsmanager:RemoveRegionsFromReplication
       - secretsmanager:RotateSecret
-      - secretsmanager:TagResource
-      - secretsmanager:UntagResource
       - secretsmanager:UpdateSecret
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:secretsmanager:{{ aws_region }}:{{ aws_account_id }}:secret:ansible-test*'
 
-  - Sid: ResourceRestrictedActionsWhichIncurNoFees
+  - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
       - acm:AddTagsToCertificate
@@ -124,50 +119,52 @@ Statement:
       - acm:RenewCertificate
       - acm:RequestCertificate
       - iam:*InstanceProfile
+      # Matches Create/Delete/Get/UpdateSAMLProvider (IAM action matching is case-insensitive)
+      - iam:*SAMLProvider
       - iam:CreateRole
-      - iam:CreateSAMLProvider
       - iam:DeleteRole
-      - iam:DeleteSAMLProvider
-      - iam:GetSAMLProvider
       - iam:GetServerCertificate
       - iam:PassRole
-      - iam:UpdateSAMLProvider
       - iam:UpdateServerCertificate
       - kms:Decrypt
       - sts:AssumeRole
     Resource:
       - 'arn:aws:acm:{{ aws_region }}:{{ aws_account_id }}:certificate/*'
       - 'arn:aws:iam::{{ aws_account_id }}:instance-profile/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
       # dms-vpc-role is hard coded into DMS...
       - 'arn:aws:iam::{{ aws_account_id }}:role/dms-vpc-role'
       - 'arn:aws:iam::{{ aws_account_id }}:role/rds_export_task'
+      - 'arn:aws:iam::{{ aws_account_id }}:saml-provider/ansible-test-*'
+      - 'arn:aws:iam::{{ aws_account_id }}:server-certificate/ansible-test-*'
       - 'arn:aws:kms:{{ aws_region }}:{{ aws_account_id }}:key/ansible-test-*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
 
   # This allows AWS Services to automatically create their Default Service Linked Roles
   # These have fixed policies and can only be assumed by the service itself.
-  - Sid: ServiceLinkedRoleCreation
+  - Sid: AllowServiceLinkedRoleCreation
     Effect: Allow
     Action:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/autoscaling.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock-agentcore.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-fargate.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/eks-nodegroup.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/ecs.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/memorydb.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/network-firewall.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/spot.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/transitgateway.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
           - 'autoscaling.amazonaws.com'
           - 'bedrock.amazonaws.com'
+          - 'bedrock-agentcore.amazonaws.com'
+          - 'runtime-identity.bedrock-agentcore.amazonaws.com'
           - 'spot.amazonaws.com'
           - 'eks-fargate.amazonaws.com'
           - 'eks-nodegroup.amazonaws.com'

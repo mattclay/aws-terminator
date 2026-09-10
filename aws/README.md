@@ -91,23 +91,7 @@ After you have tested that your terminator class can be used by `cleanup.py`, su
 
 ## IAM Policy Organization
 
-### Structure
-
-Policy docs are in `aws/policy/{group}.yaml`, arranged by the test group.
-
-### Policy Groups
-- Application Services: CloudFormation, SQS, SNS, SES
-- Application Security: Inspector, WAF, etc
-- Data Services: Glacier, Glue, Redshift, RDS, etc
-- Compute: Autoscaling, EC2, ELBs, etc
-- Networking: VPC, ACLs, route tables, NAT Gateways, IGW/VGW, security groups, etc
-- PAAS: ECR, EKR, Lambda, etc
-- Security Services: IAM, KMS, STS, etc
-- Storage Services: S3, etc
-
-### IAM Elements
-
-Policies should generally use the least permissive Actions, Resouces, and Conditions possible. However, there is also a need to prevent policies from exceeding the AWS maximum 6144 characters per policy and 10 policies per account. To help with this wildcards are generally permitted for `Describe*` and `List*` actions for non-security related services.  For example, `ec2:Describe*` is permitted.
+Policy files are in `aws/policy/{group}.yaml`, arranged by service domain. For detailed guidelines on action placement, naming conventions, wildcarding rules, and how to add new services, see the [Policy Guidelines](POLICY-GUIDELINES.md).
 
 # Deploying to AWS
 Deploying to AWS is done using an Ansible playbook, which can be easily run with make using the provided Makefile.
