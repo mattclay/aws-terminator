@@ -446,9 +446,12 @@ class BedrockAgentCoreRuntime(Terminator):
 
             return [] if not runtime_endpoints else runtime_endpoints
 
-        # Delete all runtime endpoints associated with this agent runtime first
+        # Delete non-default runtime endpoints first; the DEFAULT endpoint is
+        # auto-created and removed with the runtime itself.
         runtime_endpoints = _paginate_runtime_endpoints()
         for endpoint in runtime_endpoints:
+            if endpoint['name'] == 'DEFAULT':
+                continue
             self.client.delete_agent_runtime_endpoint(
                 agentRuntimeId=self.id,
                 endpointName=endpoint['name']
