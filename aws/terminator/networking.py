@@ -88,7 +88,11 @@ class Ec2Eip(DbTerminator):
         return self.instance['AllocationId']
 
     def terminate(self):
-        self.client.release_address(AllocationId=self.id)
+        try:
+            self.client.release_address(AllocationId=self.id)
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] != 'InvalidIPAddress.InUse':
+                raise
 
 
 class Ec2CustomerGateway(DbTerminator):
@@ -268,6 +272,10 @@ class Ec2Eni(DbTerminator):
     @property
     def name(self):
         return get_tag_dict_from_tag_list(self.instance.get('Tags')).get('Name')
+
+    @property
+    def ignore(self):
+        return self.instance.get('Status') in ('associated', 'attaching', 'in-use', 'detaching')
 
     def terminate(self):
         self.client.delete_network_interface(NetworkInterfaceId=self.id)
