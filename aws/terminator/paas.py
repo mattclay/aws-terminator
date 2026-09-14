@@ -567,3 +567,33 @@ class SageMakerEndpointConfig(Terminator):
 
     def terminate(self):
         self.client.delete_endpoint_config(EndpointConfigName=self.name)
+
+
+class SageMakerEndpoint(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_endpoints(client):
+            endpoints = client.get_paginator('list_endpoints').paginate().build_full_result()['Endpoints']
+
+            return [] if not endpoints else endpoints
+
+        return Terminator._create(credentials, SageMakerEndpoint, 'sagemaker', _paginate_list_endpoints)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['EndpointArn']
+
+    @property
+    def name(self):
+        return self.instance['EndpointName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('EndpointStatus') in ('CREATING', 'UPDATING', 'DELETING', 'ROLLING_BACK')
+
+    def terminate(self):
+        self.client.delete_endpoint(EndpointName=self.name)
