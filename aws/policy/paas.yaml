@@ -143,6 +143,8 @@ Statement:
       # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
       # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
       - sagemaker:*CodeRepository
+      # Matches Create/Delete/UpdateEndpoint.
+      - sagemaker:*Endpoint
       # Matches Create/Delete/UpdateEndpointConfig.
       - sagemaker:*EndpointConfig
       # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
@@ -174,6 +176,7 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
 
