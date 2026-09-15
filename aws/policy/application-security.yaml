@@ -27,15 +27,6 @@ Statement:
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - inspector:CreateAssessmentTarget
-      - inspector:CreateAssessmentTemplate
-      - inspector:CreateResourceGroup
-      - inspector:DeleteAssessmentTarget
-      - inspector:DeleteAssessmentTemplate
-      - inspector:Describe*
-      - inspector:List*
-      - inspector:SetTagsForResource
-      - inspector:UpdateAssessmentTarget
       - waf:CreateByteMatchSet
       - waf:CreateGeoMatchSet
       - waf:CreateIPSet
