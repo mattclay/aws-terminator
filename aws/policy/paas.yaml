@@ -143,7 +143,7 @@ Statement:
       # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
       # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
       - sagemaker:*CodeRepository
-      # Matches Create/Delete/UpdateEndpoint.
+      # Matches Create/Delete/Describe/Update/InvokeEndpoint.
       - sagemaker:*Endpoint
       # Matches Create/Delete/UpdateEndpointConfig.
       - sagemaker:*EndpointConfig

@@ -596,7 +596,7 @@ class SageMakerEndpoint(Terminator):
 
     @property
     def ignore(self) -> bool:
-        return self.instance.get('EndpointStatus') in ('CREATING', 'UPDATING', 'DELETING', 'ROLLING_BACK')
+        return self.instance.get('EndpointStatus').upper() in ('CREATING', 'UPDATING', 'DELETING', 'ROLLING_BACK')
 
     def terminate(self):
         self.client.delete_endpoint(EndpointName=self.name)
