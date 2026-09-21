@@ -151,7 +151,7 @@ Statement:
       # Matches Create/DeleteModel; DescribeModel is covered by sagemaker:Describe*.
       # ListModels does not match (ends in "Models")
       - sagemaker:*Model
-      # Matches Create/Delete/UpdateModelPackageGroup; ListModelPackageGroups
+      # Matches Create/Delete/Describe/UpdateModelPackageGroup; ListModelPackageGroups
       # does not match (ends in "Groups").
       - sagemaker:*ModelPackageGroup
       # Matches AddTags and DeleteTags; ListTags also matches but is already
