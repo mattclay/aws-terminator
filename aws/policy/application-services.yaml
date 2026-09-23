@@ -75,6 +75,7 @@ Statement:
       - ssm:StartSession
       - ssm:TerminateSession
       - ssm:UpdateAssociationStatus
+      - ssm:UpdateDocument*
       - ssm:UpdateInstanceAssociationStatus
       - ssm:UpdateInstanceInformation
       - ssmmessages:CreateControlChannel
