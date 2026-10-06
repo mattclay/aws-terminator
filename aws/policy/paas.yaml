@@ -153,6 +153,8 @@ Statement:
       # Matches Create/DeleteModel; DescribeModel is covered by sagemaker:Describe*.
       # ListModels does not match (ends in "Models")
       - sagemaker:*Model
+      # Matches Create/Delete/UpdateModelPackage; DescribeModelPackage is covered by sagemaker:Describe*.
+      - sagemaker:*ModelPackage
       # Matches Create/Delete/Describe/UpdateModelPackageGroup; ListModelPackageGroups
       # does not match (ends in "Groups").
       - sagemaker:*ModelPackageGroup
@@ -182,6 +184,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package-group/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
 
   - Sid: AllowLambdaEventSourceMappings

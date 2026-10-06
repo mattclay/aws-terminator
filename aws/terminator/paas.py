@@ -602,6 +602,35 @@ class SageMakerEndpoint(Terminator):
         self.client.delete_endpoint(EndpointName=self.name)
 
 
+class SageMakerModelPackage(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_model_packages(client):
+            packages = client.get_paginator('list_model_packages').paginate().build_full_result()['ModelPackageSummaryList']
+            return [] if not packages else packages
+
+        return Terminator._create(credentials, SageMakerModelPackage, 'sagemaker', _paginate_list_model_packages)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['ModelPackageArn']
+
+    @property
+    def name(self):
+        return self.instance.get('ModelPackageName') or self.id
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('ModelPackageStatus') == 'Deleting'
+
+    def terminate(self):
+        self.client.delete_model_package(ModelPackageName=self.id)
+
+
 class SageMakerModelPackageGroup(Terminator):
     @staticmethod
     def create(credentials):
