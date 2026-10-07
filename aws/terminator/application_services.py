@@ -190,6 +190,24 @@ class KinesisStream(Terminator):
         )
 
 
+class SesConfigurationSet(DbTerminator):
+    @staticmethod
+    def create(credentials):
+        return Terminator._create(credentials, SesConfigurationSet, 'sesv2',
+                                  lambda client: client.list_configuration_sets().get('ConfigurationSets', []))
+
+    @property
+    def id(self):
+        return self.instance['Name']
+
+    @property
+    def name(self):
+        return self.instance['Name']
+
+    def terminate(self):
+        self.client.delete_configuration_set(ConfigurationSetName=self.name)
+
+
 class SesIdentity(DbTerminator):
     @staticmethod
     def create(credentials):
