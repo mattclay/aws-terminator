@@ -626,3 +626,33 @@ class SageMakerModelPackageGroup(Terminator):
 
     def terminate(self):
         self.client.delete_model_package_group(ModelPackageGroupName=self.name)
+
+
+class SageMakerTrainingJob(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_training_jobs(client):
+            jobs = client.get_paginator('list_training_jobs').paginate().build_full_result()['TrainingJobSummaries']
+
+            return [] if not jobs else jobs
+
+        return Terminator._create(credentials, SageMakerTrainingJob, 'sagemaker', _paginate_list_training_jobs)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['TrainingJobArn']
+
+    @property
+    def name(self):
+        return self.instance['TrainingJobName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('TrainingJobStatus') != 'InProgress'
+
+    def terminate(self):
+        self.client.stop_training_job(TrainingJobName=self.name)
