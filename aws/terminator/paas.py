@@ -626,3 +626,70 @@ class SageMakerModelPackageGroup(Terminator):
 
     def terminate(self):
         self.client.delete_model_package_group(ModelPackageGroupName=self.name)
+
+
+class SageMakerNotebook(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_notebooks(client):
+            notebooks = client.get_paginator('list_notebook_instances').paginate().build_full_result()['NotebookInstances']
+
+            return [] if not notebooks else notebooks
+
+        return Terminator._create(credentials, SageMakerNotebook, 'sagemaker', _paginate_list_notebooks)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['NotebookInstanceArn']
+
+    @property
+    def name(self):
+        return self.instance['NotebookInstanceName']
+
+    def terminate(self):
+        def _describe_notebook():
+            notebook_info = self.client.describe_notebook_instance(NotebookInstanceName=self.name)
+            return notebook_info if notebook_info else {}
+
+        def _stop_notebook(notebook_info):
+            if not notebook_info:
+                return
+            status = notebook_info.get('NotebookInstanceStatus')
+            if status != 'Stopped':
+                self.client.stop_notebook_instance(NotebookInstanceName=self.name)
+                waiter = self.client.get_waiter('notebook_instance_stopped')
+                waiter.wait(NotebookInstanceName=self.name)
+
+        notebook_info = _describe_notebook()
+        _stop_notebook(notebook_info=notebook_info)
+        self.client.delete_notebook_instance(NotebookInstanceName=self.name)
+
+
+class SageMakerNotebookLifecycleConfig(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_notebook_lifecycle_configs(client):
+            configs = client.get_paginator('list_notebook_instance_lifecycle_configs').paginate().build_full_result()['NotebookInstanceLifecycleConfigs']
+
+            return [] if not configs else configs
+
+        return Terminator._create(credentials, SageMakerNotebookLifecycleConfig, 'sagemaker', _paginate_list_notebook_lifecycle_configs)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['NotebookInstanceLifecycleConfigArn']
+
+    @property
+    def name(self):
+        return self.instance['NotebookInstanceLifecycleConfigName']
+
+    def terminate(self):
+        self.client.delete_notebook_instance_lifecycle_config(NotebookInstanceLifecycleConfigName=self.name)

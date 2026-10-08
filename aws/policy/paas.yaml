@@ -156,6 +156,11 @@ Statement:
       # Matches Create/Delete/Describe/UpdateModelPackageGroup; ListModelPackageGroups
       # does not match (ends in "Groups").
       - sagemaker:*ModelPackageGroup
+      # Matches Create/Delete/Update/Start/StopNotebookInstance
+      # Describe and List are already handled in AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
+      - sagemaker:*NotebookInstance
+      # Matches Create/Delete/UpdateNotebookInstance
+      - sagemaker:*NotebookInstanceLifecycleConfig
       # Matches AddTags and DeleteTags; ListTags also matches but is already
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
@@ -183,6 +188,8 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance-lifecycle-config/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
 
   - Sid: AllowLambdaEventSourceMappings
     Effect: Allow
