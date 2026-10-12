@@ -650,6 +650,10 @@ class SageMakerNotebook(Terminator):
     def name(self):
         return self.instance['NotebookInstanceName']
 
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('NotebookInstanceStatus').upper() in ('PENDING', 'UPDATING', 'DELETING', 'STOPPING')
+
     def terminate(self):
         def _describe_notebook():
             notebook_info = self.client.describe_notebook_instance(NotebookInstanceName=self.name)
@@ -661,8 +665,6 @@ class SageMakerNotebook(Terminator):
             status = notebook_info.get('NotebookInstanceStatus')
             if status != 'Stopped':
                 self.client.stop_notebook_instance(NotebookInstanceName=self.name)
-                waiter = self.client.get_waiter('notebook_instance_stopped')
-                waiter.wait(NotebookInstanceName=self.name)
 
         notebook_info = _describe_notebook()
         _stop_notebook(notebook_info=notebook_info)
