@@ -721,3 +721,29 @@ class SageMakerNotebookLifecycleConfig(Terminator):
 
     def terminate(self):
         self.client.delete_notebook_instance_lifecycle_config(NotebookInstanceLifecycleConfigName=self.name)
+
+
+class SageMakerPipeline(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_pipelines(client):
+            pipelines = client.get_paginator('list_pipelines').paginate().build_full_result()['PipelineSummaries']
+
+            return [] if not pipelines else pipelines
+
+        return Terminator._create(credentials, SageMakerPipeline, 'sagemaker', _paginate_list_pipelines)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['PipelineArn']
+
+    @property
+    def name(self):
+        return self.instance['PipelineName']
+
+    def terminate(self):
+        self.client.delete_pipeline(PipelineName=self.name)
