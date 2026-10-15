@@ -173,7 +173,7 @@ Statement:
       # Matches AddTags and DeleteTags; ListTags also matches but is already
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
-      # Matches Create/StopTrainingJob.
+      # Matches Create/Delete/StopTrainingJob.
       - sagemaker:*TrainingJob
     Resource:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'

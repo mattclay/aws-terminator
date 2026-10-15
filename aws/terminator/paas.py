@@ -773,7 +773,20 @@ class SageMakerTrainingJob(Terminator):
 
     @property
     def ignore(self) -> bool:
-        return self.instance.get('TrainingJobStatus') != 'InProgress'
+        status = self.instance.get('TrainingJobStatus')
+        if status == 'InProgress':
+            return False
+        if status not in ('Stopped', 'Failed', 'Completed'):
+            return True
+
+        warm_pool = self.instance.get('WarmPoolStatus') or {}
+        return warm_pool.get('Status') == 'Available'
 
     def terminate(self):
-        self.client.stop_training_job(TrainingJobName=self.name)
+        status = self.instance.get('TrainingJobStatus')
+        if status == 'InProgress':
+            self.client.stop_training_job(TrainingJobName=self.name)
+        elif status in ('Stopped', 'Failed', 'Completed'):
+            self.client.delete_training_job(TrainingJobName=self.name)
+        else:
+            raise ValueError(f'Cannot terminate training job with status {status!r}')
