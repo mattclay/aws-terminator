@@ -734,7 +734,5 @@ class SageMakerTrainingJob(Terminator):
         status = self.instance.get('TrainingJobStatus')
         if status == 'InProgress':
             self.client.stop_training_job(TrainingJobName=self.name)
-        elif status in ('Stopped', 'Failed', 'Completed'):
-            self.client.delete_training_job(TrainingJobName=self.name)
         else:
-            raise ValueError(f'Cannot terminate training job with status {status!r}')
+            self.client.delete_training_job(TrainingJobName=self.name)
