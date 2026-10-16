@@ -140,6 +140,9 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:ReleaseStaticIp
       - lightsail:StopInstance
+      # Matches Create/Delete/Describe/UpdateAppImageConfig; ListAppImageConfigs
+      # does not match (ends in "Configs").
+      - sagemaker:*AppImageConfig
       # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
       # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
       - sagemaker:*CodeRepository
@@ -186,6 +189,7 @@ Statement:
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
