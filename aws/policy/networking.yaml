@@ -24,6 +24,18 @@ Statement:
       - route53:UpdateHostedZoneComment
     Resource: "*"
 
+  # NAT gateways incur hourly and data processing charges once provisioned.
+  - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurFees
+    Effect: Allow
+    Action:
+      - ec2:CreateNatGateway
+    Resource:
+      - "*"
+    Condition:
+      StringEquals:
+        ec2:Region:
+          - '{{ aws_region }}'
+
   - Sid: AllowRegionalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
@@ -46,7 +58,6 @@ Statement:
       - ec2:CreateDhcpOptions
       - ec2:CreateEgressOnlyInternetGateway
       - ec2:CreateInternetGateway
-      - ec2:CreateNatGateway
       - ec2:CreateNetworkAcl
       - ec2:CreateNetworkAclEntry
       - ec2:CreateNetworkInterface
@@ -163,13 +174,3 @@ Statement:
     Resource:
       - 'arn:aws:apigateway:{{ aws_region }}::/restapis*'
       - 'arn:aws:apigateway:{{ aws_region }}::/tags/*'
-
-  - Sid: AllowNATGatewayServiceLinkedRole
-    Effect: Allow
-    Action:
-      - iam:CreateServiceLinkedRole
-    Resource:
-      - 'arn:aws:iam::*:role/aws-service-role/natgateway.amazonaws.com/*'
-    Condition:
-      StringEquals:
-        iam:AWSServiceName: natgateway.amazonaws.com
