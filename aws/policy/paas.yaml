@@ -140,6 +140,9 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:ReleaseStaticIp
       - lightsail:StopInstance
+      # Matches Create/Delete/Describe/UpdateAppImageConfig; ListAppImageConfigs
+      # does not match (ends in "Configs").
+      - sagemaker:*AppImageConfig
       # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
       # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
       - sagemaker:*CodeRepository
@@ -165,6 +168,8 @@ Statement:
       - sagemaker:*NotebookInstance
       # Matches Create/Delete/UpdateNotebookInstance
       - sagemaker:*NotebookInstanceLifecycleConfig
+      # Matches Create/Delete/Describe/UpdatePipeline.
+      - sagemaker:*Pipeline
       # Matches AddTags and DeleteTags; ListTags also matches but is already
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
@@ -186,6 +191,7 @@ Statement:
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
@@ -195,6 +201,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance-lifecycle-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:pipeline/*'
 
   - Sid: AllowLambdaEventSourceMappings
     Effect: Allow

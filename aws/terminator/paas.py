@@ -460,6 +460,32 @@ class BedrockAgentCoreRuntime(Terminator):
         self.client.delete_agent_runtime(agentRuntimeId=self.id)
 
 
+class SageMakerAppImageConfig(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_app_image_configs(client):
+            configs = client.get_paginator('list_app_image_configs').paginate().build_full_result()['AppImageConfigs']
+
+            return [] if not configs else configs
+
+        return Terminator._create(credentials, SageMakerAppImageConfig, 'sagemaker', _paginate_list_app_image_configs)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['AppImageConfigArn']
+
+    @property
+    def name(self):
+        return self.instance['AppImageConfigName']
+
+    def terminate(self):
+        self.client.delete_app_image_config(AppImageConfigName=self.name)
+
+
 class SageMakerCodeRepository(Terminator):
     @staticmethod
     def create(credentials):
@@ -695,3 +721,29 @@ class SageMakerNotebookLifecycleConfig(Terminator):
 
     def terminate(self):
         self.client.delete_notebook_instance_lifecycle_config(NotebookInstanceLifecycleConfigName=self.name)
+
+
+class SageMakerPipeline(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_pipelines(client):
+            pipelines = client.get_paginator('list_pipelines').paginate().build_full_result()['PipelineSummaries']
+
+            return [] if not pipelines else pipelines
+
+        return Terminator._create(credentials, SageMakerPipeline, 'sagemaker', _paginate_list_pipelines)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['PipelineArn']
+
+    @property
+    def name(self):
+        return self.instance['PipelineName']
+
+    def terminate(self):
+        self.client.delete_pipeline(PipelineName=self.name)
