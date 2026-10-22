@@ -747,3 +747,44 @@ class SageMakerPipeline(Terminator):
 
     def terminate(self):
         self.client.delete_pipeline(PipelineName=self.name)
+
+
+class SageMakerTrainingJob(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_training_jobs(client):
+            jobs = client.get_paginator('list_training_jobs').paginate().build_full_result()['TrainingJobSummaries']
+
+            return [] if not jobs else jobs
+
+        return Terminator._create(credentials, SageMakerTrainingJob, 'sagemaker', _paginate_list_training_jobs)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['TrainingJobArn']
+
+    @property
+    def name(self):
+        return self.instance['TrainingJobName']
+
+    @property
+    def ignore(self) -> bool:
+        status = self.instance.get('TrainingJobStatus')
+        if status == 'InProgress':
+            return False
+        if status not in ('Stopped', 'Failed', 'Completed'):
+            return True
+
+        warm_pool = self.instance.get('WarmPoolStatus') or {}
+        return warm_pool.get('Status') == 'Available'
+
+    def terminate(self):
+        status = self.instance.get('TrainingJobStatus')
+        if status == 'InProgress':
+            self.client.stop_training_job(TrainingJobName=self.name)
+        else:
+            self.client.delete_training_job(TrainingJobName=self.name)
