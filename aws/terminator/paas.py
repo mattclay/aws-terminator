@@ -752,6 +752,37 @@ class SageMakerNotebookLifecycleConfig(Terminator):
         self.client.delete_notebook_instance_lifecycle_config(NotebookInstanceLifecycleConfigName=self.name)
 
 
+class SageMakerFeatureGroup(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_feature_groups(client):
+            groups = client.get_paginator('list_feature_groups').paginate().build_full_result()['FeatureGroupSummaries']
+
+            return [] if not groups else groups
+
+        return Terminator._create(credentials, SageMakerFeatureGroup, 'sagemaker', _paginate_list_feature_groups)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['FeatureGroupArn']
+
+    @property
+    def name(self):
+        return self.instance['FeatureGroupName']
+
+    @property
+    def ignore(self) -> bool:
+        # The API rejects deletion while CREATING; DELETING is already in progress.
+        return self.instance.get('FeatureGroupStatus', '').upper() in ('CREATING', 'DELETING')
+
+    def terminate(self):
+        self.client.delete_feature_group(FeatureGroupName=self.name)
+
+
 class SageMakerPipeline(Terminator):
     @staticmethod
     def create(credentials):

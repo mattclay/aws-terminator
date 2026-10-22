@@ -150,6 +150,9 @@ Statement:
       - sagemaker:*Endpoint
       # Matches Create/Delete/UpdateEndpointConfig.
       - sagemaker:*EndpointConfig
+      # Matches Create/Delete/Describe/UpdateFeatureGroup; ListFeatureGroups does not
+      # match (ends in "Groups") and is covered by sagemaker:List*.
+      - sagemaker:*FeatureGroup
       # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
       # ListImages does not match (ends in "Images"). *ImageVersion actions end in "Version"
       # and are covered by sagemaker:*ImageVersion below.
@@ -197,6 +200,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package-group/*'
