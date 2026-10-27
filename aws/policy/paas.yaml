@@ -196,6 +196,7 @@ Statement:
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:domain/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
@@ -205,6 +206,8 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance-lifecycle-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:pipeline/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:space/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:user-profile/*'
 
   - Sid: AllowLambdaEventSourceMappings
     Effect: Allow
