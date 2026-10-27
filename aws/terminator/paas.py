@@ -765,7 +765,7 @@ class SageMakerDomain(Terminator):
 
     @property
     def id(self):
-        return self.instance['DomainArn']
+        return self.instance['DomainId']
 
     @property
     def name(self):
