@@ -1,9 +1,9 @@
 # note: The dependencies will be included in the Lambda package.
-boto3==1.43.118
-botocore==1.43.118
-jmespath==1.1.0
+boto3==1.40.61
+botocore==1.40.61
+jmespath==1.0.1
 python-dateutil==2.9.0.post0
-s3transfer==0.19.3
+s3transfer==0.14.0
 six==1.17.0
 urllib3==2.8.0
 # The PyYAML requirement is only used for the cleanup.py script,
