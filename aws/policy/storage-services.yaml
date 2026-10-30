@@ -124,6 +124,7 @@ Statement:
     Action:
       - ecr:BatchCheckLayerAvailability
       - ecr:BatchDeleteImages
+      - ecr:BatchGetImage
       - ecr:DeleteLifecyclePolicy
       - ecr:DeleteRepository
       - ecr:DeleteRepositoryPolicy
