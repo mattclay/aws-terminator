@@ -776,3 +776,94 @@ class SageMakerPipeline(Terminator):
 
     def terminate(self):
         self.client.delete_pipeline(PipelineName=self.name)
+
+
+class SageMakerDomain(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_domains(client):
+            domains = client.get_paginator('list_domains').paginate().build_full_result()['Domains']
+
+            return [] if not domains else domains
+
+        return Terminator._create(credentials, SageMakerDomain, 'sagemaker', _paginate_list_domains)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['DomainId']
+
+    @property
+    def name(self):
+        return self.instance['DomainName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('Status').upper() in ('PENDING', 'UPDATING', 'DELETING')
+
+    def terminate(self):
+        # By default, all resources are retained (not automatically deleted)
+        self.client.delete_domain(DomainId=self.id, RetentionPolicy={'HomeEfsFileSystem': 'Delete'})
+
+
+class SageMakerUserProfile(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_profiles(client):
+            profiles = client.get_paginator('list_user_profiles').paginate().build_full_result()['UserProfiles']
+
+            return [] if not profiles else profiles
+
+        return Terminator._create(credentials, SageMakerUserProfile, 'sagemaker', _paginate_list_profiles)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['DomainId']
+
+    @property
+    def name(self):
+        return self.instance['UserProfileName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('Status').upper() in ('PENDING', 'UPDATING', 'DELETING')
+
+    def terminate(self):
+        self.client.delete_user_profile(DomainId=self.id, UserProfileName=self.name)
+
+
+class SageMakerSpace(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_spaces(client):
+            spaces = client.get_paginator('list_spaces').paginate().build_full_result()['Spaces']
+
+            return [] if not spaces else spaces
+
+        return Terminator._create(credentials, SageMakerSpace, 'sagemaker', _paginate_list_spaces)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['DomainId']
+
+    @property
+    def name(self):
+        return self.instance['SpaceName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('Status').upper() in ('PENDING', 'UPDATING', 'DELETING')
+
+    def terminate(self):
+        self.client.delete_space(DomainId=self.id, SpaceName=self.name)
