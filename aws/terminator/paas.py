@@ -782,9 +782,7 @@ class SageMakerTrainingJob(Terminator):
     @staticmethod
     def create(credentials):
         def _paginate_list_training_jobs(client):
-            jobs = client.get_paginator('list_training_jobs').paginate().build_full_result()['TrainingJobSummaries']
-
-            return [] if not jobs else jobs
+            return client.get_paginator('list_training_jobs').paginate().build_full_result()['TrainingJobSummaries']
 
         return Terminator._create(credentials, SageMakerTrainingJob, 'sagemaker', _paginate_list_training_jobs)
 
@@ -814,6 +812,10 @@ class SageMakerTrainingJob(Terminator):
     def terminate(self):
         status = self.instance.get('TrainingJobStatus')
         if status == 'InProgress':
+            self.client.update_training_job(
+                TrainingJobName=self.name,
+                ResourceConfig={'KeepAlivePeriodInSeconds': 0},
+            )
             self.client.stop_training_job(TrainingJobName=self.name)
         else:
             self.client.delete_training_job(TrainingJobName=self.name)
