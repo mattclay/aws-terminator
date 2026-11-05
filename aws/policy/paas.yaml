@@ -177,6 +177,8 @@ Statement:
       # Matches AddTags and DeleteTags; ListTags also matches but is already
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
+      # Matches Create/Delete/StopTrainingJob.
+      - sagemaker:*TrainingJob
       - sagemaker:*UserProfile
     Resource:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
@@ -210,6 +212,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:pipeline/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:space/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:training-job/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:user-profile/*'
 
   - Sid: AllowLambdaEventSourceMappings
