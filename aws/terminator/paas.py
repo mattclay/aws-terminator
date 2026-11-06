@@ -867,10 +867,6 @@ class SageMakerUserProfile(Terminator):
         return self.instance.get('CreationTime')
 
     @property
-    def id(self):
-        return self.instance['DomainId']
-
-    @property
     def name(self):
         return self.instance['UserProfileName']
 
@@ -879,7 +875,7 @@ class SageMakerUserProfile(Terminator):
         return self.instance.get('Status').upper() in ('PENDING', 'UPDATING', 'DELETING')
 
     def terminate(self):
-        self.client.delete_user_profile(DomainId=self.id, UserProfileName=self.name)
+        self.client.delete_user_profile(DomainId=self.instance['DomainId'], UserProfileName=self.name)
 
 
 class SageMakerSpace(Terminator):
@@ -897,10 +893,6 @@ class SageMakerSpace(Terminator):
         return self.instance.get('CreationTime')
 
     @property
-    def id(self):
-        return self.instance['DomainId']
-
-    @property
     def name(self):
         return self.instance['SpaceName']
 
@@ -909,4 +901,4 @@ class SageMakerSpace(Terminator):
         return self.instance.get('Status').upper() in ('PENDING', 'UPDATING', 'DELETING')
 
     def terminate(self):
-        self.client.delete_space(DomainId=self.id, SpaceName=self.name)
+        self.client.delete_space(DomainId=self.instance['DomainId'], SpaceName=self.name)
