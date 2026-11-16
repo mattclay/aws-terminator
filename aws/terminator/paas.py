@@ -806,7 +806,11 @@ class SageMakerPipeline(Terminator):
         return self.instance['PipelineName']
 
     def terminate(self):
-        self.client.delete_pipeline(PipelineName=self.name)
+        try:
+            self.client.delete_pipeline(PipelineName=self.name)
+        except botocore.exceptions.ClientError as ex:
+            if ex.response['Error']['Code'] not in ('ResourceNotFound', 'ResourceNotFoundException'):
+                raise
 
 
 class SageMakerTrainingJob(Terminator):
