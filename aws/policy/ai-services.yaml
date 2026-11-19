@@ -14,6 +14,8 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
+      # AgentCore Runtime sessions can incur compute charges.
+      - bedrock-agentcore:InvokeAgentRuntime
       - bedrock:Invoke*
       # Matches Create/Delete/Describe/Update/InvokeEndpoint. Endpoint hosting and inference
       # can incur charges.
@@ -28,6 +30,7 @@ Statement:
       # charges.
       - sagemaker:*TrainingJob
     Resource:
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
@@ -38,14 +41,16 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      # Matches Create/Delete/UpdateAgentRuntime
-      - bedrock-agentcore:*AgentRuntime
       # Matches Create/Delete/UpdateAgentRuntimeEndpoint
       - bedrock-agentcore:*AgentRuntimeEndpoint
       # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
       - bedrock-agentcore:*TagResource
       # Matches Create/Delete/UpdateWorkloadIdentity
       - bedrock-agentcore:*WorkloadIdentity
+      # Runtime configuration actions; InvokeAgentRuntime is listed under fees.
+      - bedrock-agentcore:CreateAgentRuntime
+      - bedrock-agentcore:DeleteAgentRuntime
+      - bedrock-agentcore:UpdateAgentRuntime
       - bedrock:CreateAgent*
       - bedrock:DeleteAgent*
       - bedrock:DisableAgentActionGroup
