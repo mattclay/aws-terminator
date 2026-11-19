@@ -15,13 +15,17 @@ Statement:
     Effect: Allow
     Action:
       - bedrock:Invoke*
-      # Matches Create/Delete/Describe/Update/InvokeEndpoint; hosting and inference can incur charges.
+      # Matches Create/Delete/Describe/Update/InvokeEndpoint. Endpoint hosting and inference
+      # can incur charges.
       - sagemaker:*Endpoint
-      # Matches Create/Delete/Describe/UpdateFeatureGroup; Feature Store can incur storage and throughput charges.
+      # Matches Create/Delete/Describe/UpdateFeatureGroup. Feature Store can incur storage
+      # and throughput charges.
       - sagemaker:*FeatureGroup
-      # Matches Create/Delete/Update/Start/StopNotebookInstance; creating or starting incurs instance charges.
+      # Matches Create/Delete/Update/Start/StopNotebookInstance. Creating or starting an
+      # instance incurs charges.
       - sagemaker:*NotebookInstance
-      # Training jobs run billable compute instances.
+      # Matches Create/Delete/StopTrainingJob. Creating a training job can incur compute
+      # charges.
       - sagemaker:*TrainingJob
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
@@ -89,7 +93,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:domain/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
-      # Retained for no-fee sagemaker:*Tags actions.
+      # Retained for no-fee sagemaker:*Tags permissions.
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
