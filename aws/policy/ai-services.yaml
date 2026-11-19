@@ -7,6 +7,8 @@ Statement:
       - bedrock-agentcore:List*
       - bedrock:Get*
       - bedrock:List*
+      - nova-act:Get*
+      - nova-act:List*
       - sagemaker:Describe*
       - sagemaker:List*
     Resource: "*"
@@ -59,6 +61,8 @@ Statement:
       - bedrock:DisableAgentActionGroup
       - bedrock:PrepareAgent
       - bedrock:UpdateAgent*
+      - nova-act:CreateWorkflowDefinition
+      - nova-act:DeleteWorkflowDefinition
       # Matches Create/Delete/Describe/UpdateAppImageConfig; ListAppImageConfigs
       # does not match (ends in "Configs").
       - sagemaker:*AppImageConfig
@@ -96,6 +100,7 @@ Statement:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
+      - 'arn:aws:nova-act:{{ aws_region }}:{{ aws_account_id }}:workflow-definition/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:domain/*'
