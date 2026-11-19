@@ -15,9 +15,21 @@ Statement:
     Effect: Allow
     Action:
       - bedrock:Invoke*
+      # Matches Create/Delete/Describe/Update/InvokeEndpoint; hosting and inference can incur charges.
+      - sagemaker:*Endpoint
+      # Matches Create/Delete/Describe/UpdateFeatureGroup; Feature Store can incur storage and throughput charges.
+      - sagemaker:*FeatureGroup
+      # Matches Create/Delete/Update/Start/StopNotebookInstance; creating or starting incurs instance charges.
+      - sagemaker:*NotebookInstance
+      # Training jobs run billable compute instances.
+      - sagemaker:*TrainingJob
     Resource:
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
       - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:training-job/*'
 
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
@@ -42,13 +54,8 @@ Statement:
       # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
       - sagemaker:*CodeRepository
       - sagemaker:*Domain
-      # Matches Create/Delete/Describe/Update/InvokeEndpoint.
-      - sagemaker:*Endpoint
       # Matches Create/Delete/UpdateEndpointConfig.
       - sagemaker:*EndpointConfig
-      # Matches Create/Delete/Describe/UpdateFeatureGroup; ListFeatureGroups does not
-      # match (ends in "Groups") and is covered by sagemaker:List*.
-      - sagemaker:*FeatureGroup
       # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
       # ListImages does not match (ends in "Images"). *ImageVersion actions end in "Version"
       # and are covered by sagemaker:*ImageVersion below.
@@ -64,9 +71,6 @@ Statement:
       # Matches Create/Delete/Describe/UpdateModelPackageGroup; ListModelPackageGroups
       # does not match (ends in "Groups").
       - sagemaker:*ModelPackageGroup
-      # Matches Create/Delete/Update/Start/StopNotebookInstance
-      # Describe and List are already handled in AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
-      - sagemaker:*NotebookInstance
       # Matches Create/Delete/UpdateNotebookInstance
       - sagemaker:*NotebookInstanceLifecycleConfig
       # Matches Create/Delete/Describe/UpdatePipeline.
@@ -75,8 +79,6 @@ Statement:
       # Matches AddTags and DeleteTags; ListTags also matches but is already
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
-      # Matches Create/Delete/StopTrainingJob.
-      - sagemaker:*TrainingJob
       - sagemaker:*UserProfile
     Resource:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
@@ -87,6 +89,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:domain/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
+      # Retained for no-fee sagemaker:*Tags actions.
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
@@ -100,3 +103,20 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:space/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:training-job/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:user-profile/*'
+
+  - Sid: AllowAIServiceLinkedRoleCreation
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource:
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock-agentcore.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/*'
+      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/sagemaker.amazonaws.com/*'
+    Condition:
+      ForAnyValue:StringEquals:
+        iam:AWSServiceName:
+          - 'bedrock.amazonaws.com'
+          - 'bedrock-agentcore.amazonaws.com'
+          - 'runtime-identity.bedrock-agentcore.amazonaws.com'
+          - 'sagemaker.amazonaws.com'
