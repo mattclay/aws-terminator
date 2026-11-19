@@ -460,6 +460,35 @@ class BedrockAgentCoreRuntime(Terminator):
         self.client.delete_agent_runtime(agentRuntimeId=self.id)
 
 
+class NovaActWorkflowDefinition(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_workflow_definitions(client):
+            return client.get_paginator('list_workflow_definitions').paginate().build_full_result()['workflowDefinitionSummaries']
+
+        return Terminator._create(
+            credentials, NovaActWorkflowDefinition, 'nova-act', _paginate_workflow_definitions)
+
+    @property
+    def created_time(self):
+        return self.instance['createdAt']
+
+    @property
+    def id(self):
+        return self.instance['workflowDefinitionArn']
+
+    @property
+    def name(self):
+        return self.instance['workflowDefinitionName']
+
+    @property
+    def ignore(self):
+        return self.instance['status'] == 'DELETING'
+
+    def terminate(self):
+        self.client.delete_workflow_definition(workflowDefinitionName=self.name)
+
+
 class SageMakerAppImageConfig(Terminator):
     @staticmethod
     def create(credentials):
