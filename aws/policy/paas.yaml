@@ -17,10 +17,6 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - bedrock-agentcore:Get*
-      - bedrock-agentcore:List*
-      - bedrock:Get*
-      - bedrock:List*
       - cloudfront:CreateCloudFrontOriginAccessIdentity
       - cloudfront:Get*
       - cloudfront:List*
@@ -33,8 +29,6 @@ Statement:
       - ecs:RegisterTaskDefinition
       - lambda:GetEventSourceMapping
       - lambda:List*
-      - sagemaker:Describe*
-      - sagemaker:List*
     Resource:
       - "*"
 
@@ -43,7 +37,6 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      - bedrock:Invoke*
       - ecs:*CapacityProvider*
       - ecs:CreateService
       - ecs:DeleteCluster
@@ -61,8 +54,6 @@ Statement:
       - lightsail:CreateInstanceSnapshot
       - lightsail:StartInstance
     Resource:
-      - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
       - 'arn:aws:ecs:{{ aws_region }}:{{ aws_account_id }}:*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:cluster/*'
       - 'arn:aws:eks:{{ aws_region }}:{{ aws_account_id }}:nodegroup/*/*/*'
@@ -72,19 +63,6 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      # Matches Create/Delete/UpdateAgentRuntime
-      - bedrock-agentcore:*AgentRuntime
-      # Matches Create/Delete/UpdateAgentRuntimeEndpoint
-      - bedrock-agentcore:*AgentRuntimeEndpoint
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - bedrock-agentcore:*TagResource
-      # Matches Create/Delete/UpdateWorkloadIdentity
-      - bedrock-agentcore:*WorkloadIdentity
-      - bedrock:CreateAgent*
-      - bedrock:DeleteAgent*
-      - bedrock:DisableAgentActionGroup
-      - bedrock:PrepareAgent
-      - bedrock:UpdateAgent*
       # Matches Create/Delete/UpdateCachePolicy; GetCachePolicy is already
       # covered by cloudfront:Get* in unrestricted (IAM action matching is case-insensitive)
       - cloudfront:*CachePolicy
@@ -140,54 +118,7 @@ Statement:
       - lightsail:RebootInstance
       - lightsail:ReleaseStaticIp
       - lightsail:StopInstance
-      # Matches Create/Delete/Describe/UpdateAppImageConfig; ListAppImageConfigs
-      # does not match (ends in "Configs").
-      - sagemaker:*AppImageConfig
-      # Matches Create/Delete/UpdateCodeRepository; DescribeCodeRepository is covered
-      # by sagemaker:Describe*. ListCodeRepositories does not match (ends in "Repositories")
-      - sagemaker:*CodeRepository
-      - sagemaker:*Domain
-      # Matches Create/Delete/Describe/Update/InvokeEndpoint.
-      - sagemaker:*Endpoint
-      # Matches Create/Delete/UpdateEndpointConfig.
-      - sagemaker:*EndpointConfig
-      # Matches Create/Delete/Describe/UpdateFeatureGroup; ListFeatureGroups does not
-      # match (ends in "Groups") and is covered by sagemaker:List*.
-      - sagemaker:*FeatureGroup
-      # Matches Create/Delete/UpdateImage; DescribeImage is covered by sagemaker:Describe*.
-      # ListImages does not match (ends in "Images"). *ImageVersion actions end in "Version"
-      # and are covered by sagemaker:*ImageVersion below.
-      - sagemaker:*Image
-      # Matches Create/Delete/Describe/UpdateImageVersion; ListImageVersions does not match
-      # (ends in "Versions") and is covered by sagemaker:List*.
-      - sagemaker:*ImageVersion
-      # Matches Create/DeleteModel; DescribeModel is covered by sagemaker:Describe*.
-      # ListModels does not match (ends in "Models")
-      - sagemaker:*Model
-      # Matches Create/Delete/UpdateModelPackage; DescribeModelPackage is covered by sagemaker:Describe*.
-      - sagemaker:*ModelPackage
-      # Matches Create/Delete/Describe/UpdateModelPackageGroup; ListModelPackageGroups
-      # does not match (ends in "Groups").
-      - sagemaker:*ModelPackageGroup
-      # Matches Create/Delete/Update/Start/StopNotebookInstance
-      # Describe and List are already handled in AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
-      - sagemaker:*NotebookInstance
-      # Matches Create/Delete/UpdateNotebookInstance
-      - sagemaker:*NotebookInstanceLifecycleConfig
-      # Matches Create/Delete/Describe/UpdatePipeline.
-      - sagemaker:*Pipeline
-      - sagemaker:*Space
-      # Matches AddTags and DeleteTags; ListTags also matches but is already
-      # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
-      - sagemaker:*Tags
-      # Matches Create/Delete/StopTrainingJob.
-      - sagemaker:*TrainingJob
-      - sagemaker:*UserProfile
     Resource:
-      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
-      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       # CloudFront is a global service (no region in ARNs)
       - 'arn:aws:cloudfront::{{ aws_account_id }}:cache-policy/*'
       - 'arn:aws:cloudfront::{{ aws_account_id }}:distribution/*'
@@ -201,24 +132,6 @@ Statement:
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:function:*'
       - 'arn:aws:lambda:{{ aws_region }}:{{ aws_account_id }}:layer:*'
       - 'arn:aws:lightsail:{{ aws_region }}:{{ aws_account_id }}:*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:domain/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package-group/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance-lifecycle-config/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:pipeline/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:space/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:training-job/*'
-      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:user-profile/*'
-
   - Sid: AllowLambdaEventSourceMappings
     Effect: Allow
     Action:

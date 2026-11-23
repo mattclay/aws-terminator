@@ -19,7 +19,8 @@ Each policy file corresponds to a domain of AWS services:
 | `application-services.yaml` | CloudFormation, CloudWatch, CodeBuild, CodeCommit, CodePipeline, EventBridge, Kinesis, Lambda (logs), MQ, SES, SQS, SNS, SSM, Step Functions |
 | `application-security.yaml` | WAF, WAFv2, Inspector |
 | `security-services.yaml` | IAM, KMS, ACM, Secrets Manager, CloudTrail, STS, Access Analyzer |
-| `paas.yaml` | Bedrock, CloudFront, ECS, EKS, Elastic Beanstalk, Lambda, Lightsail, SageMaker |
+| `ai-services.yaml` | Bedrock, Bedrock AgentCore, SageMaker |
+| `paas.yaml` | CloudFront, ECS, EKS, Elastic Beanstalk, Lambda, Lightsail |
 
 When adding a new service, place it in the file that best matches its domain.
 When adding permissions for an existing service, add them to the file where that
