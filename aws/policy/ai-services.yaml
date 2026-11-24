@@ -107,6 +107,7 @@ Statement:
       - sagemaker:DeleteFeatureGroup
       - sagemaker:DeleteNotebookInstance
       - sagemaker:DeleteSpace
+      - sagemaker:DeleteTrainingJob
       - sagemaker:StopNotebookInstance
       - sagemaker:StopTrainingJob
     Resource:
