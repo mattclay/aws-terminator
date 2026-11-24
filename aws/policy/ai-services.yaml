@@ -52,16 +52,19 @@ Statement:
     Action:
       # Endpoint lifecycle actions only; this does not match InvokeAgentRuntime.
       - bedrock-agentcore:*AgentRuntimeEndpoint
+      - bedrock-agentcore:*TagResource
       # Keep runtime configuration actions explicit: *AgentRuntime would also match the
       # unused, billable InvokeAgentRuntime action.
       - bedrock-agentcore:CreateAgentRuntime
+      # CreateAgentRuntime implicitly creates workload identities; cleanup requires delete.
+      - bedrock-agentcore:CreateWorkloadIdentity
       - bedrock-agentcore:DeleteAgentRuntime
+      - bedrock-agentcore:DeleteWorkloadIdentity
       # GetAgentRuntime returns environment-variable values, so keep it resource-scoped.
       - bedrock-agentcore:GetAgentRuntime
       - bedrock-agentcore:ListTagsForResource
       # Optional runtime capacity-provider association.
       - bedrock-agentcore:PassCapacityProvider
-      - bedrock-agentcore:TagResource
       - bedrock-agentcore:UpdateAgentRuntime
       # Workflow-definition create/get/delete operations; ListWorkflowDefinitions is
       # allowed separately because it ends in "Definitions".
@@ -107,6 +110,8 @@ Statement:
       - sagemaker:StopTrainingJob
     Resource:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
+      # WorkloadIdentity resources created during AgentCore runtime lifecycle.
+      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
       - 'arn:aws:nova-act:{{ aws_region }}:{{ aws_account_id }}:workflow-definition/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
