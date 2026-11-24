@@ -135,7 +135,7 @@ class Efs(Terminator):
 
     @property
     def name(self):
-        return self.instance['Name']
+        return self.instance.get('Name') or self.id
 
     @property
     def created_time(self):
