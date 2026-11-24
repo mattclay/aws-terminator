@@ -3,12 +3,15 @@ Statement:
   - Sid: AllowGlobalUnrestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      - bedrock-agentcore:Get*
-      - bedrock-agentcore:List*
-      - bedrock:Get*
-      - bedrock:List*
-      - nova-act:Get*
-      - nova-act:List*
+      - bedrock-agentcore:ListAgentRuntimeEndpoints
+      # Read calls used by the AgentCore runtime and endpoint info modules.
+      - bedrock-agentcore:ListAgentRuntimes
+      # Read calls used by the foundation-model info module.
+      - bedrock:GetFoundationModel
+      - bedrock:ListFoundationModels
+      # The Nova Act info module lists workflow definition summaries.
+      - nova-act:ListWorkflowDefinitions
+      # Read-only descriptions are unrestricted for the integration-test account.
       - sagemaker:Describe*
       - sagemaker:List*
     Resource: "*"
@@ -16,27 +19,28 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurFees
     Effect: Allow
     Action:
-      # AgentCore Runtime sessions can incur compute charges.
-      - bedrock-agentcore:InvokeAgentRuntime
-      - bedrock:Invoke*
-      # Matches Create/Delete/Describe/Update/InvokeEndpoint. Endpoint hosting and inference
-      # can incur charges.
-      - sagemaker:*Endpoint
-      # Matches Create/Delete/Describe/UpdateFeatureGroup. Feature Store can incur storage
-      # and throughput charges.
-      - sagemaker:*FeatureGroup
-      # Matches Create/Delete/Update/Start/StopNotebookInstance. Creating or starting an
-      # instance incurs charges.
-      - sagemaker:*NotebookInstance
-      # Creating a space can provision billable EBS storage.
-      - sagemaker:*Space
-      # Matches Create/Delete/StopTrainingJob. Creating a training job can incur compute
-      # charges.
-      - sagemaker:*TrainingJob
+      - bedrock:InvokeModel
+      # These operations can provision or use billable endpoint hosting.
+      - sagemaker:CreateEndpoint
+      # Creating or reconfiguring a feature group can incur storage/throughput charges.
+      - sagemaker:CreateFeatureGroup
+      # Creating, starting, or resizing notebook instance resources can incur charges.
+      - sagemaker:CreateNotebookInstance
+      # Creating or resizing a space can provision billable EBS storage.
+      - sagemaker:CreateSpace
+      # Creating or extending a training job can incur compute charges.
+      - sagemaker:CreateTrainingJob
+      - sagemaker:InvokeEndpoint
+      - sagemaker:StartNotebookInstance
+      - sagemaker:UpdateEndpoint
+      - sagemaker:UpdateFeatureGroup
+      - sagemaker:UpdateNotebookInstance
+      - sagemaker:UpdateSpace
+      - sagemaker:UpdateTrainingJob
     Resource:
-      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
       - 'arn:aws:bedrock:{{ aws_region }}::foundation-model/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
+      # CreateEndpoint and UpdateEndpoint require authorization on the endpoint config too.
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:endpoint/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:notebook-instance/*'
@@ -46,23 +50,22 @@ Statement:
   - Sid: AllowGlobalRestrictedResourceActionsWhichIncurNoFees
     Effect: Allow
     Action:
-      # Matches Create/Delete/UpdateAgentRuntimeEndpoint
+      # Endpoint lifecycle actions only; this does not match InvokeAgentRuntime.
       - bedrock-agentcore:*AgentRuntimeEndpoint
-      # Matches TagResource and UntagResource (IAM action matching is case-insensitive)
-      - bedrock-agentcore:*TagResource
-      # Matches Create/Delete/UpdateWorkloadIdentity
-      - bedrock-agentcore:*WorkloadIdentity
-      # Runtime configuration actions; InvokeAgentRuntime is listed under fees.
+      # Keep runtime configuration actions explicit: *AgentRuntime would also match the
+      # unused, billable InvokeAgentRuntime action.
       - bedrock-agentcore:CreateAgentRuntime
       - bedrock-agentcore:DeleteAgentRuntime
+      # GetAgentRuntime returns environment-variable values, so keep it resource-scoped.
+      - bedrock-agentcore:GetAgentRuntime
+      - bedrock-agentcore:ListTagsForResource
+      # Optional runtime capacity-provider association.
+      - bedrock-agentcore:PassCapacityProvider
+      - bedrock-agentcore:TagResource
       - bedrock-agentcore:UpdateAgentRuntime
-      - bedrock:CreateAgent*
-      - bedrock:DeleteAgent*
-      - bedrock:DisableAgentActionGroup
-      - bedrock:PrepareAgent
-      - bedrock:UpdateAgent*
-      - nova-act:CreateWorkflowDefinition
-      - nova-act:DeleteWorkflowDefinition
+      # Workflow-definition create/get/delete operations; ListWorkflowDefinitions is
+      # allowed separately because it ends in "Definitions".
+      - nova-act:*WorkflowDefinition
       # Matches Create/Delete/Describe/UpdateAppImageConfig; ListAppImageConfigs
       # does not match (ends in "Configs").
       - sagemaker:*AppImageConfig
@@ -95,11 +98,15 @@ Statement:
       # covered by sagemaker:List* in unrestricted (IAM action matching is case-insensitive)
       - sagemaker:*Tags
       - sagemaker:*UserProfile
+      # Cleanup actions stop or remove billable SageMaker resources.
+      - sagemaker:DeleteEndpoint
+      - sagemaker:DeleteFeatureGroup
+      - sagemaker:DeleteNotebookInstance
+      - sagemaker:DeleteSpace
+      - sagemaker:StopNotebookInstance
+      - sagemaker:StopTrainingJob
     Resource:
       - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:runtime/*'
-      - 'arn:aws:bedrock-agentcore:{{ aws_region }}:{{ aws_account_id }}:workload-identity-directory/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent-alias/*'
-      - 'arn:aws:bedrock:{{ aws_region }}:{{ aws_account_id }}:agent/*'
       - 'arn:aws:nova-act:{{ aws_region }}:{{ aws_account_id }}:workflow-definition/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:app-image-config/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:code-repository/*'
@@ -126,13 +133,11 @@ Statement:
       - iam:CreateServiceLinkedRole
     Resource:
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock-agentcore.amazonaws.com/*'
-      - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/bedrock.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/runtime-identity.bedrock-agentcore.amazonaws.com/*'
       - 'arn:aws:iam::{{ aws_account_id }}:role/aws-service-role/sagemaker.amazonaws.com/*'
     Condition:
       ForAnyValue:StringEquals:
         iam:AWSServiceName:
-          - 'bedrock.amazonaws.com'
           - 'bedrock-agentcore.amazonaws.com'
           - 'runtime-identity.bedrock-agentcore.amazonaws.com'
           - 'sagemaker.amazonaws.com'
