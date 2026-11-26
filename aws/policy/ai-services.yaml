@@ -86,6 +86,9 @@ Statement:
       # Matches Create/Delete/Describe/UpdateImageVersion; ListImageVersions does not match
       # (ends in "Versions") and is covered by sagemaker:List*.
       - sagemaker:*ImageVersion
+      # Matches Create/Delete/Describe/UpdateInferenceComponent; ListInferenceComponents does not
+      # match (ends in "Components") and is covered by sagemaker:List*.
+      - sagemaker:*InferenceComponent
       # Matches Create/DeleteModel; DescribeModel is covered by sagemaker:Describe*.
       # ListModels does not match (ends in "Models")
       - sagemaker:*Model
@@ -124,6 +127,7 @@ Statement:
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:feature-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image-version/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:image/*'
+      - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:inference-component/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package-group/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model-package/*'
       - 'arn:aws:sagemaker:{{ aws_region }}:{{ aws_account_id }}:model/*'

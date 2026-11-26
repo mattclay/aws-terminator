@@ -244,7 +244,43 @@ class SageMakerEndpoint(Terminator):
         return self.instance.get('EndpointStatus').upper() in ('CREATING', 'UPDATING', 'DELETING', 'ROLLING_BACK')
 
     def terminate(self):
+        # Inference components are hosted on the endpoint, so they are removed first. Their deletion is
+        # asynchronous, so the endpoint deletion may only succeed on a later run.
+        components = self.client.get_paginator('list_inference_components').paginate(EndpointNameEquals=self.name).build_full_result()['InferenceComponents']
+        for component in components:
+            if component.get('InferenceComponentStatus') != 'Deleting':
+                self.client.delete_inference_component(InferenceComponentName=component['InferenceComponentName'])
         self.client.delete_endpoint(EndpointName=self.name)
+
+
+class SageMakerInferenceComponent(Terminator):
+    @staticmethod
+    def create(credentials):
+        def _paginate_list_inference_components(client):
+            components = client.get_paginator('list_inference_components').paginate().build_full_result()['InferenceComponents']
+
+            return [] if not components else components
+
+        return Terminator._create(credentials, SageMakerInferenceComponent, 'sagemaker', _paginate_list_inference_components)
+
+    @property
+    def created_time(self):
+        return self.instance.get('CreationTime')
+
+    @property
+    def id(self):
+        return self.instance['InferenceComponentArn']
+
+    @property
+    def name(self):
+        return self.instance['InferenceComponentName']
+
+    @property
+    def ignore(self) -> bool:
+        return self.instance.get('InferenceComponentStatus', '').upper() in ('CREATING', 'UPDATING', 'DELETING')
+
+    def terminate(self):
+        self.client.delete_inference_component(InferenceComponentName=self.name)
 
 
 class SageMakerModelPackage(Terminator):
